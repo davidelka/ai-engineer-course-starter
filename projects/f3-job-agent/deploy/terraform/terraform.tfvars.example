@@ -1,0 +1,5 @@
+# cp terraform.tfvars.example terraform.tfvars
+region            = "us-east-1"
+image_tag         = "v1"
+extractor         = "llm"      # or "heuristic" for a free cloud run
+schedules_enabled = true

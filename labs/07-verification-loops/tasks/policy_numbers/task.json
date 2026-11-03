@@ -1,0 +1,18 @@
+{
+  "id": "policy_numbers",
+  "title": "Parse the numbers out of Acme's vacation policy",
+  "module": "solution.py",
+  "smoke": "parse_vacation_policy('- Full-time employees receive 14 paid vacation days in their first year of employment.')",
+  "spec": [
+    "Implement parse_vacation_policy(text: str) -> dict. The text is a version of Acme's vacation policy (data/acme/hr_policies.md): markdown bullets with the same sentences, but the numbers change between versions and the bullets may come in any order.",
+    "Return a dict with exactly these keys (int values unless noted):",
+    "- first_year_days: from 'Full-time employees receive N paid vacation days in their first year of employment.'",
+    "- yearly_increment: from 'From the second year, the allowance grows by N day(s) per year of service, up to a maximum of M days.'",
+    "- max_days: M from the same sentence.",
+    "- carryover_days: from 'Up to N unused days may be carried over to the next calendar year.'",
+    "- carryover_expiry: from 'Carried-over days expire on <Month> <day>.', as a 'MM-DD' string, e.g. 'March 31' -> '03-31'.",
+    "- notice_weeks: from 'Vacation requests of 3 days or more must be submitted in the HR portal at least N week(s) in advance ...' (N is the weeks, not the 3 days).",
+    "- shutdown_days: from '... N vacation day(s) is/are deducted automatically.'",
+    "Singular and plural forms both appear ('1 day', '2 days'). If a sentence is missing, its key(s) map to None. Never raise."
+  ]
+}

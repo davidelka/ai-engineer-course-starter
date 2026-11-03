@@ -1,0 +1,7 @@
+# Lesson 10 (embeddings, vector search). Verified on PyPI, November 2026.
+numpy>=2.0                    # vectors, exact search (2.5.4 current)
+faiss-cpu>=1.12               # FAISS: Flat, HNSW, IVF, PQ (1.15.1 current, Python >= 3.10)
+sentence-transformers>=5.1    # local embedding models (6.2.0 current). Needs PyTorch: on a
+                              # laptop without a GPU install the CPU wheel FIRST:
+                              #   uv pip install torch --index-url https://download.pytorch.org/whl/cpu
+# OpenAI embeddings use httpx (already in the root requirements): no SDK needed.

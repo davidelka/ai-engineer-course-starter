@@ -1,0 +1,6 @@
+{
+  "task": "Write the Slack reply from Company Brain to Dana Levi about the access request that was just filed for her (lesson 15, task t01).",
+  "facts": {"employee_name": "Dana Levi", "request_id": "AR-00001", "system": "aws-production", "access_level": "admin",
+            "duration_days": 3, "route": "needs_security", "approver": "the Security team", "review_days": 2,
+            "expires_at": "2026-11-04"}
+}

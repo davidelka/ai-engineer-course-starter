@@ -1,0 +1,13 @@
+# Exercise 8: your review of designs/answer_service_v2.md, using designs/review_checklist.md.
+# One entry per problem you find. Point at the section (D1..D12) and the checklist item (C1..C9).
+# Write the problem and the fix in your own words (Hebrew or English).
+# Check:  python labs/20-design-driven/check_review.py
+#
+# Example of the shape (this example is NOT one of the answers):
+#   - section: D99
+#     checklist: C9
+#     problem: the log line includes the user's question text
+#     fix: log request_id, status, latency and cost only
+
+reviewer: the owner
+findings: []

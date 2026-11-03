@@ -1,0 +1,3 @@
+# Lesson 15 needs nothing beyond the repo requirements (httpx, pydantic, pytest).
+# agentkit builds on llmkit, toolkit and mockllm; obskit (lesson 22, opentelemetry-sdk) is optional,
+# used only for --spans / python -m obskit.viewer and Agent(trace=True).

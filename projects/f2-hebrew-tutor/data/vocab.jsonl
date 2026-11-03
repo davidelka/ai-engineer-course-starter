@@ -1,0 +1,160 @@
+{"id": "v001", "he": "רופא", "ar": "طبيب", "transliteration": "روفيه", "level": "A1", "pos": "noun", "gender": "m", "scenario": "clinic", "source": "team", "status": "approved"}
+{"id": "v002", "he": "רופאה", "ar": "طبيبة", "transliteration": "روفاه", "level": "A1", "pos": "noun", "gender": "f", "scenario": "clinic", "source": "team", "status": "approved"}
+{"id": "v003", "he": "אחות", "ar": "ممرضة", "transliteration": "أحوت", "level": "A1", "pos": "noun", "gender": "f", "scenario": "clinic", "source": "team", "status": "approved"}
+{"id": "v004", "he": "תור", "ar": "موعد (دَور)", "transliteration": "تور", "level": "A1", "pos": "noun", "gender": "m", "scenario": "clinic", "source": "team", "status": "approved"}
+{"id": "v005", "he": "כאב", "ar": "ألم", "transliteration": "كئيڤ", "level": "A1", "pos": "noun", "gender": "m", "scenario": "clinic", "source": "team", "status": "approved"}
+{"id": "v006", "he": "כואב לי", "ar": "يؤلمني", "transliteration": "كوئيڤ لي", "level": "A1", "pos": "phrase", "gender": null, "scenario": "clinic", "source": "team", "status": "approved"}
+{"id": "v007", "he": "ראש", "ar": "رأس", "transliteration": "روش", "level": "A1", "pos": "noun", "gender": "m", "scenario": "clinic", "source": "team", "status": "approved"}
+{"id": "v008", "he": "בטן", "ar": "بطن", "transliteration": "بيتين", "level": "A1", "pos": "noun", "gender": "f", "scenario": "clinic", "source": "team", "status": "approved"}
+{"id": "v009", "he": "חום", "ar": "حرارة (حُمّى)", "transliteration": "حوم", "level": "A1", "pos": "noun", "gender": "m", "scenario": "clinic", "source": "team", "status": "approved"}
+{"id": "v010", "he": "תרופה", "ar": "دواء", "transliteration": "تروفا", "level": "A1", "pos": "noun", "gender": "f", "scenario": "clinic", "source": "team", "status": "approved"}
+{"id": "v011", "he": "כרטיס מגנטי", "ar": "بطاقة ممغنطة", "transliteration": "كرطيس مجنيطي", "level": "A2", "pos": "noun", "gender": "m", "scenario": "clinic", "source": "team", "status": "approved"}
+{"id": "v012", "he": "מרשם", "ar": "وصفة طبية", "transliteration": "مِرشام", "level": "A2", "pos": "noun", "gender": "m", "scenario": "clinic", "source": "team", "status": "approved"}
+{"id": "v013", "he": "בדיקת דם", "ar": "فحص دم", "transliteration": "بديكات دام", "level": "A2", "pos": "noun", "gender": "f", "scenario": "clinic", "source": "team", "status": "approved"}
+{"id": "v014", "he": "גרון", "ar": "حلق", "transliteration": "جارون", "level": "A2", "pos": "noun", "gender": "m", "scenario": "clinic", "source": "team", "status": "approved"}
+{"id": "v015", "he": "הפניה", "ar": "تحويل طبي", "transliteration": "هَفناياه", "level": "B1", "pos": "noun", "gender": "f", "scenario": "clinic", "source": "team", "status": "approved"}
+{"id": "v016", "he": "אישור מחלה", "ar": "تقرير مرضي", "transliteration": "إيشور محالا", "level": "B1", "pos": "noun", "gender": "m", "scenario": "clinic", "source": "team", "status": "approved"}
+{"id": "v017", "he": "אוטובוס", "ar": "باص", "transliteration": "أوطوبوس", "level": "A1", "pos": "noun", "gender": "m", "scenario": "bus_station", "source": "team", "status": "approved"}
+{"id": "v018", "he": "תחנה", "ar": "محطة", "transliteration": "تحناه", "level": "A1", "pos": "noun", "gender": "f", "scenario": "bus_station", "source": "team", "status": "approved"}
+{"id": "v019", "he": "קו", "ar": "خط", "transliteration": "كاڤ", "level": "A1", "pos": "noun", "gender": "m", "scenario": "bus_station", "source": "team", "status": "approved"}
+{"id": "v020", "he": "כרטיס", "ar": "تذكرة", "transliteration": "كرطيس", "level": "A1", "pos": "noun", "gender": "m", "scenario": "bus_station", "source": "team", "status": "approved"}
+{"id": "v021", "he": "נהג", "ar": "سائق", "transliteration": "ناهاج", "level": "A1", "pos": "noun", "gender": "m", "scenario": "bus_station", "source": "team", "status": "approved"}
+{"id": "v022", "he": "לנסוע", "ar": "أن يسافر", "transliteration": "لِنسوع", "level": "A1", "pos": "verb", "gender": null, "scenario": "bus_station", "source": "team", "status": "approved"}
+{"id": "v023", "he": "כמה עולה", "ar": "كم الثمن", "transliteration": "كاما عولي", "level": "A1", "pos": "phrase", "gender": null, "scenario": "bus_station", "source": "team", "status": "approved"}
+{"id": "v024", "he": "רציף", "ar": "رصيف", "transliteration": "رتسيف", "level": "A2", "pos": "noun", "gender": "m", "scenario": "bus_station", "source": "team", "status": "approved"}
+{"id": "v025", "he": "רב-קו", "ar": "بطاقة راڤ-كاڤ", "transliteration": "راڤ كاڤ", "level": "A2", "pos": "noun", "gender": "m", "scenario": "bus_station", "source": "team", "status": "approved"}
+{"id": "v026", "he": "לטעון", "ar": "أن يشحن", "transliteration": "لِطعون", "level": "A2", "pos": "verb", "gender": null, "scenario": "bus_station", "source": "team", "status": "approved"}
+{"id": "v027", "he": "מאחר", "ar": "متأخر", "transliteration": "مِئاحير", "level": "A2", "pos": "adj", "gender": "m", "scenario": "bus_station", "source": "team", "status": "approved"}
+{"id": "v028", "he": "הבא", "ar": "التالي", "transliteration": "هاباه", "level": "A2", "pos": "adj", "gender": "m", "scenario": "bus_station", "source": "team", "status": "approved"}
+{"id": "v029", "he": "רכבת", "ar": "قطار", "transliteration": "راكيڤت", "level": "A2", "pos": "noun", "gender": "f", "scenario": "bus_station", "source": "team", "status": "approved"}
+{"id": "v030", "he": "לוח זמנים", "ar": "جدول مواعيد", "transliteration": "لوَح زمانيم", "level": "B1", "pos": "noun", "gender": "m", "scenario": "bus_station", "source": "team", "status": "approved"}
+{"id": "v031", "he": "לפספס", "ar": "أن يفوته", "transliteration": "لِفَسفيس", "level": "B1", "pos": "verb", "gender": null, "scenario": "bus_station", "source": "team", "status": "approved"}
+{"id": "v032", "he": "החזר", "ar": "استرجاع المال", "transliteration": "هيحزير", "level": "B1", "pos": "noun", "gender": "m", "scenario": "bus_station", "source": "team", "status": "approved"}
+{"id": "v033", "he": "לחם", "ar": "خبز", "transliteration": "ليحيم", "level": "A1", "pos": "noun", "gender": "m", "scenario": "grocery", "source": "team", "status": "approved"}
+{"id": "v034", "he": "חלב", "ar": "حليب", "transliteration": "حالاڤ", "level": "A1", "pos": "noun", "gender": "m", "scenario": "grocery", "source": "team", "status": "approved"}
+{"id": "v035", "he": "ביצה", "ar": "بيضة", "transliteration": "بيتساه", "level": "A1", "pos": "noun", "gender": "f", "scenario": "grocery", "source": "team", "status": "approved"}
+{"id": "v036", "he": "מים", "ar": "ماء", "transliteration": "مايِم", "level": "A1", "pos": "noun", "gender": "m", "scenario": "grocery", "source": "team", "status": "approved"}
+{"id": "v037", "he": "שקית", "ar": "كيس", "transliteration": "شَكيت", "level": "A1", "pos": "noun", "gender": "f", "scenario": "grocery", "source": "team", "status": "approved"}
+{"id": "v038", "he": "כסף", "ar": "مال", "transliteration": "كيسيف", "level": "A1", "pos": "noun", "gender": "m", "scenario": "grocery", "source": "team", "status": "approved"}
+{"id": "v039", "he": "שקל", "ar": "شيكل", "transliteration": "شيكيل", "level": "A1", "pos": "noun", "gender": "m", "scenario": "grocery", "source": "team", "status": "approved"}
+{"id": "v040", "he": "זול", "ar": "رخيص", "transliteration": "زول", "level": "A1", "pos": "adj", "gender": "m", "scenario": "grocery", "source": "team", "status": "approved"}
+{"id": "v041", "he": "יקר", "ar": "غالٍ", "transliteration": "ياكار", "level": "A1", "pos": "adj", "gender": "m", "scenario": "grocery", "source": "team", "status": "approved"}
+{"id": "v042", "he": "עגבנייה", "ar": "بندورة", "transliteration": "عجڤانياه", "level": "A2", "pos": "noun", "gender": "f", "scenario": "grocery", "source": "team", "status": "approved"}
+{"id": "v043", "he": "אורז", "ar": "أرز", "transliteration": "أوريز", "level": "A2", "pos": "noun", "gender": "m", "scenario": "grocery", "source": "team", "status": "approved"}
+{"id": "v044", "he": "מזומן", "ar": "نقدًا (كاش)", "transliteration": "مِزومان", "level": "A2", "pos": "noun", "gender": "m", "scenario": "grocery", "source": "team", "status": "approved"}
+{"id": "v045", "he": "קופה", "ar": "صندوق الدفع", "transliteration": "كوپاه", "level": "A2", "pos": "noun", "gender": "f", "scenario": "grocery", "source": "team", "status": "approved"}
+{"id": "v046", "he": "מדף", "ar": "رف", "transliteration": "مَدَف", "level": "B1", "pos": "noun", "gender": "m", "scenario": "grocery", "source": "team", "status": "approved"}
+{"id": "v047", "he": "חשבון", "ar": "حساب / فاتورة", "transliteration": "حيشبون", "level": "B1", "pos": "noun", "gender": "m", "scenario": "grocery", "source": "team", "status": "approved"}
+{"id": "v048", "he": "טעות", "ar": "خطأ", "transliteration": "طاعوت", "level": "B1", "pos": "noun", "gender": "f", "scenario": "grocery", "source": "team", "status": "approved"}
+{"id": "v049", "he": "בית ספר", "ar": "مدرسة", "transliteration": "بيت سيفر", "level": "A1", "pos": "noun", "gender": "m", "scenario": "school_office", "source": "team", "status": "approved"}
+{"id": "v050", "he": "כיתה", "ar": "صف", "transliteration": "كيتاه", "level": "A1", "pos": "noun", "gender": "f", "scenario": "school_office", "source": "team", "status": "approved"}
+{"id": "v051", "he": "מורה", "ar": "معلم / معلمة", "transliteration": "موريه", "level": "A1", "pos": "noun", "gender": "m", "scenario": "school_office", "source": "team", "status": "approved"}
+{"id": "v052", "he": "שיעור", "ar": "درس", "transliteration": "شيعور", "level": "A1", "pos": "noun", "gender": "m", "scenario": "school_office", "source": "team", "status": "approved"}
+{"id": "v053", "he": "מחברת", "ar": "دفتر", "transliteration": "محبيريت", "level": "A1", "pos": "noun", "gender": "f", "scenario": "school_office", "source": "team", "status": "approved"}
+{"id": "v054", "he": "ספר", "ar": "كتاب", "transliteration": "سيفر", "level": "A1", "pos": "noun", "gender": "m", "scenario": "school_office", "source": "team", "status": "approved"}
+{"id": "v055", "he": "חדר", "ar": "غرفة", "transliteration": "حيدر", "level": "A1", "pos": "noun", "gender": "m", "scenario": "school_office", "source": "team", "status": "approved"}
+{"id": "v056", "he": "מזכירה", "ar": "سكرتيرة", "transliteration": "مَزكيراه", "level": "A2", "pos": "noun", "gender": "f", "scenario": "school_office", "source": "team", "status": "approved"}
+{"id": "v057", "he": "אישור", "ar": "تصريح / موافقة", "transliteration": "إيشور", "level": "A2", "pos": "noun", "gender": "m", "scenario": "school_office", "source": "team", "status": "approved"}
+{"id": "v058", "he": "מערכת שעות", "ar": "برنامج الحصص", "transliteration": "ماعيريخت شاعوت", "level": "A2", "pos": "noun", "gender": "f", "scenario": "school_office", "source": "team", "status": "approved"}
+{"id": "v059", "he": "הפסקה", "ar": "استراحة", "transliteration": "هَپساكاه", "level": "A2", "pos": "noun", "gender": "f", "scenario": "school_office", "source": "team", "status": "approved"}
+{"id": "v060", "he": "מבחן", "ar": "امتحان", "transliteration": "مِڤحان", "level": "A2", "pos": "noun", "gender": "m", "scenario": "school_office", "source": "team", "status": "approved"}
+{"id": "v061", "he": "בחינה", "ar": "امتحان رسمي", "transliteration": "بحيناه", "level": "B1", "pos": "noun", "gender": "f", "scenario": "school_office", "source": "team", "status": "approved"}
+{"id": "v062", "he": "מועד ב'", "ar": "الموعد الثاني", "transliteration": "موعيد بيت", "level": "B1", "pos": "noun", "gender": "m", "scenario": "school_office", "source": "team", "status": "approved"}
+{"id": "v063", "he": "להירשם", "ar": "أن يسجّل", "transliteration": "لِهيراشيم", "level": "B1", "pos": "verb", "gender": null, "scenario": "school_office", "source": "team", "status": "approved"}
+{"id": "v064", "he": "חוג", "ar": "نشاط / حلقة", "transliteration": "حوج", "level": "B1", "pos": "noun", "gender": "m", "scenario": "school_office", "source": "team", "status": "approved"}
+{"id": "v065", "he": "עבודה", "ar": "عمل", "transliteration": "عڤوداه", "level": "A2", "pos": "noun", "gender": "f", "scenario": "job_interview", "source": "team", "status": "approved"}
+{"id": "v066", "he": "לעבוד", "ar": "أن يعمل", "transliteration": "لَعَڤود", "level": "A2", "pos": "verb", "gender": null, "scenario": "job_interview", "source": "team", "status": "approved"}
+{"id": "v067", "he": "מנהל", "ar": "مدير", "transliteration": "مِناهيل", "level": "A2", "pos": "noun", "gender": "m", "scenario": "job_interview", "source": "team", "status": "approved"}
+{"id": "v068", "he": "משמרת", "ar": "وردية", "transliteration": "مِشميريت", "level": "A2", "pos": "noun", "gender": "f", "scenario": "job_interview", "source": "team", "status": "approved"}
+{"id": "v069", "he": "לקוח", "ar": "زبون", "transliteration": "لاكوَح", "level": "A2", "pos": "noun", "gender": "m", "scenario": "job_interview", "source": "team", "status": "approved"}
+{"id": "v070", "he": "ניסיון", "ar": "خبرة", "transliteration": "نيسايون", "level": "A2", "pos": "noun", "gender": "m", "scenario": "job_interview", "source": "team", "status": "approved"}
+{"id": "v071", "he": "שעה", "ar": "ساعة", "transliteration": "شاعاه", "level": "A1", "pos": "noun", "gender": "f", "scenario": "job_interview", "source": "team", "status": "approved"}
+{"id": "v072", "he": "קיץ", "ar": "صيف", "transliteration": "كاييتس", "level": "A1", "pos": "noun", "gender": "m", "scenario": "job_interview", "source": "team", "status": "approved"}
+{"id": "v073", "he": "משכורת", "ar": "راتب", "transliteration": "مَسكوريت", "level": "B1", "pos": "noun", "gender": "f", "scenario": "job_interview", "source": "team", "status": "approved"}
+{"id": "v074", "he": "אחראי", "ar": "مسؤول", "transliteration": "أحراي", "level": "B1", "pos": "adj", "gender": "m", "scenario": "job_interview", "source": "team", "status": "approved"}
+{"id": "v075", "he": "בזמן", "ar": "في الوقت", "transliteration": "بِزمان", "level": "A2", "pos": "phrase", "gender": null, "scenario": "job_interview", "source": "team", "status": "approved"}
+{"id": "v076", "he": "סבלנות", "ar": "صبر", "transliteration": "سَڤلانوت", "level": "B1", "pos": "noun", "gender": "f", "scenario": "job_interview", "source": "team", "status": "approved"}
+{"id": "v077", "he": "קורות חיים", "ar": "سيرة ذاتية", "transliteration": "كوروت حاييم", "level": "B1", "pos": "noun", "gender": "m", "scenario": "job_interview", "source": "team", "status": "approved"}
+{"id": "v078", "he": "ראיון", "ar": "مقابلة", "transliteration": "رَيون", "level": "B1", "pos": "noun", "gender": "m", "scenario": "job_interview", "source": "team", "status": "approved"}
+{"id": "v079", "he": "מתאים", "ar": "مناسب", "transliteration": "مَتئيم", "level": "B1", "pos": "adj", "gender": "m", "scenario": "job_interview", "source": "team", "status": "approved"}
+{"id": "v080", "he": "להתחיל", "ar": "أن يبدأ", "transliteration": "لِهَتحيل", "level": "A2", "pos": "verb", "gender": null, "scenario": "job_interview", "source": "team", "status": "approved"}
+{"id": "v081", "he": "בית מרקחת", "ar": "صيدلية", "transliteration": "بيت ميركاحات", "level": "A1", "pos": "noun", "gender": "m", "scenario": "pharmacy", "source": "team", "status": "approved"}
+{"id": "v082", "he": "רוקח", "ar": "صيدلي", "transliteration": "روكيَح", "level": "A2", "pos": "noun", "gender": "m", "scenario": "pharmacy", "source": "team", "status": "approved"}
+{"id": "v083", "he": "כדור", "ar": "حبة دواء", "transliteration": "كادور", "level": "A1", "pos": "noun", "gender": "m", "scenario": "pharmacy", "source": "team", "status": "approved"}
+{"id": "v084", "he": "סירופ", "ar": "شراب دواء", "transliteration": "سيروپ", "level": "A1", "pos": "noun", "gender": "m", "scenario": "pharmacy", "source": "team", "status": "approved"}
+{"id": "v085", "he": "פעם", "ar": "مرة", "transliteration": "پاعام", "level": "A1", "pos": "noun", "gender": "f", "scenario": "pharmacy", "source": "team", "status": "approved"}
+{"id": "v086", "he": "ביום", "ar": "في اليوم", "transliteration": "بَيوم", "level": "A1", "pos": "phrase", "gender": null, "scenario": "pharmacy", "source": "team", "status": "approved"}
+{"id": "v087", "he": "לפני", "ar": "قبل", "transliteration": "لِفني", "level": "A1", "pos": "prep", "gender": null, "scenario": "pharmacy", "source": "team", "status": "approved"}
+{"id": "v088", "he": "אחרי", "ar": "بعد", "transliteration": "أحاري", "level": "A1", "pos": "prep", "gender": null, "scenario": "pharmacy", "source": "team", "status": "approved"}
+{"id": "v089", "he": "אוכל", "ar": "طعام", "transliteration": "أوخيل", "level": "A1", "pos": "noun", "gender": "m", "scenario": "pharmacy", "source": "team", "status": "approved"}
+{"id": "v090", "he": "משחה", "ar": "مرهم", "transliteration": "مِشحاه", "level": "A2", "pos": "noun", "gender": "f", "scenario": "pharmacy", "source": "team", "status": "approved"}
+{"id": "v091", "he": "טיפות", "ar": "قطرات", "transliteration": "طيپوت", "level": "A2", "pos": "noun", "gender": "f", "scenario": "pharmacy", "source": "team", "status": "approved"}
+{"id": "v092", "he": "מינון", "ar": "جرعة", "transliteration": "مينون", "level": "B1", "pos": "noun", "gender": "m", "scenario": "pharmacy", "source": "team", "status": "approved"}
+{"id": "v093", "he": "תופעות לוואי", "ar": "أعراض جانبية", "transliteration": "توفاعوت لوَاي", "level": "B1", "pos": "noun", "gender": "f", "scenario": "pharmacy", "source": "team", "status": "approved"}
+{"id": "v094", "he": "אלרגיה", "ar": "حساسية", "transliteration": "ألرجياه", "level": "B1", "pos": "noun", "gender": "f", "scenario": "pharmacy", "source": "team", "status": "approved"}
+{"id": "v095", "he": "מרגיע", "ar": "مُسكِّن", "transliteration": "مَرجيع", "level": "B1", "pos": "adj", "gender": "m", "scenario": "pharmacy", "source": "team", "status": "approved"}
+{"id": "v096", "he": "להירגע", "ar": "أن يهدأ", "transliteration": "لِهيراجاع", "level": "B1", "pos": "verb", "gender": null, "scenario": "pharmacy", "source": "team", "status": "approved"}
+{"id": "v097", "he": "דרך", "ar": "طريق", "transliteration": "ديريخ", "level": "A1", "pos": "noun", "gender": "f", "scenario": "directions", "source": "team", "status": "approved"}
+{"id": "v098", "he": "רחוב", "ar": "شارع", "transliteration": "رحوڤ", "level": "A1", "pos": "noun", "gender": "m", "scenario": "directions", "source": "team", "status": "approved"}
+{"id": "v099", "he": "ימינה", "ar": "يمينًا", "transliteration": "ياميناه", "level": "A1", "pos": "adv", "gender": null, "scenario": "directions", "source": "team", "status": "approved"}
+{"id": "v100", "he": "שמאלה", "ar": "يسارًا", "transliteration": "سمولاه", "level": "A1", "pos": "adv", "gender": null, "scenario": "directions", "source": "team", "status": "approved"}
+{"id": "v101", "he": "ישר", "ar": "مستقيمًا", "transliteration": "ياشار", "level": "A1", "pos": "adv", "gender": null, "scenario": "directions", "source": "team", "status": "approved"}
+{"id": "v102", "he": "קרוב", "ar": "قريب", "transliteration": "كاروڤ", "level": "A1", "pos": "adj", "gender": "m", "scenario": "directions", "source": "team", "status": "approved"}
+{"id": "v103", "he": "רחוק", "ar": "بعيد", "transliteration": "راحوك", "level": "A1", "pos": "adj", "gender": "m", "scenario": "directions", "source": "team", "status": "approved"}
+{"id": "v104", "he": "בנק", "ar": "بنك", "transliteration": "بانك", "level": "A1", "pos": "noun", "gender": "m", "scenario": "directions", "source": "team", "status": "approved"}
+{"id": "v105", "he": "עיר", "ar": "مدينة", "transliteration": "عير", "level": "A1", "pos": "noun", "gender": "f", "scenario": "directions", "source": "team", "status": "approved"}
+{"id": "v106", "he": "בניין", "ar": "بناية", "transliteration": "بينيان", "level": "A2", "pos": "noun", "gender": "m", "scenario": "directions", "source": "team", "status": "approved"}
+{"id": "v107", "he": "קניון", "ar": "مجمّع تجاري", "transliteration": "كانيون", "level": "A2", "pos": "noun", "gender": "m", "scenario": "directions", "source": "team", "status": "approved"}
+{"id": "v108", "he": "ברגל", "ar": "مشيًا", "transliteration": "بَرِجيل", "level": "A2", "pos": "phrase", "gender": null, "scenario": "directions", "source": "team", "status": "approved"}
+{"id": "v109", "he": "רמזור", "ar": "إشارة ضوئية", "transliteration": "رَمزور", "level": "A2", "pos": "noun", "gender": "m", "scenario": "directions", "source": "team", "status": "approved"}
+{"id": "v110", "he": "פינה", "ar": "زاوية", "transliteration": "پيناه", "level": "A2", "pos": "noun", "gender": "f", "scenario": "directions", "source": "team", "status": "approved"}
+{"id": "v111", "he": "צומת", "ar": "مفترق طرق", "transliteration": "تسومِت", "level": "B1", "pos": "noun", "gender": "m", "scenario": "directions", "source": "team", "status": "approved"}
+{"id": "v112", "he": "אבוד", "ar": "ضائع", "transliteration": "أڤود", "level": "B1", "pos": "adj", "gender": "m", "scenario": "directions", "source": "team", "status": "approved"}
+{"id": "v113", "he": "מסעדה", "ar": "مطعم", "transliteration": "مِسعاداه", "level": "A1", "pos": "noun", "gender": "f", "scenario": "restaurant", "source": "team", "status": "approved"}
+{"id": "v114", "he": "מלצר", "ar": "نادل", "transliteration": "مِلتسار", "level": "A1", "pos": "noun", "gender": "m", "scenario": "restaurant", "source": "team", "status": "approved"}
+{"id": "v115", "he": "תפריט", "ar": "قائمة الطعام", "transliteration": "تَفريت", "level": "A1", "pos": "noun", "gender": "m", "scenario": "restaurant", "source": "team", "status": "approved"}
+{"id": "v116", "he": "מנה", "ar": "طبق / وجبة", "transliteration": "مَناه", "level": "A1", "pos": "noun", "gender": "f", "scenario": "restaurant", "source": "team", "status": "approved"}
+{"id": "v117", "he": "פיתה", "ar": "خبز عربي (پيتا)", "transliteration": "پيتاه", "level": "A1", "pos": "noun", "gender": "f", "scenario": "restaurant", "source": "team", "status": "approved"}
+{"id": "v118", "he": "לשתות", "ar": "أن يشرب", "transliteration": "لِشتوت", "level": "A1", "pos": "verb", "gender": null, "scenario": "restaurant", "source": "team", "status": "approved"}
+{"id": "v119", "he": "לאכול", "ar": "أن يأكل", "transliteration": "لِئيخول", "level": "A1", "pos": "verb", "gender": null, "scenario": "restaurant", "source": "team", "status": "approved"}
+{"id": "v120", "he": "טעים", "ar": "لذيذ", "transliteration": "طاعيم", "level": "A1", "pos": "adj", "gender": "m", "scenario": "restaurant", "source": "team", "status": "approved"}
+{"id": "v121", "he": "חם", "ar": "ساخن", "transliteration": "حام", "level": "A1", "pos": "adj", "gender": "m", "scenario": "restaurant", "source": "team", "status": "approved"}
+{"id": "v122", "he": "קר", "ar": "بارد", "transliteration": "كار", "level": "A1", "pos": "adj", "gender": "m", "scenario": "restaurant", "source": "team", "status": "approved"}
+{"id": "v123", "he": "חריף", "ar": "حار", "transliteration": "حاريف", "level": "A2", "pos": "adj", "gender": "m", "scenario": "restaurant", "source": "team", "status": "approved"}
+{"id": "v124", "he": "בצל", "ar": "بصل", "transliteration": "باتسال", "level": "A2", "pos": "noun", "gender": "m", "scenario": "restaurant", "source": "team", "status": "approved"}
+{"id": "v125", "he": "סלט", "ar": "سلطة", "transliteration": "سالاط", "level": "A1", "pos": "noun", "gender": "m", "scenario": "restaurant", "source": "team", "status": "approved"}
+{"id": "v126", "he": "להזמין", "ar": "أن يطلب", "transliteration": "لِهَزمين", "level": "A2", "pos": "verb", "gender": null, "scenario": "restaurant", "source": "team", "status": "approved"}
+{"id": "v127", "he": "לחמם", "ar": "أن يسخّن", "transliteration": "لِحَميم", "level": "B1", "pos": "verb", "gender": null, "scenario": "restaurant", "source": "team", "status": "approved"}
+{"id": "v128", "he": "טיפ", "ar": "بقشيش", "transliteration": "طيپ", "level": "B1", "pos": "noun", "gender": "m", "scenario": "restaurant", "source": "team", "status": "approved"}
+{"id": "v129", "he": "חבר", "ar": "صديق", "transliteration": "حاڤير", "level": "A1", "pos": "noun", "gender": "m", "scenario": "new_friend", "source": "team", "status": "approved"}
+{"id": "v130", "he": "חברה", "ar": "صديقة", "transliteration": "حاڤيراه", "level": "A1", "pos": "noun", "gender": "f", "scenario": "new_friend", "source": "team", "status": "approved"}
+{"id": "v131", "he": "נעים מאוד", "ar": "تشرفنا", "transliteration": "ناعيم مِئود", "level": "A1", "pos": "phrase", "gender": null, "scenario": "new_friend", "source": "team", "status": "approved"}
+{"id": "v132", "he": "לאהוב", "ar": "أن يحب", "transliteration": "لِئيهوڤ", "level": "A1", "pos": "verb", "gender": null, "scenario": "new_friend", "source": "team", "status": "approved"}
+{"id": "v133", "he": "כדורגל", "ar": "كرة القدم", "transliteration": "كادورِجيل", "level": "A1", "pos": "noun", "gender": "m", "scenario": "new_friend", "source": "team", "status": "approved"}
+{"id": "v134", "he": "אח", "ar": "أخ", "transliteration": "أح", "level": "A1", "pos": "noun", "gender": "m", "scenario": "new_friend", "source": "team", "status": "approved"}
+{"id": "v135", "he": "אחות (משפחה)", "ar": "أخت", "transliteration": "أحوت", "level": "A1", "pos": "noun", "gender": "f", "scenario": "new_friend", "source": "team", "status": "approved"}
+{"id": "v136", "he": "משחק", "ar": "لعبة", "transliteration": "مِسحاك", "level": "A1", "pos": "noun", "gender": "m", "scenario": "new_friend", "source": "team", "status": "approved"}
+{"id": "v137", "he": "גדול", "ar": "كبير", "transliteration": "جادول", "level": "A1", "pos": "adj", "gender": "m", "scenario": "new_friend", "source": "team", "status": "approved"}
+{"id": "v138", "he": "קטן", "ar": "صغير", "transliteration": "كاطان", "level": "A1", "pos": "adj", "gender": "m", "scenario": "new_friend", "source": "team", "status": "approved"}
+{"id": "v139", "he": "חדש", "ar": "جديد", "transliteration": "حاداش", "level": "A1", "pos": "adj", "gender": "m", "scenario": "new_friend", "source": "team", "status": "approved"}
+{"id": "v140", "he": "מקצוע", "ar": "مادة دراسية / مهنة", "transliteration": "مِكتسوع", "level": "A2", "pos": "noun", "gender": "m", "scenario": "new_friend", "source": "team", "status": "approved"}
+{"id": "v141", "he": "מדעים", "ar": "علوم", "transliteration": "مادّاعيم", "level": "A2", "pos": "noun", "gender": "m", "scenario": "new_friend", "source": "team", "status": "approved"}
+{"id": "v142", "he": "מחנה", "ar": "مخيم", "transliteration": "مَحانيه", "level": "A2", "pos": "noun", "gender": "m", "scenario": "new_friend", "source": "team", "status": "approved"}
+{"id": "v143", "he": "ניסוי", "ar": "تجربة", "transliteration": "نيسوي", "level": "B1", "pos": "noun", "gender": "m", "scenario": "new_friend", "source": "team", "status": "approved"}
+{"id": "v144", "he": "מעניין", "ar": "ممتع / مثير للاهتمام", "transliteration": "مِعَنيين", "level": "B1", "pos": "adj", "gender": "m", "scenario": "new_friend", "source": "team", "status": "approved"}
+{"id": "v145", "he": "דואר", "ar": "بريد", "transliteration": "دوَار", "level": "A1", "pos": "noun", "gender": "m", "scenario": "post_office", "source": "team", "status": "approved"}
+{"id": "v146", "he": "חבילה", "ar": "طرد", "transliteration": "حاڤيلاه", "level": "A1", "pos": "noun", "gender": "f", "scenario": "post_office", "source": "team", "status": "approved"}
+{"id": "v147", "he": "מכתב", "ar": "رسالة", "transliteration": "مِختاڤ", "level": "A1", "pos": "noun", "gender": "m", "scenario": "post_office", "source": "team", "status": "approved"}
+{"id": "v148", "he": "הודעה", "ar": "إشعار / رسالة", "transliteration": "هوداعاه", "level": "A1", "pos": "noun", "gender": "f", "scenario": "post_office", "source": "team", "status": "approved"}
+{"id": "v149", "he": "טלפון", "ar": "هاتف", "transliteration": "طيليفون", "level": "A1", "pos": "noun", "gender": "m", "scenario": "post_office", "source": "team", "status": "approved"}
+{"id": "v150", "he": "מספר", "ar": "رقم", "transliteration": "مِسپار", "level": "A1", "pos": "noun", "gender": "m", "scenario": "post_office", "source": "team", "status": "approved"}
+{"id": "v151", "he": "לשלוח", "ar": "أن يرسل", "transliteration": "لِشلوَح", "level": "A1", "pos": "verb", "gender": null, "scenario": "post_office", "source": "team", "status": "approved"}
+{"id": "v152", "he": "לקבל", "ar": "أن يستلم", "transliteration": "لِكابيل", "level": "A1", "pos": "verb", "gender": null, "scenario": "post_office", "source": "team", "status": "approved"}
+{"id": "v153", "he": "מעטפה", "ar": "مغلّف", "transliteration": "مَعطافاه", "level": "A2", "pos": "noun", "gender": "f", "scenario": "post_office", "source": "team", "status": "approved"}
+{"id": "v154", "he": "בול", "ar": "طابع", "transliteration": "بول", "level": "A2", "pos": "noun", "gender": "m", "scenario": "post_office", "source": "team", "status": "approved"}
+{"id": "v155", "he": "פקיד", "ar": "موظف", "transliteration": "پاكيد", "level": "A2", "pos": "noun", "gender": "m", "scenario": "post_office", "source": "team", "status": "approved"}
+{"id": "v156", "he": "דואר רשום", "ar": "بريد مسجّل", "transliteration": "دوَار راشوم", "level": "A2", "pos": "noun", "gender": "m", "scenario": "post_office", "source": "team", "status": "approved"}
+{"id": "v157", "he": "משלוח", "ar": "شحنة", "transliteration": "مِشلوَح", "level": "B1", "pos": "noun", "gender": "m", "scenario": "post_office", "source": "team", "status": "approved"}
+{"id": "v158", "he": "לשקול", "ar": "أن يزن", "transliteration": "لِشكول", "level": "B1", "pos": "verb", "gender": null, "scenario": "post_office", "source": "team", "status": "approved"}
+{"id": "v159", "he": "בירור", "ar": "استفسار / تحقيق", "transliteration": "بيرور", "level": "B1", "pos": "noun", "gender": "m", "scenario": "post_office", "source": "team", "status": "approved"}
+{"id": "v160", "he": "סניף", "ar": "فرع", "transliteration": "سنيف", "level": "B1", "pos": "noun", "gender": "m", "scenario": "post_office", "source": "team", "status": "approved"}

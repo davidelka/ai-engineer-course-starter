@@ -1,0 +1,5 @@
+# A minimal ignore file, so the naive build does not ship your .env or your venv to the
+# Docker daemon. (Exercise 1 still shows how big the context and the image are.)
+.env
+.venv
+.git

@@ -1,0 +1,70 @@
+# LiteLLM proxy config for lesson 25, exercise 7.
+# The same model names as labs/25-llm-gateway/gateway.yaml, so scenarios.py can run the
+# same requests against both gateways. Compare the two files: the ideas are the same
+# (a public model name, deployments behind it, fallbacks), the vocabulary differs.
+
+model_list:
+  - model_name: haiku
+    litellm_params:
+      model: anthropic/mock-model         # LiteLLM's anthropic adapter, pointed at a mock
+      api_base: http://mock-ok:8765       # LiteLLM appends the /v1/messages path (verify in mock-ok's log)
+      api_key: mock-key
+    model_info:
+      id: mock-ok-haiku                   # appears as x-litellm-model-id
+      input_cost_per_token: 0.0000001     # $0.10 / 1M, like Claude Haiku 5.5
+      output_cost_per_token: 0.0000005    # $0.50 / 1M
+
+  - model_name: sonnet
+    litellm_params:
+      model: anthropic/mock-sonnet
+      api_base: http://mock-ok:8765
+      api_key: mock-key
+    model_info:
+      id: mock-ok-sonnet
+      input_cost_per_token: 0.000002      # $2 / 1M, like Claude Sonnet 5.5
+      output_cost_per_token: 0.00001      # $10 / 1M
+
+  - model_name: haiku-flaky               # primary always fails with 529
+    litellm_params:
+      model: anthropic/mock-model
+      api_base: http://mock-down:8765
+      api_key: mock-key
+    model_info:
+      id: mock-down
+      input_cost_per_token: 0.0000001
+      output_cost_per_token: 0.0000005
+
+  - model_name: haiku-backup              # the fallback target of haiku-flaky
+    litellm_params:
+      model: anthropic/mock-model
+      api_base: http://mock-ok:8765
+      api_key: mock-key
+    model_info:
+      id: mock-ok-backup
+      input_cost_per_token: 0.0000001
+      output_cost_per_token: 0.0000005
+
+  # Optional, costs real money (fractions of a cent): the real Claude Haiku 5.5.
+  - model_name: real-haiku
+    litellm_params:
+      model: anthropic/claude-haiku-5-5
+      api_key: os.environ/ANTHROPIC_API_KEY
+    model_info:
+      id: anthropic-haiku-5-5
+      input_cost_per_token: 0.0000001
+      output_cost_per_token: 0.0000005
+
+router_settings:
+  fallbacks:
+    - haiku-flaky: ["haiku-backup"]
+  num_retries: 1             # retries on the same model group before falling back
+  allowed_fails: 3           # failures within cooldown_time before a deployment is cooled down
+  cooldown_time: 20          # seconds
+
+litellm_settings:
+  drop_params: false         # never drop unsupported params silently (see the lesson)
+  request_timeout: 60
+
+general_settings:
+  master_key: os.environ/LITELLM_MASTER_KEY
+  database_url: os.environ/DATABASE_URL

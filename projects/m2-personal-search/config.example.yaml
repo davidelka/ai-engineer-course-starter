@@ -1,0 +1,47 @@
+# Personal Smart Search: copy to ~/.config/pss/config.yaml and edit.
+# Every privacy decision of the tool is in this file.
+
+roots:                                  # the folders to index (absolute paths or ~)
+  - ~/Documents
+  - ~/Downloads/scans
+index_dir: ~/.local/share/pss/main      # index files; keep it OUTSIDE the indexed folders
+exclude:                                # never opened, parsed, embedded or stored (see pss/scan.py)
+  - ".*"                                # hidden files and folders (.git .ssh .env .cache ...)
+  - "private/"                          # any folder named private
+  - "node_modules/"
+  - "__pycache__/"
+  - "*.key"
+  - "*.pem"
+  - "*.kdbx"
+  - "*.gpg"
+  - "*password*"
+  - "*secret*"
+  - "*.tmp"
+  - "~$*"
+  # - "finance/bank-statements/"        # add your own
+max_file_mb: 25
+
+embedder: e5-small                      # local multilingual-e5-small (ragkit.embed); "fake" = offline tests only
+embed_cache_dir: ~/.cache/pss/embeddings
+store: numpy                            # exact search, fine up to ~1M chunks; "faiss" = HNSW32
+chunker: "recursive:220:30"
+ocr: auto                               # auto | on | off  (needs: sudo apt install tesseract-ocr tesseract-ocr-heb)
+ocr_langs: heb+eng
+
+local_model: ollama:qwen3.5:4b          # or ollama:gemma4:e4b, ollama:gemma3:4b, extractive
+ollama_host: http://localhost:11434
+ollama_think: false
+answer_k: 5
+
+cloud:
+  enabled: false                        # master switch. Nothing leaves the machine unless true AND --cloud
+  model: anthropic:claude-haiku-5-5
+  redact: true                          # IL ID, email, phone, card (Luhn), IBAN, bank account
+  never_send:                           # sources from these folders are withheld from cloud prompts
+    - "health/"
+    - "finance/"
+  max_sources: 5
+  max_chars_per_source: 1200
+
+host: 127.0.0.1
+port: 8765

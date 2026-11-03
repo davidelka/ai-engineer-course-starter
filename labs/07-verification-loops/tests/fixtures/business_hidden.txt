@@ -1,0 +1,18 @@
+F...                                                                     [100%]
+=================================== FAILURES ===================================
+________________________ test_matches_day_by_day_count _________________________
+hidden/test_hidden.py:19: in test_matches_day_by_day_count
+    def test_matches_day_by_day_count(a, b, hol):
+                   ^^^
+hidden/test_hidden.py:22: in test_matches_day_by_day_count
+    assert got == want, f"business_days({a}, {b}, holidays={sorted(hol)}) = {got}, expected {want}"
+E   AssertionError: business_days(2024-01-01, 2025-01-01, holidays=[datetime.date(2024, 2, 23)]) = 262, expected 263
+E   assert 262 == 263
+E   Failing test case: test_matches_day_by_day_count(
+E       a=,
+E       b=,
+E       hol=,
+E   )
+=========================== short test summary info ============================
+FAILED hidden/test_hidden.py::test_matches_day_by_day_count - AssertionError:...
+1 failed, 3 passed in 0.32s

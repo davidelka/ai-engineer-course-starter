@@ -1,0 +1,7 @@
+{"trace_id": "63249c840ca5ea8bbfe5cde01a4c1676", "rating": -1, "comment": "That's wrong. Since January it's 5 days, and they expire at the end of March.", "time_ms": 1761722013150.306}
+{"trace_id": "ba51a2d978e8757bbebadfd65fadda8d", "rating": 1, "comment": "", "time_ms": 1761722373175.326}
+{"trace_id": "e54f6e4c98aa7a597456a0d9416b701b", "rating": -1, "comment": "Not true, the policy says 3 or more consecutive days. Where did this come from?", "time_ms": 1761723815086.7}
+{"trace_id": "2ef682148e9357a6b1e813cdc84af384", "rating": 1, "comment": "", "time_ms": 1761724472971.868}
+{"trace_id": "7a914e3bbb3a761eb864f2cc58832de0", "rating": -1, "comment": "Right answer, but much slower than usual.", "time_ms": 1761725134384.011}
+{"trace_id": "24cd8294195701007406f0b261efe9ef", "rating": -1, "comment": "It's in the password policy! Why can't it find it?", "time_ms": 1761725619528.056}
+{"trace_id": "b65ea5e719186255db7bc1899a498195", "rating": 1, "comment": "", "time_ms": 1761726032000.146}

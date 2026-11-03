@@ -1,0 +1,6 @@
+# Lesson 9 (ragkit ingestion). Verified on PyPI, November 2026.
+pypdf>=6.0              # PDF text extraction (6.21.4 current); layout mode keeps table rows
+python-docx>=1.1        # DOCX body, tables, headers/footers (1.2.0 current)
+beautifulsoup4>=4.12    # HTML parsing for the boilerplate rules (4.15.0 current)
+lxml>=5.0               # fast HTML parser used by BeautifulSoup when installed (6.1.3 current)
+trafilatura>=2.0        # optional: main-content extraction to compare with the rules (2.3.1 current)

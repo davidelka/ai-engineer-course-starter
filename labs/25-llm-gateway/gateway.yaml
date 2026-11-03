@@ -1,0 +1,78 @@
+# gatewaykit config for the OFFLINE lab: every deployment is a local mockllm server.
+#   python labs/25-llm-gateway/run_gateway.py --with-mocks
+# starts three mock servers in the same process:
+#   8765  "mock-a"     healthy, plays the primary provider
+#   8766  "mock-b"     healthy, plays the backup provider
+#   8767  "mock-down"  every request fails with 529 (overloaded)
+# The adapters are real (llmkit's anthropic and openai), only the servers are fake.
+# The shape mirrors LiteLLM's config.yaml on purpose: compare with litellm/config.yaml.
+
+model_list:
+  - model_name: haiku                    # what clients send as "model"
+    deployments:                         # tried in order: the fallback chain
+      - id: anthropic-us
+        model: anthropic:mock-model      # llmkit spec; priced like claude-haiku-5-5
+        base_url: http://127.0.0.1:8765
+        api_key: mock-key                # a literal key is allowed for mock servers only
+        region: us
+      - id: openai-global
+        model: openai:mock-model
+        base_url: http://127.0.0.1:8766
+        api_key: mock-key
+        region: global
+
+  - model_name: sonnet
+    deployments:
+      - id: anthropic-sonnet-us
+        model: anthropic:mock-sonnet
+        base_url: http://127.0.0.1:8765
+        api_key: mock-key
+        region: us
+        prices: {input: 2.00, output: 10.00}   # USD per 1M tokens, like claude-sonnet-5-5
+      - id: anthropic-sonnet-eu
+        model: anthropic:mock-sonnet
+        base_url: http://127.0.0.1:8766
+        api_key: mock-key
+        region: eu
+
+  - model_name: gpt
+    deployments:
+      - id: openai-gpt
+        model: openai:mock-gpt
+        base_url: http://127.0.0.1:8766
+        api_key: mock-key
+        region: global
+        prices: {input: 0.75, output: 4.50}    # like gpt-5.4-mini
+
+  - model_name: haiku-flaky              # for the fallback exercise: the primary is always down
+    deployments:
+      - id: down-primary
+        model: anthropic:mock-model
+        base_url: http://127.0.0.1:8767
+        api_key: mock-key
+        region: us
+      - id: healthy-backup
+        model: anthropic:mock-model
+        base_url: http://127.0.0.1:8765
+        api_key: mock-key
+        region: us
+
+router:
+  retries_per_deployment: 1    # llmkit tries each deployment 1 + 1 times before falling back
+  failure_threshold: 3         # consecutive failures that open a deployment's circuit
+  cooldown_s: 20               # how long it stays open before one trial request
+
+cache:
+  enabled: false               # exercise 1 turns it on and watches x-gateway-cache
+  ttl_s: 300
+
+audit:
+  path: state/audit.jsonl
+  log_content: none            # none | redacted. Never the raw prompt.
+  retention_days: 365          # Acme: audit logs are kept 1 year
+
+restore_pii_in_response: true  # put the real values back into the answer the app receives
+rpm_default: 0                 # per-key rpm_limit wins; 0 = no default limit
+policy: policy.yaml
+keys: state/keys.yaml          # created by setup_keys.py; hashes only
+master_key_env: GATEWAY_MASTER_KEY

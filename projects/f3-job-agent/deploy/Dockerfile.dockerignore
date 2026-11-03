@@ -1,0 +1,20 @@
+# Allowlist: exclude everything, then add back only what the image needs.
+# (Docker uses <Dockerfile>.dockerignore next to the Dockerfile before a root .dockerignore.)
+*
+!llmkit/
+!obskit/
+!guardkit/
+!evalkit/
+!servekit/
+!deploykit/
+!projects/f3-job-agent/jobagent/
+!projects/f3-job-agent/mine.py
+!projects/f3-job-agent/data/
+!projects/f3-job-agent/deploy/pyproject.toml
+!projects/f3-job-agent/deploy/uv.lock
+# Never in the image, even inside an allowed folder (these lines must come AFTER the ! lines):
+**/__pycache__
+**/*.pyc
+**/.env
+**/*.db
+projects/f3-job-agent/data/recorded/

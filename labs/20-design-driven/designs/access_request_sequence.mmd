@@ -1,0 +1,39 @@
+sequenceDiagram
+    %% Exercise 7: the access-request flow of Company Brain (phase 3), as a sequence diagram.
+    %% The participants are given. Write the messages and blocks below them.
+    %% Check:   python labs/20-design-driven/check_sequence.py
+    %% Render:  paste into https://mermaid.live, or view this file on GitHub (it renders Mermaid).
+    %%
+    %% The flow, in words (everything you need is here):
+    %%  - The employee sends free text ("I need admin on the prod AWS account for 2 days") to the API,
+    %%    with a request_id the client generated (the same id on every retry).
+    %%  - AccessService first asks RequestStore whether this request_id was already handled.
+    %%  - New request: the Classifier (an LLM behind the ChatModel port, lesson 3 structured output)
+    %%    turns the text into an AccessRequest with a PROPOSED route.
+    %%    If the model times out or is unavailable, do not fail and do not auto-approve:
+    %%    send the request to a human route (needs_manager or needs_security).
+    %%  - PolicyEngine (deterministic rules from saas_access_policy.md) decides the FINAL route.
+    %%    Acme's three routes: auto_approve (approved tools, read/standard seats, no customer or
+    %%    financial data), needs_manager (paid seats, unlisted tools, team write access),
+    %%    needs_security (admin/owner/root, production, customer or financial data, external sharing).
+    %%    The strictest matching route wins.
+    %%  - The decision is saved in RequestStore (audit trail).
+    %%  - auto_approve: IdentityProvider (a tool port) grants the access.
+    %%    The other two routes: the Approver (manager or security, via Slack) approves or rejects,
+    %%    and only an approval leads to a grant.
+    %%  - The employee gets a response.
+    %%
+    %% Mermaid reminders: A->>B: call   B-->>A: reply (dashed)   alt label / else label / end
+    %%                    opt label / end   break label / end.  Avoid ";" and "#" in message text.
+
+    actor Emp as Employee
+    participant API as AccessAPI
+    participant Svc as AccessService
+    participant Store as RequestStore
+    participant LLM as Classifier
+    participant Pol as PolicyEngine
+    participant Appr as Approver
+    participant IdP as IdentityProvider
+
+    Emp->>API: POST /access-requests {text}
+    %% TODO(ex7): continue from here

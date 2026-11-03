@@ -1,0 +1,4 @@
+# Lesson 7 extras (verified on PyPI, November 2026)
+hypothesis>=6.150    # property-based tests: the hidden checks of every task
+ruff>=0.15           # the lint verifier (syntax errors, undefined names)
+mypy>=1.18           # optional type-check verifier: run_loop.py --types

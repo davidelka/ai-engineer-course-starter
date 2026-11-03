@@ -1,0 +1,146 @@
+# Company Brain, local stack. Free by default: offline models, demo keys, in-process gateway.
+#
+#   cd projects/f1-company-brain
+#   docker compose up --build -d                  # brain on http://127.0.0.1:8000 (pick a demo user in the UI)
+#   docker compose exec brain python -m cbrain seed          # two requests waiting for approval, one approved
+#   docker compose logs -f brain
+#   docker compose down                           # add -v to delete the state volume too
+#
+# Profiles (add --profile <name> to `up`):
+#   live      brain-live on :8001: Claude Haiku 5.5 through the in-process gateway, real API keys as
+#             compose SECRETS (never environment variables), no demo keys: set BRAIN_API_KEYS.
+#   mcp       the brain's MCP server on :8766 (Streamable HTTP, bearer = a brain API key)
+#   mock      mockllm on the compose network; brain-mock on :8002 streams real adapter responses (MODE=mock)
+#   phoenix   Arize Phoenix on :6006; the brain exports OTLP traces to it (UI at http://127.0.0.1:6006)
+#   qdrant    a Qdrant server (lesson 11), NOT used by default: ADR-0003 explains why the index stays in files
+#   litellm   see labs/25-llm-gateway/litellm/compose.yaml: run it there and point GATEWAY_URL at it only if
+#             you also give the brain per-purpose keys (GATEWAY_KEY_ANSWER/FLOW/ROUTER). Not wired by default.
+#
+# Hardening as in lesson 27: read-only root filesystem, no capabilities, no-new-privileges, ports bound to
+# 127.0.0.1, resource limits close to the Fargate task size.
+
+name: company-brain
+
+x-hardening: &hardening
+  read_only: true
+  cap_drop: [ALL]
+  security_opt: ["no-new-privileges:true"]
+  restart: unless-stopped
+  tmpfs: ["/tmp"]
+
+x-build: &build
+  context: ../..                       # the repo root: the image needs the course packages and M1
+  dockerfile: projects/f1-company-brain/deploy/Dockerfile
+  target: runtime
+  args:
+    APP_VERSION: compose-dev
+
+services:
+  brain:
+    <<: *hardening
+    build: *build
+    image: company-brain:dev
+    ports:
+      - "127.0.0.1:8000:8000"
+    environment:
+      MODE: offline
+      LLM_PATH: gateway                # the production code path, with offline fake deployments behind it
+      BRAIN_DEMO_KEYS: "1"             # local demo only: the UI's user picker
+      ROUTER_LLM: auto
+    volumes:
+      - brain_state:/data
+    deploy:
+      resources:
+        limits: { cpus: "0.5", memory: 1G }
+
+  brain-live:
+    <<: *hardening
+    profiles: [live]
+    build: { <<: *build, target: runtime-e5 }
+    image: company-brain:e5
+    ports:
+      - "127.0.0.1:8001:8000"
+    environment:
+      MODE: live
+      LLM_PATH: gateway
+      ANTHROPIC_API_KEY_FILE: /run/secrets/anthropic_api_key
+      OPENAI_API_KEY_FILE: /run/secrets/openai_api_key
+      BRAIN_API_KEYS_FILE: /run/secrets/brain_api_keys
+      OTLP_ENDPOINT: ${OTLP_ENDPOINT:-}
+    secrets: [anthropic_api_key, openai_api_key, brain_api_keys]
+    volumes:
+      - brain_live_state:/data
+    deploy:
+      resources:
+        limits: { cpus: "1.0", memory: 2G }
+
+  mcp:
+    <<: *hardening
+    profiles: [mcp]
+    image: company-brain:dev
+    command: ["mcp", "--transport", "http", "--host", "0.0.0.0", "--port", "8766"]
+    ports:
+      - "127.0.0.1:8766:8766"
+    environment:
+      MODE: offline
+      LLM_PATH: gateway
+      BRAIN_DEMO_KEYS: "1"
+      STATE_DIR: /data/state           # the SAME state as the brain service: one identity, one set of requests
+    volumes:
+      - brain_state:/data
+    depends_on: [brain]
+
+  mockllm:
+    <<: *hardening
+    profiles: [mock]
+    image: company-brain:dev
+    entrypoint: ["python", "-m", "mockllm", "--host", "0.0.0.0", "--port", "8765"]
+    command: []
+    healthcheck:
+      test: ["CMD", "python", "-c", "import socket; socket.create_connection(('127.0.0.1', 8765), 2)"]
+      interval: 10s
+      retries: 5
+
+  brain-mock:
+    <<: *hardening
+    profiles: [mock]
+    image: company-brain:dev
+    ports:
+      - "127.0.0.1:8002:8000"
+    environment:
+      MODE: mock
+      MOCK_URL: http://mockllm:8765
+      BRAIN_DEMO_KEYS: "1"
+    volumes:
+      - brain_mock_state:/data
+    depends_on:
+      mockllm: { condition: service_healthy }
+
+  phoenix:
+    profiles: [phoenix]
+    # Pin the tag you pull (hub.docker.com/r/arizephoenix/phoenix/tags), as lesson 22 says.
+    image: arizephoenix/phoenix:latest
+    ports:
+      - "127.0.0.1:6006:6006"
+
+  qdrant:
+    profiles: [qdrant]
+    image: qdrant/qdrant:v1.20.0       # the version lesson 11 used
+    ports:
+      - "127.0.0.1:6333:6333"
+    volumes:
+      - qdrant_data:/qdrant/storage
+
+secrets:
+  anthropic_api_key:
+    environment: ANTHROPIC_API_KEY     # taken from the shell that runs `docker compose`
+  openai_api_key:
+    environment: OPENAI_API_KEY
+  brain_api_keys:
+    environment: BRAIN_API_KEYS        # JSON {"dana": "<key>", ...}; generate with python -m cbrain keys
+
+volumes:
+  brain_state:
+  brain_live_state:
+  brain_mock_state:
+  qdrant_data:

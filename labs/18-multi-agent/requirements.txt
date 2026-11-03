@@ -1,0 +1,3 @@
+# Lesson 18 needs nothing beyond the repo requirements (httpx, pydantic, pytest).
+# multikit builds on agentkit (lesson 15), toolkit (14), llmkit.structured (3) and ragkit's BM25 index (9).
+# The on-call tool reuses mcpkit/oncall.py (lesson 17); the `mcp` SDK is NOT required for this lab.

@@ -1,0 +1,17 @@
+# Extra dependencies of final project F1 (Company Brain), on top of the repo's requirements.txt.
+# Everything here is already in the root requirements.txt; listed so the project is self-describing.
+# (The container image pins its own set in deploy/pyproject.toml + deploy/uv.lock.)
+fastapi>=0.162                # the API and the SSE streams (lesson 26)
+uvicorn>=0.54
+langgraph>=1.2.19             # the approval workflow (lesson 16)
+langgraph-checkpoint-sqlite>=3.1.3
+mcp>=2.3.0                    # the MCP server (lesson 17)
+opentelemetry-sdk>=1.45       # traces (lesson 22)
+opentelemetry-exporter-otlp-proto-http>=1.45   # optional: OTLP to Phoenix
+numpy>=2.0
+sqlglot>=30.27.0
+pyyaml>=6.0
+python-hcl2>=8.1              # the Terraform static checks (lesson 27)
+# Live mode only (MODE=live): the e5-small embedder, as in M1. CPU PyTorch first:
+#   uv pip install torch --index-url https://download.pytorch.org/whl/cpu
+sentence-transformers>=5.1

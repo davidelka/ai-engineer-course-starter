@@ -1,0 +1,121 @@
+id,name,email,title,team,manager_id,location,start_date,_source_system,_extracted_at
+E001,Yael Shapira,yael.shapira@acme.example,CEO,exec,,Tel Aviv,2016-03-01,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+E002,Amir Katz,amir.katz@acme.example,CTO,exec,E001,Tel Aviv,2017-01-14,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+E003,Avi Mizrahi,avi.mizrahi@acme.example,CFO,exec,E001,Tel Aviv,2018-06-11,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+E004,Daniel Weiss,daniel.weiss@acme.example,VP Sales,exec,E001,Tel Aviv,2017-05-16,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+E005,Michal Ben-David,michal.ben-david@acme.example,VP Engineering,exec,E002,Haifa,2017-04-23,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+E006,Noam Friedman,noam.friedman@acme.example,VP Product,exec,E001,Tel Aviv,2017-10-22,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+E007,Orly Peretz,orly.peretz@acme.example,VP People,exec,E001,Tel Aviv,2018-03-22,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+E008,Shira Levin,shira.levin@acme.example,VP Customer Support,exec,E001,Tel Aviv,2016-04-19,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+E009,Itai Barak,itai.barak@acme.example,Engineering Team Lead,core-api,E005,Haifa,2021-07-25,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+E010,Amit Gabay,amit.gabay@acme.example,Software Engineer,core-api,E009,Tel Aviv,2023-03-04,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+E011,Barak Dahan,barak.dahan@acme.example,Software Engineer,core-api,E009,Haifa,2023-05-12,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+E012,Eyal Azoulay,eyal.azoulay@acme.example,Software Engineer,core-api,E009,Haifa,2019-12-07,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+E013,Ido Elkayam,ido.elkayam@acme.example,Software Engineer,core-api,E009,Tel Aviv,2020-06-11,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+E014,Inbal Nachmias,inbal.nachmias@acme.example,Software Engineer,core-api,E009,Haifa,2024-01-16,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+E015,Tomer Shani,tomer.shani@acme.example,Senior Software Engineer,core-api,E009,Haifa,2020-08-03,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+E016,Dana Levi,dana.levi@acme.example,Engineering Team Lead,engine,E005,Haifa,2018-09-14,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+E017,Avital Tal,avital.tal@acme.example,Software Engineer,engine,E016,Haifa,2023-01-01,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+E018,Barak Carmi,barak.carmi@acme.example,Software Engineer,engine,E016,Haifa,2024-01-31,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+E019,Elad Mizrahi,elad.mizrahi@acme.example,Software Engineer,engine,E016,Haifa,2021-05-03,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+E020,Lior Tal,lior.tal@acme.example,Software Engineer,engine,E016,Haifa,2025-08-13,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+E021,Oren Katz,oren.katz@acme.example,Software Engineer,engine,E016,Tel Aviv,2023-12-30,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+E022,Roni Golan,roni.golan@acme.example,Software Engineer,engine,E016,Tel Aviv,2020-09-11,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+E023,Yonatan Peled,yonatan.peled@acme.example,Senior Software Engineer,engine,E016,Haifa,2025-01-08,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+E024,Omer Haddad,omer.haddad@acme.example,Engineering Team Lead,integrations,E005,Tel Aviv,2021-02-09,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+E025,Asaf Navon,asaf.navon@acme.example,Software Engineer,integrations,E024,Tel Aviv,2026-05-17,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+E026,Keren Golan,keren.golan@acme.example,Software Engineer,integrations,E024,Tel Aviv,2019-05-26,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+E027,Raz Ashkenazi,raz.ashkenazi@acme.example,Software Engineer,integrations,E024,Tel Aviv,2023-09-17,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+E028,Roni Carmi,roni.carmi@acme.example,Software Engineer,integrations,E024,Tel Aviv,2022-06-11,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+E029,Rotem Biton,rotem.biton@acme.example,Software Engineer,integrations,E024,Tel Aviv,2022-11-15,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+E030,Sapir Weiss,sapir.weiss@acme.example,Software Engineer,integrations,E024,Tel Aviv,2021-02-05,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+E031,Rina Sasson,rina.sasson@acme.example,Engineering Team Lead,billing,E005,Tel Aviv,2020-08-08,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+E032,Ido Doron,ido.doron@acme.example,Software Engineer,billing,E031,Tel Aviv,2019-07-26,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+E033,Maor Navon,maor.navon@acme.example,Software Engineer,billing,E031,Tel Aviv,2021-07-18,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+E034,Na'ama Mizrahi,naama.mizrahi@acme.example,Software Engineer,billing,E031,Tel Aviv,2019-08-15,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+E035,Nadav Eshel,nadav.eshel@acme.example,Software Engineer,billing,E031,Tel Aviv,2020-06-07,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+E036,Shai Sasson,shai.sasson@acme.example,Software Engineer,billing,E031,Tel Aviv,2022-10-29,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+E037,Gil Avraham,gil.avraham@acme.example,Engineering Team Lead,identity,E005,Haifa,2020-02-22,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+E038,Omri Azoulay,omri.azoulay@acme.example,Software Engineer,identity,E037,Haifa,2025-09-27,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+E039,Raz Tal,raz.tal@acme.example,Software Engineer,identity,E037,Tel Aviv,2023-01-16,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+E040,Sapir Golan,sapir.golan@acme.example,Software Engineer,identity,E037,Haifa,2020-05-03,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+E041,Shir Barzilai,shir.barzilai@acme.example,Software Engineer,identity,E037,Tel Aviv,2021-11-13,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+E042,Maya Rosen,maya.rosen@acme.example,Engineering Team Lead,frontend,E005,Tel Aviv,2021-01-06,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+E043,Asaf Ben-Haim,asaf.ben-haim@acme.example,Frontend Engineer,frontend,E042,Tel Aviv,2023-11-16,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+E044,Efrat Harel,efrat.harel@acme.example,Frontend Engineer,frontend,E042,Tel Aviv,2023-07-25,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+E045,Erez Katz,erez.katz@acme.example,Frontend Engineer,frontend,E042,Tel Aviv,2021-09-04,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+E046,Hadar Mizrahi,hadar.mizrahi@acme.example,Frontend Engineer,frontend,E042,Tel Aviv,2022-10-09,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+E047,Michal Harel,michal.harel@acme.example,Frontend Engineer,frontend,E042,Tel Aviv,2025-03-02,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+E048,Yarden Doron,yarden.doron@acme.example,Frontend Engineer,frontend,E042,Tel Aviv,2020-05-12,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+E049,Eitan Klein,eitan.klein@acme.example,Engineering Team Lead,data,E005,Haifa,2020-01-03,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+E050,Adva Rosenberg,adva.rosenberg@acme.example,Data Engineer,data,E049,Haifa,2022-07-28,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+E051,Galit Gabay,galit.gabay@acme.example,Data Engineer,data,E049,Haifa,2025-04-17,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+E052,Hila Alon,hila.alon@acme.example,Data Engineer,data,E049,Haifa,2023-12-11,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+E053,Liat Erez,liat.erez@acme.example,Data Engineer,data,E049,Tel Aviv,2025-01-08,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+E054,Omri Dahan,omri.dahan@acme.example,Data Engineer,data,E049,Haifa,2020-06-13,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+E055,Boaz Nahum,boaz.nahum@acme.example,Engineering Team Lead,platform,E005,Haifa,2020-10-19,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+E056,Dor Livne,dor.livne@acme.example,Site Reliability Engineer,platform,E055,Haifa,2025-09-26,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+E057,Maor Kaplan,maor.kaplan@acme.example,Site Reliability Engineer,platform,E055,Haifa,2023-03-26,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+E058,Matan Gabay,matan.gabay@acme.example,Site Reliability Engineer,platform,E055,Haifa,2019-07-31,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+E059,Sergey Volkov,sergey.volkov@acme.example,Site Reliability Engineer,platform,E055,Haifa,2024-07-10,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+E060,Shai Rosenberg,shai.rosenberg@acme.example,Site Reliability Engineer,platform,E055,Tel Aviv,2023-03-16,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+E061,Talia Tal,talia.tal@acme.example,Site Reliability Engineer,platform,E055,Haifa,2019-08-25,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+E062,Tamar Golan,tamar.golan@acme.example,CISO,security,E002,Tel Aviv,2018-04-19,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+E063,Lior Ashkenazi,lior.ashkenazi@acme.example,Security Engineer,security,E062,Tel Aviv,2022-05-09,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+E064,Neta Yosef,neta.yosef@acme.example,Security Engineer,security,E062,Tel Aviv,2026-05-24,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+E065,Ruth Malka,ruth.malka@acme.example,Security Engineer,security,E062,Haifa,2020-03-12,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+E066,Yossi Dahan,yossi.dahan@acme.example,Head of IT,it,E002,Tel Aviv,2020-10-30,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+E067,Ariel Cohen,ariel.cohen@acme.example,IT Specialist,it,E066,Tel Aviv,2024-10-22,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+E068,Bar Malul,bar.malul@acme.example,IT Specialist,it,E066,Tel Aviv,2022-02-25,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+E069,Hagar Levy,hagar.levy@acme.example,Group Product Manager,product,E006,Tel Aviv,2019-10-08,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+E070,Ido Peretz,ido.peretz@acme.example,Product Manager,product,E069,Tel Aviv,2021-01-09,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+E071,Oren Carmi,oren.carmi@acme.example,Product Manager,product,E069,Tel Aviv,2019-01-05,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+E072,Raz Navon,raz.navon@acme.example,Product Manager,product,E069,Tel Aviv,2019-02-12,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+E073,Shani Barzilai,shani.barzilai@acme.example,Product Manager,product,E069,Tel Aviv,2023-02-03,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+E074,Hila Tzur,hila.tzur@acme.example,Design Lead,design,E006,Tel Aviv,2017-06-14,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+E075,Alon Sasson,alon.sasson@acme.example,Product Designer,design,E074,Tel Aviv,2022-07-16,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+E076,Noa Cohen,noa.cohen@acme.example,Product Designer,design,E074,Tel Aviv,2025-08-07,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+E077,Omri Kaplan,omri.kaplan@acme.example,Product Designer,design,E074,Tel Aviv,2020-11-29,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+E078,Ofer Levi,ofer.levi@acme.example,Sales Director,sales-il,E004,Tel Aviv,2020-12-18,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+E079,Barak Mizrahi,barak.mizrahi@acme.example,Account Executive,sales-il,E078,Tel Aviv,2023-11-16,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+E080,Efrat Doron,efrat.doron@acme.example,Account Executive,sales-il,E078,Tel Aviv,2021-10-22,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+E081,Inbal Weiss,inbal.weiss@acme.example,Account Executive,sales-il,E078,Tel Aviv,2024-04-25,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+E082,Michal Rubin,michal.rubin@acme.example,Account Executive,sales-il,E078,Tel Aviv,2022-01-07,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+E083,Ohad Gabay,ohad.gabay@acme.example,Account Executive,sales-il,E078,Tel Aviv,2026-04-26,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+E084,Shani Sasson,shani.sasson@acme.example,Account Executive,sales-il,E078,Tel Aviv,2024-05-07,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+E085,Shani Shapiro,shani.shapiro@acme.example,Account Executive,sales-il,E078,Tel Aviv,2023-09-12,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+E086,Lena Hoffmann,lena.hoffmann@acme.example,Head of EMEA Sales,sales-emea,E004,Berlin,2019-04-28,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+E087,Anna Neumann,anna.neumann@acme.example,Account Executive,sales-emea,E086,Berlin,2024-06-23,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+E088,Hannah Wagner,hannah.wagner@acme.example,Account Executive,sales-emea,E086,Berlin,2023-05-10,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+E089,Lea Müller,lea.mueller@acme.example,Account Executive,sales-emea,E086,Berlin,2025-10-16,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+E090,Lukas Klein,lukas.klein@acme.example,Account Executive,sales-emea,E086,Berlin,2021-05-14,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+E091,Paul Zimmermann,paul.zimmermann@acme.example,Account Executive,sales-emea,E086,Berlin,2019-03-15,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+E092,Sophie Schulz,sophie.schulz@acme.example,Account Executive,sales-emea,E086,Berlin,2022-10-22,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+E093,Nir Golan,nir.golan@acme.example,Support Manager,support-il,E008,Tel Aviv,2019-07-18,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+E094,Elad Ashkenazi,elad.ashkenazi@acme.example,Support Engineer,support-il,E093,Tel Aviv,2024-03-24,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+E095,Hila Ashkenazi,hila.ashkenazi@acme.example,Support Engineer,support-il,E093,Tel Aviv,2020-12-05,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+E096,Hila Peretz,hila.peretz@acme.example,Support Engineer,support-il,E093,Tel Aviv,2020-07-31,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+E097,Maor Ben-Haim,maor.ben-haim@acme.example,Support Engineer,support-il,E093,Tel Aviv,2023-10-28,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+E098,Michal Elkayam,michal.elkayam@acme.example,Support Engineer,support-il,E093,Tel Aviv,2024-03-23,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+E099,Raz Elkayam,raz.elkayam@acme.example,Support Engineer,support-il,E093,Tel Aviv,2021-09-22,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+E100,Shir Shapiro,shir.shapiro@acme.example,Support Engineer,support-il,E093,Tel Aviv,2021-02-23,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+E101,Jonas Becker,jonas.becker@acme.example,Support Lead EMEA,support-emea,E008,Berlin,2018-12-20,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+E102,Felix Schulz,felix.schulz@acme.example,Support Engineer,support-emea,E101,Berlin,2021-11-11,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+E103,Julia Zimmermann,julia.zimmermann@acme.example,Support Engineer,support-emea,E101,Berlin,2020-10-22,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+E104,Lukas Koch,lukas.koch@acme.example,Support Engineer,support-emea,E101,Berlin,2024-07-03,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+E105,Moritz Neumann,moritz.neumann@acme.example,Support Engineer,support-emea,E101,Berlin,2024-07-27,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+E106,Keren Amar,keren.amar@acme.example,Controller,finance,E003,Tel Aviv,2018-04-26,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+E107,Efrat Livne,efrat.livne@acme.example,Financial Analyst,finance,E106,Tel Aviv,2023-06-20,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+E108,Eyal Alon,eyal.alon@acme.example,Financial Analyst,finance,E106,Tel Aviv,2023-05-14,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+E109,Moshe Biton,moshe.biton@acme.example,Procurement Manager,finance,E106,Tel Aviv,2025-07-18,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+E110,Na'ama Azoulay,naama.azoulay@acme.example,Financial Analyst,finance,E106,Tel Aviv,2023-05-07,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+E111,Sivan Elbaz,sivan.elbaz@acme.example,HR Manager,people,E007,Tel Aviv,2019-11-03,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+E112,Adi Navon,adi.navon@acme.example,Office Manager Tel Aviv,people,E111,Tel Aviv,2025-10-29,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+E113,Katrin Vogel,katrin.vogel@acme.example,Office Manager Berlin,people,E111,Berlin,2023-12-12,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+E114,Rotem Shalev,rotem.shalev@acme.example,Office Manager Haifa,people,E111,Haifa,2021-12-07,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+E115,Tal Ben-Ami,tal.ben-ami@acme.example,Recruiter,people,E111,Tel Aviv,2025-09-14,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+E116,Gali Oren,gali.oren@acme.example,Head of Marketing,marketing,E001,Tel Aviv,2018-04-27,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+E117,Ido Erez,ido.erez@acme.example,Marketing Manager,marketing,E116,Tel Aviv,2025-12-14,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+E118,Matan Katz,matan.katz@acme.example,Marketing Manager,marketing,E116,Tel Aviv,2020-08-23,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+E119,Shai Golan,shai.golan@acme.example,Marketing Manager,marketing,E116,Tel Aviv,2026-05-19,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+E120,Shani Alon,shani.alon@acme.example,Marketing Manager,marketing,E116,Tel Aviv,2022-07-15,HiBob (Pulse HR portal),2026-10-31T23:00:00Z

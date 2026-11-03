@@ -1,0 +1,11 @@
+# Extra dependencies of midterm project M1, on top of the repo's requirements.txt.
+# Same versions as the lessons that introduced them (verified on PyPI there, November 2026).
+numpy>=2.0                    # dense retrieval (lesson 10)
+sqlglot>=30.27.0              # datakit's SQL guard, row policy and provenance (lesson 8)
+fastapi>=0.162                # the service, incl. Server-Sent Events (lesson 26)
+uvicorn>=0.53                 # ASGI server for `python -m acmeqa serve`
+opentelemetry-sdk>=1.45       # obskit tracing (lesson 22)
+# Live mode only (MODE=live): the e5-small embedder runs locally. Needs PyTorch: on a laptop
+# without a GPU install the CPU wheel FIRST:
+#   uv pip install torch --index-url https://download.pytorch.org/whl/cpu
+sentence-transformers>=5.1

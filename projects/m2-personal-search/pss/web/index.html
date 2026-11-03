@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>חיפוש חכם במסמכים שלי</title>
+<style>
+:root{--bg:#f6f5f1;--card:#fff;--ink:#1d1d1b;--muted:#6b6a64;--line:#e2e0d8;--accent:#2f5d8a;--good:#2d7a4b;--goodsoft:#e3f2e8;--warn:#a25b00;--warnsoft:#fbeedd;--mark:#fff1a8;--code:#f0efe9}
+@media (prefers-color-scheme:dark){:root{--bg:#161614;--card:#211f1c;--ink:#ecebe6;--muted:#a3a19a;--line:#38352f;--accent:#8db7e0;--good:#7fcf9a;--goodsoft:#1d3325;--warn:#f0b35c;--warnsoft:#3a2a12;--mark:#5c4e00;--code:#2a2824}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 system-ui,"Segoe UI","Noto Sans Hebrew",Arial,sans-serif}
+header{padding:18px 16px 8px;max-width:980px;margin:0 auto;display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between}
+h1{font-size:1.35rem;margin:0}
+.badge{display:inline-flex;gap:6px;align-items:center;border-radius:999px;padding:4px 12px;font-size:.85rem;border:1px solid var(--line)}
+.badge.local{background:var(--goodsoft);color:var(--good)}
+.badge.cloud{background:var(--warnsoft);color:var(--warn)}
+main{max-width:980px;margin:0 auto;padding:0 16px 40px}
+.searchbar{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}
+.searchbar input{flex:1 1 260px;min-width:0;font:inherit;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink)}
+button{font:inherit;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:10px;padding:9px 14px;cursor:pointer}
+button.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+button[aria-pressed=true]{outline:2px solid var(--accent)}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.hint{color:var(--muted);font-size:.85rem}
+.chip{font-size:.8rem;border:1px dashed var(--line);border-radius:999px;padding:2px 10px;cursor:pointer;background:transparent;direction:ltr}
+.grid{display:grid;grid-template-columns:minmax(0,1fr);gap:16px;margin-top:12px}
+@media (min-width:900px){.grid{grid-template-columns:minmax(0,1.4fr) minmax(0,1fr)}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.result{margin-bottom:10px}
+.result h3{margin:0 0 2px;font-size:1rem}
+.meta{color:var(--muted);font-size:.8rem;display:flex;gap:10px;flex-wrap:wrap}
+.path{direction:ltr;unicode-bidi:isolate}
+.snip{margin:6px 0 4px;font-size:.92rem;overflow-wrap:anywhere}
+mark{background:var(--mark);color:inherit;border-radius:3px;padding:0 1px}
+a{color:var(--accent)}
+.answer{white-space:pre-wrap;overflow-wrap:anywhere}
+.cite{display:inline-block;font-size:.75rem;border:1px solid var(--accent);border-radius:6px;padding:0 5px;margin:0 2px;text-decoration:none}
+.payload{background:var(--code);border-radius:8px;padding:8px;font:12px/1.45 ui-monospace,monospace;max-height:260px;overflow:auto;white-space:pre-wrap;direction:ltr;text-align:left}
+.warnbox{background:var(--warnsoft);color:var(--warn);border-radius:8px;padding:8px 10px;margin:8px 0;font-size:.9rem}
+.okbox{background:var(--goodsoft);color:var(--good);border-radius:8px;padding:8px 10px;margin:8px 0;font-size:.9rem}
+details summary{cursor:pointer}
+.small{font-size:.8rem}
+label.toggle{display:inline-flex;gap:6px;align-items:center;font-size:.9rem}
+</style>
+</head>
+<body>
+<header>
+  <h1>חיפוש חכם במסמכים שלי</h1>
+  <span id="privacy" class="badge local" role="status">מקומי: שום דבר לא יוצא מהמחשב</span>
+</header>
+<main>
+  <form id="f" class="searchbar" autocomplete="off">
+    <input id="q" type="search" placeholder="למשל: ערבות בנקאית, או type:pdf after:2026-01 אחריות" aria-label="שאילתה">
+    <button class="primary" type="submit">חיפוש</button>
+    <button id="askbtn" type="button">שאל את המסמכים</button>
+  </form>
+  <div class="row">
+    <span class="hint">מצב:</span>
+    <button type="button" class="mode" data-mode="hybrid" aria-pressed="true">היברידי</button>
+    <button type="button" class="mode" data-mode="bm25" aria-pressed="false">מילים (BM25)</button>
+    <button type="button" class="mode" data-mode="dense" aria-pressed="false">סמנטי</button>
+    <label class="toggle"><input id="cloud" type="checkbox"> תשובה מהענן (Claude)</label>
+  </div>
+  <div class="row" style="margin-top:6px">
+    <span class="hint">מסננים בתוך השאילתה:</span>
+    <button type="button" class="chip">type:pdf</button>
+    <button type="button" class="chip">folder:kids</button>
+    <button type="button" class="chip">after:2026-06</button>
+    <button type="button" class="chip">lang:he</button>
+  </div>
+  <div class="grid">
+    <section id="results" aria-live="polite"><p class="hint">התוצאות יופיעו כאן. כל תוצאה היא קובץ, עם העמוד שבו נמצאה ההתאמה.</p></section>
+    <aside>
+      <div class="card" id="answerCard"><b>תשובה</b><p class="hint">לחץ "שאל את המסמכים". התשובה נבנית רק מהקטעים שנמצאו, וכל משפט מפנה למקור שלו.</p></div>
+      <div class="card" style="margin-top:12px"><details id="egressBox"><summary><b>יומן יציאה לענן</b> <span id="egressCount" class="hint"></span></summary><div id="egress" class="small"></div></details></div>
+      <div class="card small" style="margin-top:12px" id="statusCard"></div>
+    </aside>
+  </div>
+</main>
+<script>
+"use strict";
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+let mode = "hybrid", status = null;
+const fileUrl = (id, page) => "/api/file/" + id.split("/").map(encodeURIComponent).join("/") + (page ? "#page=" + page : "");
+const FMT = {pdf:"PDF", docx:"Word", md:"הערה", txt:"טקסט", html:"דף שמור", image:"תמונה"};
+
+async function j(url, opts) {
+  const r = await fetch(url, opts);
+  const d = await r.json().catch(() => ({}));
+  if (!r.ok) throw new Error(d.detail || r.statusText);
+  return d;
+}
+function setPrivacy() {
+  const cloud = $("#cloud").checked;
+  const b = $("#privacy");
+  b.className = "badge " + (cloud ? "cloud" : "local");
+  b.textContent = cloud ? "ענן: " + (status ? status.privacy.cloud_model : "") + ", עם השמטה ו-redaction" : "מקומי: שום דבר לא יוצא מהמחשב";
+}
+async function loadStatus() {
+  status = await j("/api/status");
+  const s = status.stats, p = status.privacy, e = status.egress;
+  $("#statusCard").innerHTML = `<b>האינדקס</b><br>${s.files} קבצים, ${s.chunks} קטעים, ${(s.index_bytes/1024).toFixed(0)} KB. embedder: <span class="path">${esc(s.embedder)}</span>. מודל מקומי: <span class="path">${esc(status.local_model)}</span>.<br>`
+    + `ענן: ${p.cloud_enabled ? "מותר בהגדרות (רק כשמסמנים)" : "כבוי בהגדרות"}. לא נשלחים לעולם: <span class="path">${esc(p.never_send.join(", "))}</span>.`
+    + (status.notices.length ? `<div class="warnbox">${status.notices.map(esc).join("<br>")}</div>` : "");
+  $("#egressCount").textContent = e.calls ? `(${e.calls} קריאות, ${e.chars_sent} תווים)` : "(ריק)";
+  $("#cloud").disabled = !p.cloud_enabled;
+  $("#cloud").parentElement.title = p.cloud_enabled ? "" : "הענן כבוי בקובץ ההגדרות (cloud.enabled)";
+  setPrivacy();
+}
+function renderResults(d) {
+  const box = $("#results");
+  if (!d.results.length) { box.innerHTML = `<p class="hint">לא נמצאו קבצים${d.text ? "" : " שמתאימים למסננים"}.</p>`; return; }
+  const f = Object.keys(d.filters || {}).length ? `<p class="hint">מסננים: <span class="path">${esc(JSON.stringify(d.filters))}</span></p>` : "";
+  const w = (d.warnings || []).length ? `<div class="warnbox">${d.warnings.map(esc).join("<br>")}</div>` : "";
+  box.innerHTML = f + w + d.results.map(r => {
+    const pages = r.pages.length ? ` · עמוד ${r.pages.join(", ")}` : "";
+    const sem = r.snippet.includes("<mark>") ? "" : ` · <span title="אין מילה משותפת לשאילתה: התאמה לפי משמעות">התאמה סמנטית</span>`;
+    const also = r.also.length ? `<div class="hint">עותק נוסף: <span class="path">${r.also.map(esc).join(", ")}</span></div>` : "";
+    return `<article class="card result"><h3><a href="${fileUrl(r.id, r.page)}" target="_blank" rel="noopener">${esc(r.title)}</a></h3>
+      <div class="meta"><span class="path">${esc(r.id)}</span><span>${FMT[r.format] || esc(r.format)}${pages}</span><span>${esc(r.date)}</span>${sem}</div>
+      <div class="snip">${r.snippet}</div>${also}</article>`;
+  }).join("") + `<p class="hint">${d.results.length} קבצים, ${d.ms} ms, מצב ${esc(d.mode)}.</p>`;
+}
+async function doSearch() {
+  const q = $("#q").value.trim();
+  if (!q) return;
+  try { renderResults(await j(`/api/search?q=${encodeURIComponent(q)}&mode=${mode}&k=10`)); }
+  catch (e) { $("#results").innerHTML = `<div class="warnbox">${esc(e.message)}</div>`; }
+}
+function renderAnswer(a) {
+  const byN = {}; a.citations.forEach(c => byN[c.n] = c);
+  let text = esc(a.answer).replace(/\[(\d+)\]/g, (m, n) => byN[n] ? `<a class="cite" href="${fileUrl(byN[n].file, byN[n].page)}" target="_blank" title="${esc(byN[n].file)}">${n}</a>` : `<span class="cite" title="מקור לא קיים">?${n}</span>`);
+  const src = a.sources.map(s => `<li><span class="path">${esc(s.file)}</span>${s.page ? " עמ' " + s.page : ""}</li>`).join("");
+  const where = a.where === "cloud" ? `<div class="warnbox">נשלח לענן (${esc(a.model)}). ${a.withheld.length ? "הושמטו " + a.withheld.length + " מקורות מתיקיות מוגנות. " : ""}${Object.keys(a.redactions).length ? "הוסתרו: " + esc(JSON.stringify(a.redactions)) + ". " : ""}עלות: $${a.cost_usd}</div>`
+                                    : `<div class="okbox">נענה מקומית (${esc(a.model)}), ${a.latency_s} שניות. שום דבר לא יצא מהמחשב.</div>`;
+  const bad = a.invalid_citations.length ? `<div class="warnbox">המודל ציטט מקור שלא קיים: ${a.invalid_citations.join(", ")}</div>` : "";
+  $("#answerCard").innerHTML = `<b>תשובה</b>${where}<div class="answer">${text}</div>${bad}<details><summary class="hint">המקורות שנשלחו למודל (${a.sources.length})</summary><ol class="small">${src}</ol></details>`;
+}
+function renderPreview(a, q) {
+  const red = Object.keys(a.redactions).length ? esc(JSON.stringify(a.redactions)) : "אין";
+  $("#answerCard").innerHTML = `<b>לפני שליחה לענן</b>
+    <div class="warnbox">זה בדיוק מה שייצא מהמחשב אל ${esc(a.model)}. ${a.sources.length} מקורות יישלחו, ${a.withheld.length} הושמטו (תיקיות מוגנות: <span class="path">${esc(a.withheld.join(", ") || "-")}</span>). פרטים שהוסתרו: ${red}.</div>
+    <div class="payload">${esc(a.payload.user)}</div>
+    <div class="row" style="margin-top:8px"><button class="primary" id="send">שלח לענן</button><button id="cancel">ביטול</button></div>`;
+  $("#send").onclick = () => doAsk(true, false, q);
+  $("#cancel").onclick = () => { $("#answerCard").innerHTML = "<b>תשובה</b><p class='hint'>בוטל. שום דבר לא נשלח.</p>"; };
+}
+async function doAsk(cloud, dryRun, qOverride) {
+  const q = qOverride || $("#q").value.trim();
+  if (!q) return;
+  $("#answerCard").innerHTML = `<b>תשובה</b><p class="hint">${cloud ? "שולח לענן..." : "המודל המקומי עונה... (במחשב נייד זה יכול לקחת עשרות שניות)"}</p>`;
+  try {
+    const a = await j("/api/ask", {method: "POST", headers: {"content-type": "application/json"}, body: JSON.stringify({q, cloud, dry_run: dryRun, mode})});
+    if (a.dry_run) renderPreview(a, q); else renderAnswer(a);
+    if (cloud && !dryRun) { loadStatus(); loadEgress(); }
+  } catch (e) { $("#answerCard").innerHTML = `<b>תשובה</b><div class="warnbox">${esc(e.message)}</div>`; }
+}
+async function loadEgress() {
+  const d = await j("/api/egress");
+  const sends = d.entries.filter(e => e.event === "send").reverse();
+  $("#egress").innerHTML = sends.length ? sends.map(e => `<details><summary>${new Date(e.ts * 1000).toLocaleString("he-IL")} · ${esc(e.model)} · ${e.chars} תווים · ${e.files.length} קבצים</summary>
+    <div class="hint">קבצים: <span class="path">${esc(e.files.join(", "))}</span><br>הושמטו: <span class="path">${esc(e.withheld.join(", ") || "-")}</span><br>redaction: ${esc(JSON.stringify(e.redactions))}<br>sha256: <span class="path">${esc(e.sha256.slice(0, 16))}…</span></div>
+    <div class="payload">${esc(e.payload.user)}</div></details>`).join("") : `<p class="hint">שום דבר לא נשלח לענן.</p>`;
+}
+$("#f").addEventListener("submit", e => { e.preventDefault(); doSearch(); });
+$("#askbtn").addEventListener("click", () => { const c = $("#cloud").checked; doAsk(c, c); });
+$("#cloud").addEventListener("change", setPrivacy);
+document.querySelectorAll(".mode").forEach(b => b.addEventListener("click", () => {
+  mode = b.dataset.mode;
+  document.querySelectorAll(".mode").forEach(x => x.setAttribute("aria-pressed", String(x === b)));
+  doSearch();
+}));
+document.querySelectorAll(".chip").forEach(c => c.addEventListener("click", () => { $("#q").value = (c.textContent + " " + $("#q").value).trim(); $("#q").focus(); }));
+$("#egressBox").addEventListener("toggle", e => { if (e.target.open) loadEgress(); });
+loadStatus().catch(e => { $("#statusCard").innerHTML = `<div class="warnbox">${esc(e.message)}</div>`; });
+</script>
+</body>
+</html>

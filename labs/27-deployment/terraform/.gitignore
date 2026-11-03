@@ -1,0 +1,10 @@
+# Terraform state can contain secrets and resource IDs: never commit it.
+.terraform/
+*.tfstate
+*.tfstate.*
+tfplan
+*.tfplan
+crash.log
+terraform.tfvars
+# The provider lock file IS worth committing (it pins provider checksums), keep it:
+!.terraform.lock.hcl

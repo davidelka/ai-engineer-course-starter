@@ -1,0 +1,4 @@
+# Lesson 16: LangGraph (StateGraph, interrupt/Command, RetryPolicy, error_handler) and its SQLite checkpointer.
+# Tested in November 2026 with langgraph 1.2.19 and langgraph-checkpoint-sqlite 3.1.3.
+langgraph>=1.2.19
+langgraph-checkpoint-sqlite>=3.1.3

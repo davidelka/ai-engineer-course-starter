@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>معلّم العبرية المحكية</title>
+<style>
+  :root { --bg:#f7f4ee; --card:#fff; --ink:#1f2328; --muted:#6b6f76; --accent:#b4572b; --good:#1f7a4d; --bad:#b42318;
+          --line:#e4ddd0; --soft:#fbefe7; }
+  @media (prefers-color-scheme: dark) { :root { --bg:#16181d; --card:#1f232b; --ink:#e8e6e3; --muted:#9aa0a8;
+          --accent:#e08a5c; --good:#5fd09a; --bad:#ff8f85; --line:#2e333d; --soft:#2a211c; } }
+  * { box-sizing: border-box; }
+  body { margin:0; font-family: system-ui, "Segoe UI", Tahoma, sans-serif; background:var(--bg); color:var(--ink); }
+  main { max-width: 760px; margin: 0 auto; padding: 16px; }
+  h1 { font-size: 1.4rem; margin: 0 0 4px; }
+  .muted { color: var(--muted); font-size: .9rem; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 14px; margin: 12px 0; }
+  label { display:block; font-size:.9rem; margin: 6px 0 2px; }
+  input, select, button { font: inherit; padding: 8px 10px; border-radius: 8px; border: 1px solid var(--line);
+          background: var(--card); color: var(--ink); max-width: 100%; }
+  button { background: var(--accent); color: #fff; border: none; cursor: pointer; }
+  button.secondary { background: transparent; color: var(--accent); border: 1px solid var(--accent); }
+  button:disabled { opacity: .5; cursor: default; }
+  .row { display:flex; gap:8px; flex-wrap: wrap; align-items: end; }
+  .row > * { flex: 1 1 140px; }
+  #chat { min-height: 200px; display:flex; flex-direction: column; gap: 8px; }
+  .bubble { padding: 10px 12px; border-radius: 12px; max-width: 90%; line-height: 1.5; }
+  .tutor { background: var(--soft); align-self: flex-start; }
+  .me { background: var(--card); border:1px solid var(--line); align-self: flex-end; }
+  .he { font-size: 1.15rem; }
+  .fix { border-inline-start: 4px solid var(--accent); padding: 6px 10px; margin-top: 6px; font-size: .95rem; }
+  .fix del { color: var(--bad); } .fix ins { color: var(--good); text-decoration: none; font-weight: 600; }
+  .chips span { display:inline-block; border:1px solid var(--line); border-radius: 999px; padding: 2px 8px; margin: 2px; font-size:.85rem; }
+  .w-ok, .w-homophone { color: var(--good); } .w-close { color: var(--accent); } .w-wrong, .w-missing { color: var(--bad); text-decoration: underline; }
+  .rec { background: var(--bad); }
+  .stats { display:flex; gap: 16px; font-size: .95rem; }
+  .hidden { display: none; }
+</style>
+</head>
+<body>
+<main>
+  <h1>تدرّب على العبرية المحكية</h1>
+  <div class="muted">أنت تتحدث مع برنامج ذكاء اصطناعي، وليس مع إنسان. لا تكتب اسمك الكامل أو رقم هاتفك أو عنوانك.</div>
+
+  <section class="card" id="join">
+    <div class="row">
+      <div><label for="code">رمز الصف</label><input id="code" autocomplete="off"></div>
+      <div><label for="nick">اسم مستعار (كلمة واحدة)</label><input id="nick" autocomplete="off"></div>
+      <div><label for="addr">خاطبني بصيغة</label>
+        <select id="addr"><option value="m">المذكر (אתה)</option><option value="f">المؤنث (את)</option></select></div>
+      <div><button id="joinBtn">دخول</button></div>
+    </div>
+    <div class="muted" id="joinMsg"></div>
+  </section>
+
+  <section class="card hidden" id="pick">
+    <div class="row">
+      <div><label for="scen">المكان على الخريطة</label><select id="scen"></select></div>
+      <div><label for="lvl">المستوى</label><select id="lvl"><option>A1</option><option>A2</option><option>B1</option></select></div>
+      <div><button id="startBtn">ابدأ</button></div>
+    </div>
+    <div class="muted" id="goal"></div>
+    <div class="stats" id="stats"></div>
+  </section>
+
+  <section class="card hidden" id="talk">
+    <div id="chat"></div>
+    <div class="row" style="margin-top:12px">
+      <div style="flex:3 1 200px"><input id="msg" dir="rtl" lang="he" placeholder="اكتب بالعبرية..."></div>
+      <div><button id="sendBtn">إرسال</button></div>
+      <div><button id="recBtn" class="secondary">🎙 سجّل</button></div>
+    </div>
+    <div class="hidden" id="sayBox"><label for="say">وضع تجريبي بدون إنترنت: اكتب ما قلته (التعرف على الكلام مزيّف)</label>
+      <input id="say" dir="rtl" lang="he"></div>
+    <div class="muted" id="status"></div>
+  </section>
+</main>
+<script>
+"use strict";
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+let token = sessionStorage.getItem("hebtutor_token") || "", session = null, offline = false, rec = null, chunks = [];
+
+async function api(path, opts = {}) {
+  const headers = Object.assign({}, opts.headers || {}, token ? {"X-Student-Token": token} : {});
+  if (opts.json) { headers["Content-Type"] = "application/json"; opts.body = JSON.stringify(opts.json); }
+  const r = await fetch(path, Object.assign({}, opts, {headers}));
+  if (!r.ok) { const p = await r.json().catch(() => ({})); throw new Error(p.detail || p.title || r.status); }
+  return r;
+}
+
+function bubble(cls, html) { const d = document.createElement("div"); d.className = "bubble " + cls; d.innerHTML = html;
+  $("chat").appendChild(d); d.scrollIntoView({block: "end"}); return d; }
+
+function renderAssessment(div, res) {
+  const a = res.assessment;
+  let html = `<div class="he" lang="he" dir="rtl">${esc(a.reply_he)}</div>`;
+  if (a.correction) html += `<div class="fix"><span lang="he"><del>${esc(a.correction.original)}</del> ← <ins>${esc(a.correction.corrected)}</ins></span><div>${esc(a.correction.explanation_ar)}</div></div>`;
+  if (a.help_ar) html += `<div class="fix">${esc(a.help_ar)}</div>`;
+  if (a.new_vocabulary?.length) html += `<div class="chips">` + a.new_vocabulary.map(v => `<span><b lang="he">${esc(v.he)}</b> ${esc(v.ar)} · ${esc(v.transliteration)}</span>`).join("") + `</div>`;
+  div.innerHTML = html;
+  if (res.points !== undefined) $("stats").innerHTML = `<span>النقاط: <b>${res.points}</b></span><span>المستوى: <b>${esc(res.level)}</b></span>` + (res.points_earned ? `<span>+${res.points_earned}</span>` : "");
+}
+
+$("joinBtn").onclick = async () => {
+  try {
+    const r = await api("/students/join", {method: "POST", json: {class_code: $("code").value, nickname: $("nick").value, addressing: $("addr").value}});
+    token = (await r.json()).student_token; sessionStorage.setItem("hebtutor_token", token); await afterJoin();
+  } catch (e) { $("joinMsg").textContent = "لم ينجح الدخول: " + e.message; }
+};
+
+async function afterJoin() {
+  $("join").classList.add("hidden"); $("pick").classList.remove("hidden");
+  const ready = await (await fetch("/readyz")).json(); offline = ready.stt === "fake";
+  $("sayBox").classList.toggle("hidden", !offline);
+  const list = await (await fetch("/scenarios")).json();
+  $("scen").innerHTML = list.map(s => `<option value="${esc(s.id)}">${esc(s.title_ar)} · ${esc(s.title_he)}</option>`).join("");
+  const p = await (await api("/progress")).json();
+  $("stats").innerHTML = `<span>النقاط: <b>${p.points}</b></span><span>المستوى: <b>${esc(p.level)}</b></span><span>كلمات للمراجعة: <b>${p.due_reviews}</b></span>`;
+  $("lvl").value = p.level;
+}
+
+$("startBtn").onclick = async () => {
+  const r = await api("/sessions", {method: "POST", json: {scenario_id: $("scen").value, level: $("lvl").value}});
+  session = await r.json(); $("chat").innerHTML = ""; $("talk").classList.remove("hidden");
+  $("goal").textContent = "المهمة: " + (session.scenario.goal_ar || "");
+  bubble("tutor", `<div class="he" lang="he" dir="rtl">${esc(session.tutor_says)}</div>`);
+};
+
+$("sendBtn").onclick = async () => {
+  const text = $("msg").value.trim(); if (!text || !session) return;
+  $("msg").value = ""; bubble("me", `<div class="he" lang="he" dir="rtl">${esc(text)}</div>`);
+  const div = bubble("tutor", `<div class="he" lang="he" dir="rtl"></div>`);
+  const r = await api(`/sessions/${session.session_id}/turns/stream`, {method: "POST", json: {text}});
+  const reader = r.body.getReader(), dec = new TextDecoder(); let buf = "", shown = "";
+  for (;;) {
+    const {value, done} = await reader.read(); if (done) break;
+    buf += dec.decode(value, {stream: true});
+    let i; while ((i = buf.indexOf("\n\n")) >= 0) {
+      const block = buf.slice(0, i); buf = buf.slice(i + 2);
+      const ev = (block.match(/^event: (.*)$/m) || [])[1], data = JSON.parse((block.match(/^data: (.*)$/m) || [, "{}"])[1]);
+      if (ev === "sentence") { shown += (shown ? " " : "") + data.text; div.firstChild.textContent = shown; }
+      if (ev === "assessment") renderAssessment(div, data);
+    }
+  }
+};
+$("msg").addEventListener("keydown", (e) => { if (e.key === "Enter") $("sendBtn").click(); });
+
+$("recBtn").onclick = async () => {
+  if (rec && rec.state === "recording") { rec.stop(); return; }
+  if (offline && $("say").value.trim()) return sendAudio(new Blob(["x"]), "offline.wav");
+  const stream = await navigator.mediaDevices.getUserMedia({audio: true});
+  const type = ["audio/webm;codecs=opus", "audio/mp4", "audio/webm"].find(t => MediaRecorder.isTypeSupported(t)) || "";
+  rec = new MediaRecorder(stream, type ? {mimeType: type} : {}); chunks = [];
+  rec.ondataavailable = (e) => chunks.push(e.data);
+  rec.onstop = () => { stream.getTracks().forEach(t => t.stop()); $("recBtn").classList.remove("rec"); $("recBtn").textContent = "🎙 سجّل";
+    sendAudio(new Blob(chunks, {type: rec.mimeType}), rec.mimeType.includes("mp4") ? "audio.mp4" : "audio.webm"); };
+  rec.start(); $("recBtn").classList.add("rec"); $("recBtn").textContent = "⏹ أوقف";
+};
+
+async function sendAudio(blob, name) {
+  $("status").textContent = "...";
+  const fd = new FormData(); fd.append("file", blob, name);
+  if (offline && $("say").value.trim()) { fd.append("say", $("say").value.trim()); $("say").value = ""; }
+  const r = await api(`/sessions/${session.session_id}/turns/audio`, {method: "POST", body: fd});
+  const d = await r.json();
+  let me = `<div class="he" lang="he" dir="rtl">${esc(d.transcript)}</div>`;
+  if (d.speaking) me += `<div lang="he" dir="rtl">` + d.speaking.words.map(w => `<span class="w-${w.status}">${esc(w.word)}</span>`).join(" ") +
+    `</div><div class="muted">وضوح الكلام كما سمعه برنامج التعرف: ${Math.round(d.speaking.score * 100)}% (ليس تقييمًا للنطق)</div>`;
+  bubble("me", me);
+  if (d.result) renderAssessment(bubble("tutor", ""), d.result);
+  if (d.audio_wav_b64) new Audio("data:audio/wav;base64," + d.audio_wav_b64).play().catch(() => {});
+  const b = d.budget || {};
+  $("status").textContent = `أول صوت بعد ${b.first_audio_s ?? "-"} ث · الكل ${b.total_s ?? "-"} ث`;
+}
+
+if (token) afterJoin().catch(() => { token = ""; sessionStorage.removeItem("hebtutor_token"); });
+</script>
+</body>
+</html>

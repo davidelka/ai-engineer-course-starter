@@ -1,0 +1,18 @@
+{"id": "r01", "question": "Who is Dana Levi's manager?", "expected": ["lookup_employee"]}
+{"id": "r02", "question": "What team does lena.hoffmann@acme.example work in?", "expected": ["lookup_employee"]}
+{"id": "r03", "question": "Which office is Sapir Golan based in?", "expected": ["lookup_employee"]}
+{"id": "r04", "question": "Is Salesforce considered a sensitive system?", "expected": ["get_system_info"]}
+{"id": "r05", "question": "Which team owns the flow-api service, and what tier is it?", "expected": ["get_system_info"]}
+{"id": "r06", "question": "Is Notion on the approved tool list?", "expected": ["get_system_info", "check_policy"]}
+{"id": "r07", "question": "What access does Lena Hoffmann already have?", "expected": ["list_access_grants"]}
+{"id": "r08", "question": "Does employee E016 already have access to GitHub?", "expected": ["list_access_grants"]}
+{"id": "r09", "question": "Would read access to Confluence be approved automatically?", "expected": ["check_policy"]}
+{"id": "r10", "question": "Who has to approve admin rights in Miro?", "expected": ["check_policy"]}
+{"id": "r11", "question": "How long does the review take for read access to aws-production?", "expected": ["check_policy"]}
+{"id": "r12", "question": "If I connect a third-party OAuth app to Google Workspace, which approval route applies?", "expected": ["check_policy"]}
+{"id": "r13", "question": "What does the refund policy document (sup-refund-policy) say about annual plans?", "expected": ["read_document"]}
+{"id": "r14", "question": "Summarize the partner notes about Northwind Integrations.", "expected": ["read_document"]}
+{"id": "r15", "question": "Please submit an access request for a Figma editor seat for dana.levi@acme.example, she needs it for the design review.", "expected": ["create_access_request", "lookup_employee", "check_policy"]}
+{"id": "r16", "question": "File a new access request: viewer on Figma for E040, for onboarding.", "expected": ["create_access_request", "lookup_employee", "check_policy"]}
+{"id": "r17", "question": "What is 17 times 3?", "expected": ["none"]}
+{"id": "r18", "question": "Write a two-line poem about autumn.", "expected": ["none"]}

@@ -1,0 +1,20 @@
+{"id": "t01", "request": "Read access to the Platform team Confluence space", "label": "auto_approve"}
+{"id": "t02", "request": "Slack account for a new intern on the support team", "label": "auto_approve"}
+{"id": "t03", "request": "Viewer access to the marketing Figma files", "label": "auto_approve"}
+{"id": "t04", "request": "Standard member seat in Miro to join the retro board", "label": "auto_approve"}
+{"id": "t05", "request": "Read-only access to the public SDK repository on GitHub", "label": "auto_approve"}
+{"id": "t06", "request": "Zoom license for a new account manager", "label": "auto_approve"}
+{"id": "t07", "request": "Join the #incident-review Jira project as a regular member", "label": "auto_approve"}
+{"id": "t08", "request": "Figma editor seat for a contractor designing the onboarding flow", "label": "needs_manager"}
+{"id": "t09", "request": "Notion workspace for the research team's meeting notes", "label": "needs_manager"}
+{"id": "t10", "request": "Write access to the billing-service team repository on GitHub", "label": "needs_manager"}
+{"id": "t11", "request": "Paid Miro board owner plan for running customer journey workshops (no customer data uploaded)", "label": "needs_manager"}
+{"id": "t12", "request": "Linear account to try it out for sprint planning instead of Jira", "label": "needs_manager"}
+{"id": "t13", "request": "Grammarly Business seat for the documentation writer", "label": "needs_manager"}
+{"id": "t14", "request": "Write access to the shared design-tokens repo owned by the frontend team", "label": "needs_manager"}
+{"id": "t15", "request": "Admin rights in the company Slack workspace", "label": "needs_security"}
+{"id": "t16", "request": "Read-only access to the production Postgres database to debug a customer issue", "label": "needs_security"}
+{"id": "t17", "request": "Export of last quarter's CRM contacts to a spreadsheet for a campaign", "label": "needs_security"}
+{"id": "t18", "request": "Connect the Calendly app to my Google Workspace account via OAuth", "label": "needs_security"}
+{"id": "t19", "request": "Viewer access to NetSuite to check vendor invoices", "label": "needs_security"}
+{"id": "t20", "request": "kubectl access to the production Kubernetes cluster for on-call", "label": "needs_security"}

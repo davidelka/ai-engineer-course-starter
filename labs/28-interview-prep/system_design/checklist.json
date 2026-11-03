@@ -1,0 +1,391 @@
+{
+ "title": "Support ticket triage with RAG and human escalation",
+ "red_flags": [
+  "קופץ לארכיטקטורה בלי דרישות",
+  "אין eval או golden set",
+  "המודל מחליט לבד על הסלמה או סגירה",
+  "אין מספרים לעלות"
+ ],
+ "rubric": [
+  {
+   "id": "req1",
+   "section": "requirements",
+   "point": "נפח, שפות ו-SLA במספרים (600 ביום, שיא, עברית/אנגלית, 15 דקות ל-P1)",
+   "weight": 2,
+   "concepts": [
+    [
+     "600",
+     "נפח",
+     "volume"
+    ],
+    [
+     "עברית",
+     "hebrew",
+     "שפות"
+    ],
+    [
+     "sla",
+     "15 דקות",
+     "דחיפות"
+    ]
+   ],
+   "need": 2
+  },
+  {
+   "id": "req2",
+   "section": "requirements",
+   "point": "גבולות v1: מה בתחום ומה לא (לא סוגרים פניות לבד) והנחות מפורשות",
+   "weight": 1,
+   "concepts": [
+    [
+     "v1"
+    ],
+    [
+     "הנחה",
+     "הנחות",
+     "assum*",
+     "מחוץ לתחום",
+     "out of scope"
+    ]
+   ],
+   "need": 2
+  },
+  {
+   "id": "met1",
+   "section": "metrics",
+   "point": "מדד ניתוב לכל תור ו-recall לפניות דחופות/security",
+   "weight": 2,
+   "concepts": [
+    [
+     "דיוק",
+     "accuracy",
+     "precision"
+    ],
+    [
+     "recall"
+    ],
+    [
+     "תור",
+     "queue"
+    ]
+   ],
+   "need": 2
+  },
+  {
+   "id": "met2",
+   "section": "metrics",
+   "point": "מדד עסקי: זמן עד ניתוב, שיעור העברות חוזרות, זמן נציג, שיעור הסלמה",
+   "weight": 1,
+   "concepts": [
+    [
+     "זמן עד ניתוב",
+     "time to route",
+     "זמן טיפול"
+    ],
+    [
+     "העברות",
+     "reroute",
+     "שיעור הסלמה",
+     "escalation rate"
+    ]
+   ],
+   "need": 1
+  },
+  {
+   "id": "arch1",
+   "section": "architecture",
+   "point": "קליטה אסינכרונית עם queue ונרמול ערוצים",
+   "weight": 1,
+   "concepts": [
+    [
+     "queue",
+     "תור הודעות",
+     "אסינכרוני",
+     "async*"
+    ]
+   ],
+   "need": 1
+  },
+  {
+   "id": "arch2",
+   "section": "architecture",
+   "point": "סיווג עם structured output: תור, דחיפות, ביטחון ונימוק קצר",
+   "weight": 2,
+   "concepts": [
+    [
+     "structured output",
+     "json schema",
+     "pydantic"
+    ],
+    [
+     "ביטחון",
+     "confidence"
+    ]
+   ],
+   "need": 2
+  },
+  {
+   "id": "arch3",
+   "section": "architecture",
+   "point": "RAG על בסיס הידע ועל פניות דומות שנפתרו, עם hybrid search",
+   "weight": 2,
+   "concepts": [
+    [
+     "rag",
+     "retrieval"
+    ],
+    [
+     "פניות דומות",
+     "similar tickets",
+     "פניות סגורות"
+    ],
+    [
+     "hybrid",
+     "bm25",
+     "reranker"
+    ]
+   ],
+   "need": 2
+  },
+  {
+   "id": "arch4",
+   "section": "architecture",
+   "point": "טיוטת תשובה עם ציטוטים שהנציג מאשר או עורך",
+   "weight": 1,
+   "concepts": [
+    [
+     "טיוטה",
+     "draft"
+    ],
+    [
+     "ציטוט",
+     "citation"
+    ]
+   ],
+   "need": 2
+  },
+  {
+   "id": "arch5",
+   "section": "architecture",
+   "point": "כללי הסלמה דטרמיניסטיים בקוד (security, ביטחון נמוך, אין מקור)",
+   "weight": 2,
+   "concepts": [
+    [
+     "דטרמיניסטי",
+     "deterministic",
+     "כללים בקוד"
+    ],
+    [
+     "הסלמה",
+     "escalat*"
+    ]
+   ],
+   "need": 2
+  },
+  {
+   "id": "data1",
+   "section": "data",
+   "point": "golden set מפניות היסטוריות, עם ניקוי תוויות (פניות שהועברו)",
+   "weight": 2,
+   "concepts": [
+    [
+     "golden set"
+    ],
+    [
+     "היסטורי",
+     "historical",
+     "90,000"
+    ],
+    [
+     "תוויות",
+     "labels",
+     "תיוג"
+    ]
+   ],
+   "need": 2
+  },
+  {
+   "id": "data2",
+   "section": "data",
+   "point": "ingestion של בסיס הידע: chunking לפי מבנה, תאריך עדכון ומאמרים ישנים",
+   "weight": 1,
+   "concepts": [
+    [
+     "chunk*"
+    ],
+    [
+     "ישנים",
+     "עדכון",
+     "freshness",
+     "stale"
+    ]
+   ],
+   "need": 2
+  },
+  {
+   "id": "eval1",
+   "section": "eval",
+   "point": "eval offline לפני שחרור: לכל תור, ושופט מכויל לטיוטות",
+   "weight": 2,
+   "concepts": [
+    [
+     "offline",
+     "לפני שחרור"
+    ],
+    [
+     "judge",
+     "שופט"
+    ],
+    [
+     "מכויל",
+     "כיול",
+     "calibrat*"
+    ]
+   ],
+   "need": 2
+  },
+  {
+   "id": "eval2",
+   "section": "eval",
+   "point": "eval online: תיקוני נציגים, עריכות וטיוטות שנדחו כאות",
+   "weight": 1,
+   "concepts": [
+    [
+     "online"
+    ],
+    [
+     "תיקוני",
+     "עריכות",
+     "override",
+     "edits"
+    ]
+   ],
+   "need": 2
+  },
+  {
+   "id": "fail1",
+   "section": "failures",
+   "point": "הזיה או מקור חסר: לא לנחש, להסלים",
+   "weight": 1,
+   "concepts": [
+    [
+     "הזיה",
+     "hallucinat*",
+     "אין מקור"
+    ]
+   ],
+   "need": 1
+  },
+  {
+   "id": "fail2",
+   "section": "failures",
+   "point": "prompt injection בתוך הפנייה ומה מונע נזק",
+   "weight": 1,
+   "concepts": [
+    [
+     "injection"
+    ]
+   ],
+   "need": 1
+  },
+  {
+   "id": "fail3",
+   "section": "failures",
+   "point": "הספק נופל או איטי: retries, fallback, ניתוב ידני",
+   "weight": 1,
+   "concepts": [
+    [
+     "fallback",
+     "retries",
+     "נופל",
+     "outage"
+    ]
+   ],
+   "need": 1
+  },
+  {
+   "id": "cost1",
+   "section": "cost_latency",
+   "point": "חישוב עלות במספרים מול התקציב, ומודל קטן/caching",
+   "weight": 2,
+   "concepts": [
+    [
+     "$",
+     "דולר",
+     "500"
+    ],
+    [
+     "טוקנים",
+     "tokens"
+    ],
+    [
+     "מודל קטן",
+     "small model",
+     "caching",
+     "haiku"
+    ]
+   ],
+   "need": 2
+  },
+  {
+   "id": "cost2",
+   "section": "cost_latency",
+   "point": "יעד latency, במיוחד ל-P1",
+   "weight": 1,
+   "concepts": [
+    [
+     "latency",
+     "שניות",
+     "דקות"
+    ],
+    [
+     "p1",
+     "p95"
+    ]
+   ],
+   "need": 2
+  },
+  {
+   "id": "sec1",
+   "section": "security",
+   "point": "PII בשכר, הרשאות ו-least privilege, audit log",
+   "weight": 2,
+   "concepts": [
+    [
+     "pii",
+     "מידע אישי"
+    ],
+    [
+     "הרשאות",
+     "least privilege"
+    ],
+    [
+     "audit"
+    ]
+   ],
+   "need": 2
+  },
+  {
+   "id": "iter1",
+   "section": "iteration",
+   "point": "גלגול: shadow mode, אחר כך assist, ולולאת משוב ל-golden set",
+   "weight": 2,
+   "concepts": [
+    [
+     "shadow"
+    ],
+    [
+     "assist",
+     "הדרגתי",
+     "rollout"
+    ],
+    [
+     "משוב",
+     "feedback",
+     "golden set"
+    ]
+   ],
+   "need": 2
+  }
+ ]
+}

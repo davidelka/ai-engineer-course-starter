@@ -1,0 +1,7 @@
+# Lesson 11 (managed vector search). Verified on PyPI, November 2026.
+# Lesson 10's requirements (numpy, faiss-cpu, sentence-transformers) are assumed installed.
+qdrant-client>=1.17           # Qdrant client + in-process ":memory:" mode (1.20.0 current)
+psycopg[binary]>=3.2          # PostgreSQL driver (3.3.6 current)
+pgvector>=0.4                 # pgvector helpers for psycopg (0.5.1 current; ragkit works without it)
+# Optional, only for exercise 8 (s3vectors_demo.py):
+# boto3>=1.40                 # AWS SDK with the "s3vectors" client

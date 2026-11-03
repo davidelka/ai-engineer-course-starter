@@ -1,0 +1,8 @@
+# Lesson 21 (multimodal). Verified on PyPI, November 2026.
+pillow>=11.0            # make / resize / compress the lab images (13.0.0 current); needs FreeType for fonts
+pypdf>=6.0              # PDF text extraction, already used in lesson 9 (6.21.4 current)
+pypdfium2>=4.30         # render PDF pages to images for exercise 8 (5.14.0 current); optional, there is a fallback
+jiwer>=4.0              # optional: cross-checks your WER implementation in the tests (4.0.0 current)
+# Optional local speech (not needed for the tests; large downloads):
+# faster-whisper>=1.2   # local STT; Hebrew model ivrit-ai/whisper-large-v3-turbo-ct2 (1.2.1 current)
+# piper-tts>=1.8        # local TTS; Hebrew voice he_IL-saspeech-medium (1.8.0 current, GPL-3.0)

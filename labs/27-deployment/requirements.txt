@@ -1,0 +1,11 @@
+# Lesson 27 adds these Python packages to the course venv:
+python-hcl2>=8.1     # checks.py and the tests read the Terraform files without the terraform binary
+fastapi>=0.162       # the Company Brain mini API (lesson 26 probably added it already)
+uvicorn>=0.54
+# The container image does NOT use this file: its dependencies are pinned in app/uv.lock.
+#
+# Not Python, install on your machine:
+#   Docker Engine (or Docker Desktop) with the compose plugin v2
+#   Terraform >= 1.11 (1.17.x is current, November 2026)
+#   AWS CLI v2, with credentials for your account (aws configure, or aws sso login)
+#   optional: trivy 0.76.x for image scanning (never 0.69.4, see the README)

@@ -1,0 +1,49 @@
+# Ticket triage: STARTER spec for exercise 7. Copy it to mine.arch.yaml and complete it.
+#   cp labs/19-ai-architecture/cases/ticket_triage/starter.arch.yaml labs/19-ai-architecture/cases/ticket_triage/mine.arch.yaml
+#
+# Read REQUIREMENTS.md first. Then add components, flows and a budget until:
+#   python labs/19-ai-architecture/arch_check.py   labs/19-ai-architecture/cases/ticket_triage/mine.arch.yaml   -> no errors
+#   python labs/19-ai-architecture/cost_model.py   labs/19-ai-architecture/cases/ticket_triage/mine.arch.yaml   -> within budget
+#   python labs/19-ai-architecture/diagram.py      labs/19-ai-architecture/cases/ticket_triage/mine.arch.yaml   -> a readable diagram
+#
+# Kinds you can use: client service guardrail classifier llm retriever datastore cache queue tool
+#                    human_approval external_api observability eval batch_job
+# A third-party component approved for customer data gets  pii_allowed: true  (see REQUIREMENTS.md).
+
+system: ticket-triage
+description: >
+  Classify and route Acme support tickets, alert on-call for urgent ones, and draft replies for agents.
+
+boundaries:
+  - {id: customers, name: "Customers (email, web form)", trust: untrusted}
+  - {id: acme_vpc,  name: "Acme VPC (AWS)",              trust: trusted}
+  - {id: anthropic, name: "Anthropic API",               trust: third_party, notes: "DPA + zero data retention approved"}
+  - {id: saas,      name: "Zendesk, PagerDuty",          trust: third_party}
+
+components:
+  - {id: email_inbox, name: "Support mailbox", kind: client, boundary: customers, tech: "SES inbound"}
+  - {id: web_form,    name: "Web form",        kind: client, boundary: customers}
+  - {id: intake_api,  name: "Intake API",      kind: service, boundary: acme_vpc, tech: "FastAPI"}
+  - {id: zendesk,     name: "Zendesk",         kind: external_api, boundary: saas, pii_allowed: true}
+  - {id: pagerduty,   name: "PagerDuty",       kind: external_api, boundary: saas}
+  # TODO: guardrail, queue, triage worker, deterministic rules, triage model, retrieval for drafts,
+  #       draft model, output check, audit log, tracing, eval ... decide what you need and why.
+
+flows:
+  - {from: email_inbox, to: intake_api, data: "ticket", classification: pii}
+  - {from: web_form,    to: intake_api, data: "ticket", classification: pii}
+  # TODO
+
+# budget:
+#   fixed_monthly_usd: ...
+#   monthly_limit_usd: 700
+#   paths:
+#     - name: triage
+#       requests_per_day: 2500
+#       days: 22
+#       prompt_cache_hit_rate: ...
+#       calls:
+#         - {name: ..., model: claude-haiku-5-5, input_tokens: ..., cacheable_tokens: ..., output_tokens: ...}
+#       latency_budget_ms: 60000
+#       stages:
+#         - {name: ..., p95_ms: ..., p50_ms: ...}

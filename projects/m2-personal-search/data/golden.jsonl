@@ -1,0 +1,52 @@
+{"id": "g01", "q": "ערבות בנקאית", "lang": "he", "kind": "keyword", "relevant": ["home/lease-2026.pdf", "home/lease-2026 (1).pdf"], "pages": {"home/lease-2026.pdf": [2]}, "facts": ["12,600"]}
+{"id": "g02", "q": "דמי שכירות לחודש", "lang": "he", "kind": "keyword", "relevant": ["home/lease-2026.pdf", "home/lease-2026 (1).pdf"], "pages": {"home/lease-2026.pdf": [1]}, "facts": ["4,200"]}
+{"id": "g03", "q": "השתתפות עצמית במוסך שבהסדר", "lang": "he", "kind": "keyword", "relevant": ["finance/car-insurance-2026.pdf"], "pages": {"finance/car-insurance-2026.pdf": [2]}, "facts": ["1,850"]}
+{"id": "g04", "q": "עין עבדת", "lang": "he", "kind": "keyword", "relevant": ["kids/school-trip-permission-2026-11.docx"]}
+{"id": "g05", "q": "מחברות חשבון משובצות", "lang": "he", "kind": "keyword", "relevant": ["kids/school-supplies-grade3-2026.docx"]}
+{"id": "g06", "q": "טופס 106", "lang": "he", "kind": "keyword", "relevant": ["finance/tax-refund-checklist-2025.md"]}
+{"id": "g07", "q": "ארנונה הנחה בתשלום שנתי", "lang": "he", "kind": "keyword", "relevant": ["home/arnona-2026.md"], "facts": ["2%"]}
+{"id": "g08", "q": "שקשוקה כמון", "lang": "he", "kind": "keyword", "relevant": ["recipes/shakshuka.md", "recipes/shakshuka-copy.md"]}
+{"id": "g09", "q": "חוג שחמט מחיר", "lang": "he", "kind": "keyword", "relevant": ["kids/chess-club-2026.html"], "facts": ["180"]}
+{"id": "g10", "q": "ThinkPad E14", "lang": "en", "kind": "keyword", "relevant": ["receipts/receipt-laptop-2026-03.html"]}
+{"id": "g11", "q": "check-in time Old Town Rooms", "lang": "en", "kind": "keyword", "relevant": ["travel/tbilisi-hotel-booking-2026-08.pdf"], "pages": {"travel/tbilisi-hotel-booking-2026-08.pdf": [1]}, "facts": ["14:00"]}
+{"id": "g12", "q": "checked bag 23 kg", "lang": "en", "kind": "keyword", "relevant": ["travel/flight-eticket-tlv-tbs-2026-08.html"], "facts": ["23 kg"]}
+{"id": "g13", "q": "Reciprocal Rank Fusion k = 60", "lang": "en", "kind": "keyword", "relevant": ["courses/ai-engineer-rag-notes.md", "courses/ai-engineer-rag-notes-v2.md"]}
+{"id": "g14", "q": "red lentils turmeric", "lang": "en", "kind": "keyword", "relevant": ["recipes/lentil-soup.txt"]}
+{"id": "g15", "q": "insurance excess rental car", "lang": "en", "kind": "keyword", "relevant": ["travel/car-rental-georgia-voucher.pdf"], "pages": {"travel/car-rental-georgia-voucher.pdf": [1]}, "facts": ["500 USD"]}
+{"id": "g16", "q": "anode replacement water heater", "lang": "en", "kind": "keyword", "relevant": ["home/solar-water-heater-service.txt"], "facts": ["3 years"]}
+{"id": "g17", "q": "pm2 cluster mode", "lang": "en", "kind": "keyword", "relevant": ["courses/node-backend-cheatsheet.md"]}
+{"id": "g18", "q": "airport transfer GEL", "lang": "en", "kind": "keyword", "relevant": ["travel/tbilisi-hotel-booking-2026-08.pdf"], "pages": {"travel/tbilisi-hotel-booking-2026-08.pdf": [2]}, "facts": ["60 GEL"]}
+{"id": "g19", "q": "כמה זמן מראש צריך להודיע אם רוצים להמשיך לגור בדירה עוד שנה?", "lang": "he", "kind": "semantic", "relevant": ["home/lease-2026.pdf", "home/lease-2026 (1).pdf"], "pages": {"home/lease-2026.pdf": [2]}, "facts": ["60"]}
+{"id": "g20", "q": "מה קורה אם המנוע של המקרר מתקלקל אחרי שלוש שנים?", "lang": "he", "kind": "semantic", "relevant": ["home/fridge-warranty-2026-03.pdf"], "pages": {"home/fridge-warranty-2026-03.pdf": [1]}, "facts": ["5 שנים"]}
+{"id": "g21", "q": "מתי אני צריך ללכת לרופאה?", "lang": "he", "kind": "semantic", "relevant": ["health/clinic-appointment-2026-11-18.pdf"], "facts": ["10:40"]}
+{"id": "g22", "q": "מה הבת שלי צריכה לקחת איתה לטיול?", "lang": "he", "kind": "semantic", "relevant": ["kids/school-trip-permission-2026-11.docx"], "facts": ["2 ליטר"]}
+{"id": "g23", "q": "איך מקבלים כסף בחזרה על משקפיים?", "lang": "he", "kind": "semantic", "relevant": ["health/glasses-reimbursement-guide.md"], "facts": ["300"]}
+{"id": "g24", "q": "באיזו שעה הילד צריך להיאסף מהגן בימי שישי?", "lang": "he", "kind": "semantic", "relevant": ["kids/kindergarten-yoav-2026-27.md"], "facts": ["12:00"]}
+{"id": "g25", "q": "כמה עולה האינטרנט אחרי השנה הראשונה?", "lang": "he", "kind": "semantic", "relevant": ["home/internet-plan-2026.html"], "facts": ["129"]}
+{"id": "g26", "q": "what time do we have to leave the hotel room on the last day", "lang": "en", "kind": "semantic", "relevant": ["travel/tbilisi-hotel-booking-2026-08.pdf"], "pages": {"travel/tbilisi-hotel-booking-2026-08.pdf": [1]}, "facts": ["11:00"]}
+{"id": "g27", "q": "how much luggage can each of us take on the plane", "lang": "en", "kind": "semantic", "relevant": ["travel/flight-eticket-tlv-tbs-2026-08.html"], "facts": ["23 kg"]}
+{"id": "g28", "q": "will money be held on my card when I pick up the car", "lang": "en", "kind": "semantic", "relevant": ["travel/car-rental-georgia-voucher.pdf"], "facts": ["300 USD"]}
+{"id": "g29", "q": "when is my teeth cleaning", "lang": "en", "kind": "semantic", "relevant": ["health/dental-checkup-2026-12.txt"], "facts": ["16:15"]}
+{"id": "g30", "q": "can I bring back the bookcase if I change my mind", "lang": "en", "kind": "semantic", "relevant": ["receipts/receipt-furniture-2026-05.txt"], "facts": ["30 days"]}
+{"id": "g31", "q": "what fees does my pension fund charge", "lang": "en", "kind": "semantic", "relevant": ["finance/pension-annual-statement-2025.html"], "facts": ["0.22%"]}
+{"id": "g32", "q": "מה מדיניות הביטול של המלון בטביליסי?", "lang": "he", "kind": "cross-lingual", "relevant": ["travel/tbilisi-hotel-booking-2026-08.pdf"], "pages": {"travel/tbilisi-hotel-booking-2026-08.pdf": [1]}, "facts": ["48"]}
+{"id": "g33", "q": "מתכון למרק עדשים", "lang": "he", "kind": "cross-lingual", "relevant": ["recipes/lentil-soup.txt"]}
+{"id": "g34", "q": "באיזו טמפרטורה אופים פיתות?", "lang": "he", "kind": "cross-lingual", "relevant": ["recipes/pita-bread.html"], "facts": ["250"]}
+{"id": "g35", "q": "when is the rent due each month", "lang": "en", "kind": "cross-lingual", "relevant": ["home/lease-2026.pdf", "home/lease-2026 (1).pdf"], "pages": {"home/lease-2026.pdf": [1]}}
+{"id": "g36", "q": "how much does the school trip cost", "lang": "en", "kind": "cross-lingual", "relevant": ["kids/school-trip-permission-2026-11.docx"], "facts": ["85"]}
+{"id": "g37", "q": "car insurance deductible for the windshield", "lang": "en", "kind": "cross-lingual", "relevant": ["finance/car-insurance-2026.pdf"], "pages": {"finance/car-insurance-2026.pdf": [2]}, "facts": ["450"]}
+{"id": "g38", "q": "first grade math games for addition", "lang": "en", "kind": "cross-lingual", "relevant": ["courses/first-grade-math-ideas.md"]}
+{"id": "g39", "q": "challah baking temperature", "lang": "en", "kind": "cross-lingual", "relevant": ["recipes/grandma-challah.docx"], "facts": ["180"]}
+{"id": "g40", "q": "type:pdf אחריות", "lang": "he", "kind": "filter", "relevant": ["home/fridge-warranty-2026-03.pdf"]}
+{"id": "g41", "q": "folder:receipts after:2026-06", "lang": "en", "kind": "filter", "relevant": ["receipts/receipt-supermarket-2026-10.html", "receipts/receipt-pharmacy-2026-08.txt"]}
+{"id": "g42", "q": "after:2026-11 before:2027 appointment", "lang": "en", "kind": "filter", "relevant": ["health/clinic-appointment-2026-11-18.pdf", "health/dental-checkup-2026-12.txt"]}
+{"id": "g43", "q": "folder:travel lang:he ציוד", "lang": "he", "kind": "filter", "relevant": ["travel/packing-list-georgia.md"]}
+{"id": "g44", "q": "type:docx קמח", "lang": "he", "kind": "filter", "relevant": ["recipes/grandma-challah.docx"]}
+{"id": "g45", "q": "תיקייה:kids שיעורי בית", "lang": "he", "kind": "filter", "relevant": ["kids/parents-meeting-2026-10.md"]}
+{"id": "g46", "q": "cordless drill receipt", "lang": "en", "kind": "ocr", "relevant": ["scans/hardware-store-receipt.png"], "facts": ["349"]}
+{"id": "g47", "q": "יום פיגמות בגן", "lang": "he", "kind": "ocr-he", "relevant": ["scans/gan-note-he.png"]}
+{"id": "g48", "q": "wifi password", "lang": "en", "kind": "negative", "relevant": [], "must_not": ["private/passwords-DO-NOT-INDEX.txt"]}
+{"id": "g49", "q": "what is my passport number", "lang": "en", "kind": "negative", "relevant": [], "abstain": true}
+{"id": "g50", "q": "כמה עולה הפוליסה של ביטוח הדירה?", "lang": "he", "kind": "negative", "relevant": [], "abstain": true}
+{"id": "g51", "q": "מתי מגיעים לחסן את הילדים בבית הספר?", "lang": "he", "kind": "semantic", "relevant": ["health/school-vaccination-notice-2026.md"], "facts": ["22 בנובמבר"]}
+{"id": "g52", "q": "רכב חלופי אחרי תאונה", "lang": "he", "kind": "keyword", "relevant": ["finance/car-insurance-2026.pdf"], "pages": {"finance/car-insurance-2026.pdf": [3]}, "facts": ["7 ימים"]}

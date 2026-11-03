@@ -1,0 +1,3 @@
+# The baked demo needs only the fake key file from the context.
+*
+!labs/27-deployment/fixtures/fake.env

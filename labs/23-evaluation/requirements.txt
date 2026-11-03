@@ -1,0 +1,5 @@
+# Lesson 23 (evalkit). No new Python packages: evalkit uses only the standard library and pydantic,
+# and reads the corpus through ragkit, whose dependencies are in labs/09-rag-ingestion/requirements.txt.
+-r ../09-rag-ingestion/requirements.txt
+# Exercise 7 uses promptfoo through npx (Node.js 20+), pinned in the commands: npx promptfoo@0.125.1
+# (npm "promptfoo" 0.125.1 verified November 2026). Nothing to pip install for it.

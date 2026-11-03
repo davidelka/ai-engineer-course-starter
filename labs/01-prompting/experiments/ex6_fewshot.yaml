@@ -1,0 +1,43 @@
+# Exercise 6 — few-shot classification of SaaS access requests.
+# The policy is in the system prompt; only the examples change between variants.
+# Watch the "outputs" line under the table: the unbalanced variant should drift
+# toward auto_approve. Examples and test cases are separate files on purpose.
+name: ex6-fewshot
+cases: ../../../data/acme/saas_requests_test.jsonl
+labels: [auto_approve, needs_manager, needs_security]
+expected_field: label
+scorer: label
+repeats: 3
+max_workers: 4
+system: |
+  You route SaaS access requests at Acme Ltd. according to this policy:
+
+  {policy}
+
+  {examples}
+
+  Reply with exactly one label: auto_approve, needs_manager or needs_security.
+user_template: "<request>{request}</request>"
+
+defaults:
+  provider: anthropic
+  model: claude-haiku-5-5
+  max_tokens: 2000
+  effort: low
+
+variants:
+  - name: zero-shot
+    context: {policy: ../../../data/acme/saas_access_policy.md}
+  - name: balanced-3
+    context: {policy: ../../../data/acme/saas_access_policy.md}
+    examples: {file: ../../../data/acme/saas_examples_balanced.jsonl, n: 3}
+  - name: balanced-6
+    context: {policy: ../../../data/acme/saas_access_policy.md}
+    examples: {file: ../../../data/acme/saas_examples_balanced.jsonl, n: 6}
+  - name: unbalanced-6
+    context: {policy: ../../../data/acme/saas_access_policy.md}
+    examples: {file: ../../../data/acme/saas_examples_unbalanced.jsonl, n: 6}
+
+# USD per 1M tokens, from Anthropic pricing (prompts under 100K tokens)
+prices:
+  claude-haiku-5-5: {input: 0.10, output: 0.50}

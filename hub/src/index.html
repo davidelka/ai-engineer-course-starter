@@ -1,0 +1,834 @@
+<title>מסלול AI Engineer</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Hebrew:wght@400;500;700&family=IBM+Plex+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: one narrow reading column (phone first). Home = course map; lesson = 7 numbered stations, one at a time, with a sticky station rail. */
+:root {
+  --bg: #f2f4f7;
+  --surface: #ffffff;
+  --ink: #141a2e;
+  --muted: #586079;
+  --line: #d9dde7;
+  --accent: #2446c4;
+  --accent-soft: #e2e8fb;
+  --signal: #c56a06;
+  --signal-soft: #fcebd4;
+  --good: #1f7a4d;
+  --good-soft: #dcf1e5;
+  --bad: #b3261e;
+  --bad-soft: #f9dedc;
+  --code-bg: #eef1f6;
+  --font: "IBM Plex Sans Hebrew", "Segoe UI", "Arial Hebrew", system-ui, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0e1220; --surface: #161b2d; --ink: #e7e9f3; --muted: #9aa1bb; --line: #2a3150;
+    --accent: #8ea3ff; --accent-soft: #222b54; --signal: #f2a43a; --signal-soft: #3a2a12;
+    --good: #5fd09a; --good-soft: #143326; --bad: #ff8f85; --bad-soft: #3d1a18; --code-bg: #1d2338;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0e1220; --surface: #161b2d; --ink: #e7e9f3; --muted: #9aa1bb; --line: #2a3150;
+  --accent: #8ea3ff; --accent-soft: #222b54; --signal: #f2a43a; --signal-soft: #3a2a12;
+  --good: #5fd09a; --good-soft: #143326; --bad: #ff8f85; --bad-soft: #3d1a18; --code-bg: #1d2338;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  background: var(--bg); color: var(--ink); font-family: var(--font); font-size: 16px; line-height: 1.65;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 0 48px; text-align: right;
+}
+a { color: var(--accent); }
+b, strong { font-weight: 700; }
+code { font-family: var(--mono); font-size: .86em; background: var(--code-bg); padding: 1px 5px; border-radius: 4px; direction: ltr; unicode-bidi: isolate; }
+pre { font-family: var(--mono); font-size: .8rem; line-height: 1.55; background: var(--code-bg); border-radius: 8px; padding: 10px 12px; overflow-x: auto; direction: ltr; text-align: left; margin: 0; white-space: pre; }
+button { font: inherit; color: inherit; cursor: pointer; }
+button:focus-visible, a:focus-visible, input:focus-visible, label:focus-within { outline: 2px solid var(--accent); outline-offset: 2px; }
+.wrap { max-width: 760px; margin: 0 auto; }
+h1, h2, h3 { text-wrap: balance; line-height: 1.25; margin: 0; }
+h2 { font-size: 1.35rem; }
+h3 { font-size: 1.05rem; }
+.muted { color: var(--muted); }
+.eyebrow { font-family: var(--mono); font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); direction: ltr; unicode-bidi: isolate; }
+.stack { display: grid; gap: 14px; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 16px; display: grid; gap: 12px; min-width: 0; }
+ul.clean, ol.clean { margin: 0; padding-inline-start: 1.2em; display: grid; gap: 8px; }
+.btn { border: 1px solid var(--line); background: var(--surface); border-radius: 999px; padding: 8px 16px; font-size: .92rem; display: inline-flex; align-items: center; gap: 6px; text-decoration: none; color: var(--ink); }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: var(--surface); font-weight: 500; }
+.btn.small { padding: 5px 12px; font-size: .82rem; }
+.row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.spacer { flex: 1; }
+
+/* top bar */
+.topbar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--bg); margin-inline: calc(-1 * max(16px, env(safe-area-inset-left, 0px))); padding: 10px max(16px, env(safe-area-inset-right, 0px)) 8px max(16px, env(safe-area-inset-left, 0px)); border-bottom: 1px solid var(--line); }
+.topbar .wrap { display: flex; align-items: center; gap: 10px; }
+.brand { font-weight: 700; font-size: 1rem; text-decoration: none; color: var(--ink); display: flex; align-items: center; gap: 8px; white-space: nowrap; }
+.brand i { width: 10px; height: 10px; border-radius: 2px; background: var(--signal); display: inline-block; }
+.sync { font-size: .75rem; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.bar { height: 6px; border-radius: 3px; background: var(--line); overflow: hidden; }
+.bar > i { display: block; height: 100%; background: var(--accent); border-radius: 3px; transition: width .4s; }
+
+/* home */
+.hero { padding-block: 22px 6px; display: grid; gap: 10px; }
+.hero h1 { font-size: 1.9rem; }
+.hero p { margin: 0; color: var(--muted); max-width: 60ch; }
+.mmm { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; counter-reset: st; }
+.mmm li { display: grid; grid-template-columns: 2.1rem minmax(0, 1fr); gap: 10px; align-items: start; }
+.mmm li::before { counter-increment: st; content: counter(st); width: 2.1rem; height: 2.1rem; border-radius: 50%; display: grid; place-items: center; background: var(--accent-soft); color: var(--accent); font-family: var(--mono); font-weight: 600; font-size: .9rem; }
+.mmm b { color: var(--ink); }
+.mmm span { color: var(--muted); font-size: .92rem; display: block; }
+.phase { display: grid; gap: 8px; }
+.phase-head { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.phase-head h3 { font-size: 1.1rem; }
+.phase-proj { font-size: .82rem; color: var(--signal); font-weight: 500; }
+.topic { display: grid; grid-template-columns: 2.2rem minmax(0, 1fr) auto; gap: 10px; align-items: center; padding: 10px 12px; border-radius: 10px; border: 1px solid var(--line); background: var(--surface); text-decoration: none; color: var(--ink); }
+.topic.ready { border-color: var(--accent); }
+.topic .num { font-family: var(--mono); color: var(--muted); font-size: .85rem; text-align: center; }
+.topic .t { font-weight: 500; font-size: .95rem; direction: ltr; text-align: right; unicode-bidi: plaintext; overflow-wrap: anywhere; }
+.topic .d { font-size: .82rem; color: var(--muted); }
+.pill { font-size: .72rem; padding: 2px 8px; border-radius: 999px; background: var(--line); color: var(--muted); white-space: nowrap; }
+.pill.go { background: var(--accent); color: var(--surface); }
+.pill.done { background: var(--good-soft); color: var(--good); }
+
+/* lesson */
+.lesson-head { padding-block: 16px 8px; display: grid; gap: 6px; }
+.lesson-head h1 { font-size: 1.45rem; direction: ltr; text-align: right; unicode-bidi: plaintext; }
+.rail { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 49px); z-index: 4; background: var(--bg); padding-block: 8px; display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; margin-inline: calc(-1 * max(16px, env(safe-area-inset-left, 0px))); padding-inline: max(16px, env(safe-area-inset-left, 0px)); }
+.rail::-webkit-scrollbar { display: none; }
+.st { flex: 0 0 auto; display: flex; align-items: center; gap: 6px; border: 1px solid var(--line); background: var(--surface); border-radius: 999px; padding: 5px 12px 5px 10px; font-size: .86rem; white-space: nowrap; }
+.st .k { width: 1.4rem; height: 1.4rem; border-radius: 50%; display: grid; place-items: center; font-family: var(--mono); font-size: .75rem; background: var(--line); color: var(--muted); }
+.st.done .k { background: var(--good); color: var(--surface); }
+.st[aria-current="step"] { border-color: var(--accent); background: var(--accent-soft); font-weight: 700; }
+.st[aria-current="step"] .k { background: var(--accent); color: var(--surface); }
+.station { display: grid; gap: 14px; padding-top: 6px; }
+.station-title { display: flex; align-items: baseline; gap: 10px; }
+.station-title .k { font-family: var(--mono); color: var(--accent); font-weight: 600; }
+.next-bar { display: flex; flex-wrap: wrap; gap: 8px; justify-content: space-between; align-items: center; padding-top: 6px; }
+.callout { background: var(--signal-soft); border-radius: 10px; padding: 10px 14px; }
+
+/* videos */
+.video { display: grid; gap: 6px; }
+.video .meta { font-size: .82rem; color: var(--muted); }
+.tag { font-size: .7rem; padding: 1px 8px; border-radius: 999px; background: var(--signal-soft); color: var(--signal); font-weight: 500; }
+.tag.opt { background: var(--line); color: var(--muted); }
+
+/* slides */
+.deck { display: grid; gap: 10px; }
+.slide { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 20px 18px; min-height: 420px; display: grid; gap: 12px; align-content: start; min-width: 0; touch-action: pan-y; }
+.slide .eyebrow { color: var(--signal); }
+.slide h2 { font-size: 1.4rem; }
+.slide p { margin: 0; }
+.slide .big { font-size: 1.12rem; line-height: 1.65; }
+.slide p, .slide li { line-height: 1.75; }
+.slide ul, .slide ol { margin: 0; padding-inline-start: 1.2em; display: grid; gap: 8px; }
+.slide .formula { font-size: .95rem; text-align: center; }
+.slide .bad { border-inline-start: 3px solid var(--bad); padding: 6px 10px; background: var(--bad-soft); border-radius: 0 8px 8px 0; }
+.slide .good { border-inline-start: 3px solid var(--good); padding: 6px 10px; background: var(--good-soft); border-radius: 0 8px 8px 0; }
+.slide .bad span, .slide .good span { font-family: var(--mono); font-size: .82rem; display: block; text-align: left; }
+.ladder { list-style: none; padding: 0 !important; counter-reset: lv; gap: 6px !important; }
+.ladder li { counter-increment: lv; border: 1px solid var(--line); border-radius: 10px; padding: 8px 12px; display: grid; }
+.ladder li b::before { content: counter(lv) " · "; font-family: var(--mono); color: var(--muted); }
+.ladder li span { font-size: .86rem; color: var(--muted); }
+.ladder li.danger { border-color: var(--bad); background: var(--bad-soft); }
+.ladder li.danger span { color: var(--ink); }
+.deck-nav { display: flex; align-items: center; gap: 10px; }
+.dots { display: flex; gap: 4px; flex-wrap: wrap; flex: 1; justify-content: center; }
+.dots i { width: 7px; height: 7px; border-radius: 50%; background: var(--line); }
+.dots i.on { background: var(--accent); width: 18px; border-radius: 4px; }
+.counter { font-family: var(--mono); font-size: .8rem; color: var(--muted); }
+
+/* sims */
+.sim { display: grid; gap: 12px; direction: rtl; }
+.knob { display: grid; gap: 2px; }
+.knob-head { display: flex; justify-content: space-between; gap: 8px; }
+.knob-head b { font-family: var(--mono); direction: ltr; }
+.knob small { color: var(--muted); font-size: .8rem; }
+input[type="range"] { width: 100%; accent-color: var(--accent); direction: ltr; }
+.seg { display: flex; flex-wrap: wrap; gap: 6px; }
+.seg button { border: 1px solid var(--line); background: var(--surface); border-radius: 999px; padding: 5px 12px; font-size: .84rem; }
+.seg button[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-soft); font-weight: 500; }
+.prompt-line { font-family: var(--mono); font-size: .95rem; direction: ltr; text-align: left; padding: 8px 12px; background: var(--code-bg); border-radius: 8px; overflow-wrap: anywhere; white-space: pre-wrap; }
+.prompt-line .nx { color: var(--signal); font-weight: 600; border-bottom: 2px dashed var(--signal); }
+.stats { display: flex; flex-wrap: wrap; gap: 4px 16px; font-size: .84rem; color: var(--muted); }
+.stats b { color: var(--ink); font-family: var(--mono); font-variant-numeric: tabular-nums; }
+.bars { display: grid; gap: 5px; direction: ltr; }
+.brow { display: grid; grid-template-columns: minmax(0, 7.5rem) minmax(0, 1fr) 3.6rem; gap: 8px; align-items: center; font-variant-numeric: tabular-nums; }
+.brow .t { font-family: var(--mono); font-size: .82rem; white-space: pre; overflow: hidden; text-overflow: ellipsis; text-align: left; }
+.brow .tr { height: 18px; background: var(--code-bg); border-radius: 4px; position: relative; overflow: hidden; }
+.brow .f { position: absolute; inset-block: 0; left: 0; background: var(--accent); border-radius: 4px; transition: width .3s; }
+.brow.cut .f { background: repeating-linear-gradient(135deg, var(--muted) 0 3px, transparent 3px 7px); opacity: .5; }
+.brow.cut .t { color: var(--muted); text-decoration: line-through; }
+.brow.pick .tr { box-shadow: inset 0 0 0 2px var(--signal); }
+.brow.pick .t { color: var(--signal); font-weight: 600; }
+.brow .v { font-family: var(--mono); font-size: .76rem; text-align: right; }
+.chips { display: flex; flex-wrap: wrap; gap: 5px; direction: ltr; }
+.chip { font-family: var(--mono); font-size: .8rem; padding: 2px 7px; border-radius: 6px; background: var(--signal-soft); white-space: pre; }
+.tk { display: inline-grid; justify-items: center; line-height: 1.2; padding: 3px 7px; border-radius: 6px; background: var(--code-bg); border: 1px solid var(--line); font-family: var(--mono); font-size: .88rem; white-space: pre; }
+.tk small { font-size: .62rem; color: var(--muted); }
+.tk.new { background: var(--signal-soft); border-color: var(--signal); animation: pop .45s ease; }
+@keyframes pop { from { transform: translateY(-10px); opacity: 0; } to { transform: none; opacity: 1; } }
+.pipe { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 4px; direction: ltr; }
+.pipe div { border: 1px solid var(--line); border-radius: 8px; padding: 5px 2px; text-align: center; font-size: .66rem; color: var(--muted); line-height: 1.3; background: var(--surface); }
+.pipe div b { display: block; color: var(--ink); font-size: .72rem; font-weight: 500; }
+.pipe div.on { border-color: var(--accent); background: var(--accent-soft); color: var(--ink); }
+.stage { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 14px; min-height: 230px; direction: ltr; display: grid; gap: 12px; align-content: start; overflow: hidden; }
+.seq { display: flex; flex-wrap: wrap; gap: 5px; }
+.llm { justify-self: center; padding: 14px 24px; border-radius: 12px; border: 2px solid var(--accent); color: var(--accent); font-weight: 700; position: relative; font-family: var(--mono); }
+.llm::after { content: ""; position: absolute; inset: -6px; border-radius: 16px; border: 2px dashed var(--accent); animation: spin 3s linear infinite; opacity: .45; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.formula-s { font-family: var(--mono); font-size: .78rem; color: var(--muted); overflow-wrap: anywhere; }
+.cap { min-height: 64px; }
+.task-list { margin: 0; padding-inline-start: 1.2em; display: grid; gap: 6px; font-size: .94rem; }
+
+/* lab */
+.cmd { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 6px; align-items: stretch; }
+.cmd pre { white-space: pre-wrap; overflow-wrap: anywhere; }
+.copy { border: 1px solid var(--line); background: var(--surface); border-radius: 8px; padding: 0 10px; font-size: .78rem; }
+.ex { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 10px; align-items: start; padding: 12px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); }
+.ex input { width: 20px; height: 20px; margin-top: 3px; accent-color: var(--good); }
+.ex.done { border-color: var(--good); }
+.ex h3 { font-size: .98rem; }
+.ex p { margin: 2px 0 6px; font-size: .92rem; color: var(--muted); }
+
+/* quiz */
+.q { display: grid; gap: 8px; }
+.q h3 { font-size: 1rem; font-weight: 500; }
+.q h3 .qn { font-family: var(--mono); color: var(--muted); margin-inline-end: 6px; }
+.opt { text-align: right; border: 1px solid var(--line); background: var(--surface); border-radius: 10px; padding: 9px 12px; font-size: .93rem; line-height: 1.45; unicode-bidi: plaintext; }
+.opt[disabled] { cursor: default; }
+.opt.right { border-color: var(--good); background: var(--good-soft); }
+.opt.wrong { border-color: var(--bad); background: var(--bad-soft); }
+.why { font-size: .9rem; border-inline-start: 3px solid var(--accent); padding: 4px 10px; }
+.score { font-size: 1.1rem; font-weight: 700; }
+
+/* summary */
+.sum-pt h4 { margin: 0 0 2px; font-size: 1rem; }
+.sum-pt p { margin: 0; color: var(--ink); }
+.slide h4 { margin: 4px 0 0; font-size: 1.02rem; color: var(--accent); }
+.slide .example { background: var(--code-bg); border-radius: 10px; padding: 10px 14px; display: grid; gap: 6px; }
+.slide .example > b:first-child { font-size: .8rem; color: var(--muted); font-weight: 500; }
+dl.gl { margin: 0; display: grid; gap: 8px; }
+dl.gl div { display: grid; gap: 0; }
+dl.gl dt { font-weight: 700; font-family: var(--mono); font-size: .88rem; direction: ltr; text-align: right; unicode-bidi: plaintext; }
+dl.gl dd { margin: 0; color: var(--muted); font-size: .92rem; }
+.toast { position: fixed; inset-inline: 0; bottom: calc(16px + env(safe-area-inset-bottom, 0px)); display: flex; justify-content: center; pointer-events: none; z-index: 10; padding-inline: max(16px, env(safe-area-inset-left, 0px)); }
+.toast[hidden] { display: none; }
+.toast span { background: var(--ink); color: var(--bg); padding: 8px 16px; border-radius: 999px; font-size: .88rem; }
+/* lesson 2 aids */
+.stream-grid { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 12px; }
+@media (max-width: 600px) { .stream-grid { grid-template-columns: minmax(0, 1fr); } }
+.wire { height: 260px; overflow-y: auto; background: var(--code-bg); border-radius: 8px; padding: 6px; direction: ltr; text-align: left; display: grid; gap: 3px; align-content: start; }
+.wl { display: grid; grid-template-columns: 2.8rem minmax(0, 1fr); gap: 6px; font-family: var(--mono); font-size: .7rem; line-height: 1.4; padding: 3px 4px; border-radius: 4px; }
+.wl span:last-child { white-space: pre-wrap; overflow-wrap: anywhere; }
+.wl .ts { color: var(--muted); }
+.wl.delta span:last-child { color: var(--accent); }
+.wl.err { background: var(--bad-soft); color: var(--bad); }
+.wl.http { background: var(--good-soft); }
+.wl.new { animation: pop .35s ease; box-shadow: inset 0 0 0 1px var(--signal); }
+.screen { min-height: 120px; border: 1px solid var(--line); border-radius: 8px; padding: 12px; background: var(--surface); direction: ltr; text-align: left; font-size: 1rem; }
+.screen.broken { border-color: var(--bad); }
+.screen .partial { direction: rtl; text-align: right; color: var(--bad); font-size: .85rem; margin-top: 8px; }
+.form2 { display: grid; gap: 8px; }
+.form2 label { display: grid; gap: 2px; font-size: .86rem; color: var(--muted); }
+.form2 .row label { display: inline-flex; align-items: center; gap: 6px; }
+.form2 textarea, .form2 input[type="number"], .form2 select, .pr input { font: inherit; font-family: var(--mono); font-size: .85rem; color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 6px 8px; width: 100%; }
+.form2 .row input[type="number"] { width: auto; }
+.req { border: 1px solid var(--line); border-radius: 10px; padding: 10px; display: grid; gap: 8px; min-width: 0; }
+.req h4 { margin: 0; font-size: .95rem; text-align: right; }
+.chart { height: 190px; display: grid; grid-template-columns: repeat(var(--cols, 20), minmax(0, 1fr)); gap: 1px; align-items: end; direction: ltr; border-bottom: 1px solid var(--line); position: relative; }
+.chart .col { height: 100%; display: flex; flex-direction: column; justify-content: flex-end; }
+.chart i { display: block; width: 100%; }
+.chart i.ok { background: var(--good); }
+.chart i.no { background: var(--bad); opacity: .8; }
+.capline { position: absolute; inset-inline: 0; border-top: 1px dashed var(--ink); font-size: .65rem; color: var(--muted); text-align: right; pointer-events: none; }
+.legend { display: flex; flex-wrap: wrap; gap: 12px; font-size: .8rem; }
+.legend i { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-inline-end: 4px; }
+.legend i.ok { background: var(--good); } .legend i.no { background: var(--bad); }
+.cd-ctx { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 10px; }
+@media (max-width: 600px) { .cd-ctx { grid-template-columns: minmax(0, 1fr); } }
+.cd-schema { font-family: var(--mono); font-size: .76rem; direction: ltr; text-align: left; background: var(--code-bg); border-radius: 8px; padding: 6px 10px; display: grid; gap: 2px; }
+.cd-schema div { padding: 1px 4px; border-radius: 4px; color: var(--muted); overflow-wrap: anywhere; }
+.cd-schema div span { color: var(--ink); }
+.cd-schema div.on { background: var(--signal-soft); color: var(--ink); box-shadow: inset 2px 0 0 var(--signal); }
+.cd-phases { display: flex; gap: 6px; flex-wrap: wrap; }
+.cd-phases span { border: 1px solid var(--line); border-radius: 999px; padding: 4px 12px; font-size: .86rem; color: var(--muted); background: var(--surface); }
+.cd-phases span b { font-family: var(--mono); margin-inline-end: 4px; }
+.cd-phases span.on { border-color: var(--accent); background: var(--accent-soft); color: var(--ink); font-weight: 700; }
+.cd-what { border: 1px solid var(--line); border-radius: 10px; padding: 8px 12px; font-size: .9rem; }
+.cd-what summary { cursor: pointer; font-weight: 500; }
+.cd-what label { display: block; margin-top: 8px; line-height: 1.5; }
+.guide { border-inline-start: 3px solid var(--accent); background: var(--accent-soft); border-radius: 0 10px 10px 0; padding: 10px 14px; display: grid; gap: 8px; }
+.guide summary { cursor: pointer; font-weight: 700; }
+.guide p { margin: 0; line-height: 1.75; }
+.guide ol { margin: 0; padding-inline-start: 1.2em; display: grid; gap: 6px; line-height: 1.7; }
+.code-area { width: 100%; font-family: var(--mono); font-size: .8rem; color: var(--ink); background: var(--code-bg); border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; text-align: left; }
+.stackbar { height: 22px; display: flex; direction: ltr; border-radius: 6px; overflow: hidden; background: var(--code-bg); }
+.stackbar i { display: block; height: 100%; transition: width .3s; }
+.stackbar .g0, .legend .g0 { background: var(--good); }
+.stackbar .g1, .legend .g1 { background: color-mix(in srgb, var(--good) 65%, var(--surface)); }
+.stackbar .g2, .legend .g2 { background: color-mix(in srgb, var(--good) 40%, var(--surface)); }
+.stackbar .g3, .legend .g3 { background: color-mix(in srgb, var(--good) 22%, var(--surface)); }
+.stackbar .gx, .legend .gx { background: var(--bad); }
+.req .seg button { font-size: .8rem; padding: 3px 10px; }
+.cost-row { border: 1px solid var(--line); border-radius: 10px; padding: 10px; display: grid; gap: 6px; }
+.pr { display: inline-flex; align-items: center; gap: 4px; font-size: .78rem; color: var(--muted); direction: ltr; }
+.pr input { width: 4.6rem; padding: 3px 6px; }
+.cbar { height: 14px; display: flex; direction: ltr; background: var(--code-bg); border-radius: 4px; overflow: hidden; }
+.cbar i { display: block; height: 100%; transition: width .3s; }
+.cbar .ci { background: var(--accent); } .cbar .co { background: var(--signal); }
+@media (prefers-reduced-motion: reduce) { *, *::after { animation: none !important; transition: none !important; } }
+@media (min-width: 640px) { .hero h1 { font-size: 2.3rem; } .slide { padding: 26px 28px; min-height: 400px; } }
+</style>
+
+<div dir="rtl">
+  <header class="topbar">
+    <div class="wrap">
+      <a class="brand" href="#home"><i></i>AI Engineer</a>
+      <span class="spacer"></span>
+      <span class="sync" id="sync">טוען התקדמות…</span>
+    </div>
+  </header>
+  <main class="wrap" id="app"></main>
+  <div class="toast" id="toast" hidden><span id="toast-text"></span></div>
+</div>
+
+<script src="course.js?v=13"></script>
+<script src="lessons/01.js?v=13"></script>
+<script src="lessons/02.js?v=13"></script>
+<script src="aids/l02.js?v=13"></script>
+<script src="lessons/03.js?v=13"></script>
+<script src="aids/l03.js?v=13"></script>
+<script src="lessons/04.js?v=13"></script>
+<script src="aids/l04.js?v=13"></script>
+<script src="lessons/05.js?v=13"></script>
+<script src="aids/l05.js?v=13"></script>
+<script src="lessons/06.js?v=13"></script>
+<script src="aids/l06.js?v=13"></script>
+<script src="lessons/07.js?v=13"></script>
+<script src="aids/l07.js?v=13"></script>
+<script src="lessons/08.js?v=13"></script>
+<script src="aids/l08.js?v=13"></script>
+<script src="lessons/09.js?v=13"></script>
+<script src="aids/l09.js?v=13"></script>
+<script src="lessons/10.js?v=13"></script>
+<script src="aids/l10.js?v=13"></script>
+<script src="lessons/11.js?v=13"></script>
+<script src="aids/l11.js?v=13"></script>
+<script src="lessons/12.js?v=13"></script>
+<script src="aids/l12.js?v=13"></script>
+<script src="lessons/13.js?v=13"></script>
+<script src="aids/l13.js?v=13"></script>
+<script src="lessons/14.js?v=13"></script>
+<script src="aids/l14.js?v=13"></script>
+<script src="lessons/15.js?v=13"></script>
+<script src="aids/l15.js?v=13"></script>
+<script src="lessons/16.js?v=13"></script>
+<script src="aids/l16.js?v=13"></script>
+<script src="lessons/17.js?v=13"></script>
+<script src="aids/l17.js?v=13"></script>
+<script src="lessons/18.js?v=13"></script>
+<script src="aids/l18.js?v=13"></script>
+<script src="lessons/19.js?v=13"></script>
+<script src="aids/l19.js?v=13"></script>
+<script src="lessons/20.js?v=13"></script>
+<script src="aids/l20.js?v=13"></script>
+<script src="lessons/21.js?v=13"></script>
+<script src="aids/l21.js?v=13"></script>
+<script src="lessons/22.js?v=13"></script>
+<script src="aids/l22.js?v=13"></script>
+<script src="lessons/23.js?v=13"></script>
+<script src="aids/l23.js?v=13"></script>
+<script src="lessons/24.js?v=13"></script>
+<script src="aids/l24.js?v=13"></script>
+<script src="lessons/25.js?v=13"></script>
+<script src="aids/l25.js?v=13"></script>
+<script src="lessons/26.js?v=13"></script>
+<script src="aids/l26.js?v=13"></script>
+<script src="lessons/27.js?v=13"></script>
+<script src="aids/l27.js?v=13"></script>
+<script src="lessons/28.js?v=13"></script>
+<script src="aids/l28.js?v=13"></script>
+<script src="lessons/29.js?v=13"></script>
+<script src="aids/l29.js?v=13"></script>
+<script src="lessons/30.js?v=13"></script>
+<script src="aids/l30.js?v=13"></script>
+<script src="lessons/31.js?v=13"></script>
+<script src="aids/l31.js?v=13"></script>
+<script src="lessons/32.js?v=13"></script>
+<script src="aids/l32.js?v=13"></script>
+<script src="lessons/33.js?v=13"></script>
+<script src="aids/l33.js?v=13"></script>
+<script>
+"use strict";
+const $ = (s, el = document) => el.querySelector(s);
+const h = (html) => { const t = document.createElement("template"); t.innerHTML = html.trim(); return t.content.firstElementChild; };
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+// The 7 stations of every lesson ("7 המ׳").
+const STATIONS = [
+  { key: "goal", name: "מטרה", what: "מה תדע לעשות בסוף, ואיך זה מתחבר לשאר הקורס" },
+  { key: "intro", name: "מבוא", what: "אנימציה שמסבירה את המושג המרכזי, וסרטונים נבחרים עם זמני התחלה" },
+  { key: "slides", name: "מצגת", what: "התוכן עצמו, שקופית אחרי שקופית" },
+  { key: "play", name: "מגרש משחקים", what: "סימולציה אינטראקטיבית עם משימות קצרות" },
+  { key: "lab", name: "מעבדה", what: "תרגילי קוד במחשב, מתוך ריפו הקורס" },
+  { key: "quiz", name: "מבחן", what: "שאלות הבנה עם הסבר לכל תשובה" },
+  { key: "sum", name: "מסכם", what: "סיכום מפורט של מה שחשוב לזכור, מילון מושגים וקריאה נוספת" },
+];
+
+/* ---------------- progress: synced per person when the store is available, local otherwise ---------------- */
+const LS_KEY = "aie-progress-v1";
+const Progress = {
+  state: { stations: {}, ex: {}, quiz: {}, last: null },
+  ref: null, mode: "local", timer: null, listeners: [],
+  async init() {
+    try { const raw = localStorage.getItem(LS_KEY); if (raw) this.state = { ...this.state, ...JSON.parse(raw) }; } catch (e) {}
+    setSync("ההתקדמות נשמרת בדפדפן הזה");
+    try {
+      const [db, user] = await Promise.all([window.claude?.use?.("db"), window.claude?.use?.("user")]);
+      const id = user ? await user.id() : null;
+      if (!db || !id) return;
+      this.ref = db.doc("data/users/" + id + "/progress");
+      const snap = await this.ref.get();
+      if (snap.exists) {
+        this.state = merge(this.state, snap.data());
+      }
+      this.mode = "cloud";
+      setSync("ההתקדמות מסונכרנת בין המכשירים");
+      this.emit();
+      if (!snap.exists && hasAny(this.state)) this.save(true);
+    } catch (e) { /* stay local */ }
+  },
+  set(path, value) {
+    let o = this.state;
+    for (let i = 0; i < path.length - 1; i++) { o[path[i]] = o[path[i]] || {}; o = o[path[i]]; }
+    o[path[path.length - 1]] = value;
+    this.save();
+    this.emit();
+  },
+  get(path) { return path.reduce((o, k) => (o ? o[k] : undefined), this.state); },
+  save(now) {
+    try { localStorage.setItem(LS_KEY, JSON.stringify(this.state)); } catch (e) {}
+    if (!this.ref) return;
+    clearTimeout(this.timer);
+    this.timer = setTimeout(async () => {
+      try { await this.ref.set(JSON.parse(JSON.stringify(this.state))); }
+      catch (e) { if (e && e.code === "invalid_argument") { this.ref = null; setSync("ההתקדמות נשמרת בדפדפן הזה"); } }
+    }, now ? 0 : 800);
+  },
+  on(fn) { this.listeners.push(fn); },
+  emit() { this.listeners.forEach((f) => f()); },
+};
+function merge(a, b) {
+  const out = { ...a };
+  for (const k of Object.keys(b || {})) out[k] = b[k] && typeof b[k] === "object" && !Array.isArray(b[k]) ? merge(a[k] || {}, b[k]) : b[k];
+  return out;
+}
+function hasAny(s) { return Object.keys(s.stations || {}).length > 0 || Object.keys(s.quiz || {}).length > 0; }
+function setSync(t) { $("#sync").textContent = t; }
+function toast(t) { $("#toast-text").textContent = t; $("#toast").hidden = false; clearTimeout(toast.t); toast.t = setTimeout(() => ($("#toast").hidden = true), 1800); }
+function lessonDone(id) { const s = Progress.get(["stations", id]) || {}; return STATIONS.filter((x) => s[x.key]).length; }
+const pad = (n) => String(n).padStart(2, "0");
+const REPO_URL = "https://github.com/davidelka/ai-engineer-course";
+
+/* ---------------- router ---------------- */
+let cleanup = [];
+function route() {
+  cleanup.forEach((f) => f()); cleanup = [];
+  const m = location.hash.match(/^#l(\d\d)(?:s(\d))?$/);
+  if (m && window.LESSONS[m[1]]) renderLesson(m[1], m[2] ? Math.min(7, Math.max(1, +m[2])) - 1 : null);
+  else renderHome();
+  window.scrollTo(0, 0);
+}
+window.addEventListener("hashchange", route);
+Progress.on(() => { if (!location.hash.startsWith("#l")) renderHome(); else refreshRail(); });
+
+/* ---------------- home ---------------- */
+function renderHome() {
+  const app = $("#app");
+  const ready = COURSE.topics.filter((t) => t.ready);
+  const doneStations = ready.reduce((a, t) => a + lessonDone(pad(t.n)), 0);
+  const total = COURSE.topics.length * STATIONS.length;
+  const last = Progress.state.last;
+  const cont = last && window.LESSONS[last.id] ? `#l${last.id}s${last.s + 1}` : "#l01";
+  app.innerHTML = "";
+  app.append(h(`<section class="hero">
+    <div class="eyebrow">DevOps Experts syllabus · self-study</div>
+    <h1>מסלול AI Engineer</h1>
+    <p>28 נושאים בארבעה שלבים, שני פרויקטי אמצע ושלושה פרויקטי סיום שאפשר להציג. הפרויקט המרכזי, <b>Company Brain</b>, גדל לאורך כל הדרך. כל שיעור ופרויקט בנויים משבע תחנות קבועות.</p>
+    <div class="bar" aria-label="התקדמות בקורס"><i style="width:${(doneStations / total) * 100}%"></i></div>
+    <div class="row"><a class="btn primary" href="${cont}">${last ? "להמשיך מאיפה שעצרתי" : "להתחיל את שיעור 1"}</a><span class="muted" style="font-size:.85rem">${doneStations} מתוך ${total} תחנות</span></div>
+  </section>`));
+
+  const how = h(`<section class="card"><div class="eyebrow">How a lesson is built</div><h2>איך בנוי כל שיעור</h2>
+    <p class="muted" style="margin:0">כל שיעור עובר באותן שבע תחנות, באותו סדר. אפשר לקפוץ בין תחנות, וכל תחנה שמסיימים מסומנת.</p>
+    <ol class="mmm">${STATIONS.map((s) => `<li><div><b>${s.name}</b><span>${s.what}</span></div></li>`).join("")}</ol></section>`);
+  app.append(how);
+
+  for (const ph of COURSE.phases) {
+    const sec = h(`<section class="phase" style="margin-top:18px"><div class="phase-head"><h3>${ph.name}</h3><span class="muted" style="font-size:.88rem">${ph.sub}</span></div></section>`);
+    if (ph.project) sec.append(h(`<div class="phase-proj">◆ ${ph.project}</div>`));
+    for (const t of COURSE.topics.filter((x) => x.phase === ph.id)) {
+      const id = pad(t.n);
+      const isReady = t.ready && window.LESSONS[id];
+      const done = isReady ? lessonDone(id) : 0;
+      const pill = !isReady ? `<span class="pill">בקרוב</span>` : done === 7 ? `<span class="pill done">הושלם</span>` : done ? `<span class="pill go">${done}/7</span>` : `<span class="pill go">פתוח</span>`;
+      const el = h(`<${isReady ? "a" : "div"} class="topic${isReady ? " ready" : ""}" ${isReady ? `href="#l${id}"` : ""}>
+        <span class="num">${t.label || id}</span><span><span class="t">${esc(t.title)}</span><span class="d">${esc(t.he)}</span></span>${pill}</${isReady ? "a" : "div"}>`);
+      sec.append(el);
+    }
+    app.append(sec);
+  }
+}
+
+/* ---------------- lesson ---------------- */
+let current = { id: null, idx: 0 };
+function renderLesson(id, idx) {
+  const L = window.LESSONS[id];
+  if (idx === null) {
+    const s = Progress.get(["stations", id]) || {};
+    idx = STATIONS.findIndex((x) => !s[x.key]);
+    if (idx < 0) idx = 0;
+  }
+  current = { id, idx };
+  Progress.state.last = { id, s: idx };
+  Progress.save();
+  const app = $("#app");
+  app.innerHTML = "";
+  app.append(h(`<section class="lesson-head"><div class="eyebrow">${L.label ? "Project " + L.label : "Topic " + pad(L.n)}</div><h1>${esc(L.title)}</h1><div class="muted">${esc(L.he)} · ${esc(L.hours)}</div></section>`));
+  const rail = h(`<nav class="rail" id="rail" aria-label="תחנות השיעור"></nav>`);
+  STATIONS.forEach((s, i) => {
+    const b = h(`<button class="st" data-i="${i}"><span class="k">${i + 1}</span>${s.name}</button>`);
+    b.addEventListener("click", () => { location.hash = `#l${id}s${i + 1}`; });
+    rail.append(b);
+  });
+  app.append(rail);
+  const body = h(`<section class="station" id="station"></section>`);
+  app.append(body);
+  const st = STATIONS[idx];
+  body.append(h(`<div class="station-title"><span class="k">${idx + 1}/7</span><h2>${st.name}</h2></div>`));
+  const content = h(`<div class="stack"></div>`);
+  body.append(content);
+  ({ goal: stGoal, intro: stIntro, slides: stSlides, play: stPlay, lab: stLab, quiz: stQuiz, sum: stSum })[st.key](L, content, id);
+  const done = !!Progress.get(["stations", id, st.key]);
+  const nav = h(`<div class="next-bar">
+    ${idx > 0 ? `<a class="btn" href="#l${id}s${idx}">→ ${STATIONS[idx - 1].name}</a>` : `<a class="btn" href="#home">→ למסלול</a>`}
+    <button class="btn primary" id="finish">${done ? "✓ הושלם" : "סיימתי"}${idx < 6 ? ` · ל${STATIONS[idx + 1].name} ←` : " ←"}</button></div>`);
+  $("#finish", nav).addEventListener("click", () => {
+    Progress.set(["stations", id, st.key], 1);
+    if (idx < 6) location.hash = `#l${id}s${idx + 2}`;
+    else { toast("כל הכבוד, השיעור הושלם"); location.hash = "#home"; }
+  });
+  body.append(nav);
+  refreshRail();
+  const cur = $(`.st[data-i="${idx}"]`);
+  if (cur) cur.scrollIntoView({ inline: "center", block: "nearest" });
+}
+function refreshRail() {
+  if (!current.id) return;
+  const s = Progress.get(["stations", current.id]) || {};
+  document.querySelectorAll(".st").forEach((b) => {
+    const i = +b.dataset.i;
+    b.classList.toggle("done", !!s[STATIONS[i].key]);
+    if (i === current.idx) b.setAttribute("aria-current", "step"); else b.removeAttribute("aria-current");
+  });
+}
+
+function stGoal(L, c) {
+  c.append(h(`<div class="card"><h3>בסוף השיעור תדע</h3><ol class="clean">${L.goals.map((g) => `<li>${g}</li>`).join("")}</ol></div>`));
+  c.append(h(`<div class="callout">${L.connects}</div>`));
+  c.append(h(`<p class="muted" style="margin:0">זמן: ${esc(L.hours)}.</p>`));
+}
+
+function stIntro(L, c) {
+  const anim = L.intro.animation || "tokenloop";
+  const a = h(`<div class="card"><div class="eyebrow">Animation</div><h3>${esc(L.intro.animationTitle || "טוקן אחרי טוקן: איך מודל כותב תשובה")}</h3>${L.intro.animationGuide ? `<details class="guide" open><summary>איך לקרוא את האנימציה</summary>${L.intro.animationGuide}</details>` : ""}<div id="anim"></div></div>`);
+  c.append(a);
+  const mount = { tokenloop: mountTokenLoop, streaming: mountStreaming, constrained: mountConstrained }[anim];
+  const mount2 = mount || (window.AIDS || {})[anim];
+  if (mount2) cleanup.push(mount2($("#anim", a)) || (() => {}));
+  c.append(h(`<h3 style="margin-top:6px">${L.intro.videos.some((v) => v.kind && v.kind !== "וידאו") ? "צפייה וקריאה" : "סרטונים"}</h3>`));
+  for (const v of L.intro.videos) {
+    c.append(h(`<div class="card video">
+      <div class="row"><span class="tag${v.required ? "" : " opt"}">${v.required ? "חובה" : "רשות"}</span><span class="meta">${v.kind ? esc(v.kind) + " · " : ""}${esc(v.who)} · ${v.minutes} דק׳</span></div>
+      <h3 dir="ltr" style="text-align:right">${esc(v.title)}</h3>
+      <div class="meta">${esc(v.part)}</div>
+      <div>${esc(v.why)}</div>
+      <div><a class="btn small" href="${v.url}" target="_blank" rel="noopener">${v.kind && v.kind !== "וידאו" ? "לפתיחה" : "לצפייה"} ↗</a></div></div>`));
+  }
+}
+
+function stSlides(L, c) {
+  const deck = h(`<div class="deck"><div id="slide-host"></div>
+    <div class="deck-nav"><button class="btn small" id="prev" aria-label="שקופית קודמת">→</button><div class="dots" id="dots"></div><span class="counter" id="cnt"></span><button class="btn small" id="next" aria-label="שקופית הבאה">←</button></div>
+    <p class="muted" style="margin:0;font-size:.82rem">אפשר להחליק בטלפון, או להשתמש בחצים במקלדת.</p></div>`);
+  c.append(deck);
+  let i = 0;
+  const N = L.slides.length;
+  const host = $("#slide-host", deck);
+  const draw = () => {
+    const s = L.slides[i];
+    host.innerHTML = "";
+    host.append(h(`<article class="slide" aria-roledescription="slide" aria-label="${i + 1} מתוך ${N}"><div class="eyebrow">${esc(s.kicker)}</div><h2>${s.title}</h2>${s.html}</article>`));
+    $("#dots", deck).innerHTML = L.slides.map((_, j) => `<i class="${j === i ? "on" : ""}"></i>`).join("");
+    $("#cnt", deck).textContent = `${i + 1}/${N}`;
+    $("#prev", deck).disabled = i === 0;
+    $("#next", deck).disabled = i === N - 1;
+  };
+  const go = (d) => { const n = Math.min(N - 1, Math.max(0, i + d)); if (n !== i) { i = n; draw(); const top = deck.getBoundingClientRect().top; if (top < 110) window.scrollBy({ top: top - 110 }); } };
+  $("#prev", deck).addEventListener("click", () => go(-1));
+  $("#next", deck).addEventListener("click", () => go(1));
+  let x0 = null;
+  host.addEventListener("touchstart", (e) => { x0 = e.touches[0].clientX; }, { passive: true });
+  host.addEventListener("touchend", (e) => { if (x0 === null) return; const dx = e.changedTouches[0].clientX - x0; if (Math.abs(dx) > 50) go(dx > 0 ? 1 : -1); x0 = null; });
+  const key = (e) => { if (e.key === "ArrowLeft") go(1); if (e.key === "ArrowRight") go(-1); };
+  document.addEventListener("keydown", key);
+  cleanup.push(() => document.removeEventListener("keydown", key));
+  draw();
+}
+
+function stPlay(L, c) {
+  for (const s of L.sims) {
+    const card = h(`<div class="card"><div class="eyebrow">Simulation</div><h3>${esc(s.title)}</h3><p class="muted" style="margin:0">${esc(s.lead)}</p><div class="sim-host"></div>
+      <div><h3 style="font-size:.95rem">משימות</h3><ol class="task-list">${s.tasks.map((t) => `<li>${t}</li>`).join("")}</ol></div></div>`);
+    c.append(card);
+    const mount = { sampling: mountSampling, compare: mountCompare, retry: mountRetry, cost: mountCost, schema: mountSchemaLab, repairsim: mountRepairSim, bugs: mountBugs }[s.id] || (window.AIDS || {})[s.id];
+    if (mount) { const off = mount($(".sim-host", card)); if (typeof off === "function") cleanup.push(off); }
+  }
+  if (L.sims.some((s) => s.id === "sampling"))
+    c.append(h(`<p class="muted" style="margin:0;font-size:.86rem">הציונים בסימולציה הם דוגמה שהוכנה לשיעור, לא פלט של מודל אמיתי. את הדבר האמיתי תראה בתרגיל 2 במעבדה.</p>`));
+}
+
+function copyBtn(text) {
+  const b = h(`<button class="copy" aria-label="העתקה">העתק</button>`);
+  b.addEventListener("click", async () => {
+    try { await navigator.clipboard.writeText(text); toast("הועתק"); }
+    catch (e) { const r = document.createRange(); r.selectNodeContents(b.previousElementSibling); const sel = getSelection(); sel.removeAllRanges(); sel.addRange(r); toast("סומן, אפשר להעתיק"); }
+  });
+  return b;
+}
+function cmdBlock(text) { const d = h(`<div class="cmd"><pre></pre></div>`); $("pre", d).textContent = text; d.append(copyBtn(text)); return d; }
+
+function stLab(L, c, id) {
+  c.append(h(`<p style="margin:0">${L.lab.intro}</p>`));
+  if (L.lab.repoPath) {
+    c.append(h(`<div class="card"><div class="eyebrow">Course repo</div><h3>ריפו הקורס</h3>
+      <p class="muted" style="margin:0">הקוד כבר אצלך בריפו הפרטי. מושכים את העדכון, וכל ההוראות נמצאות גם ב-README של המעבדה.</p>
+      <div class="row"><a class="btn small" href="${REPO_URL}/tree/main/${L.lab.repoPath}" target="_blank" rel="noopener" dir="ltr">${esc(L.lab.repoPath)} ↗</a></div></div>`));
+  } else {
+    const repo = h(`<div class="card"><div class="eyebrow">Course repo</div><h3>ריפו הקורס</h3>
+      <p class="muted" style="margin:0">Prompt Lab, Arena, ספירת טוקנים, promptfoo ונתוני החברה המדומה Acme. מומלץ להוריד במחשב, לפתוח, ולהעלות ל-GitHub פרטי.</p>
+      <div class="row" id="dl-row"><span class="muted" style="font-size:.85rem" id="dl-note">בודק אם אפשר להוריד מכאן…</span></div></div>`);
+    c.append(repo);
+    setupDownload(repo);
+  }
+  const setup = h(`<div class="card"><h3>הכנה, פעם אחת</h3></div>`);
+  setup.append(cmdBlock(L.lab.setup.join("\n")));
+  c.append(setup);
+  c.append(h(`<div class="card"><h3>הכלים</h3><ul class="clean">${L.lab.tools.map((t) => `<li>${t}</li>`).join("")}</ul></div>`));
+  c.append(h(`<h3 style="margin-top:4px">התרגילים</h3>`));
+  for (const ex of L.lab.exercises) {
+    const done = !!Progress.get(["ex", id, ex.id]);
+    const el = h(`<div class="ex${done ? " done" : ""}"><input type="checkbox" id="ex-${id}-${ex.id}" ${done ? "checked" : ""}><div><label for="ex-${id}-${ex.id}"><h3>${ex.id.replace("ex", "")}. ${esc(ex.title)}</h3></label><p>${esc(ex.text)}</p></div></div>`);
+    if (ex.cmd) $("div", el).append(cmdBlock(ex.cmd));
+    $("input", el).addEventListener("change", (e) => { Progress.set(["ex", id, ex.id], e.target.checked ? 1 : 0); el.classList.toggle("done", e.target.checked); });
+    c.append(el);
+  }
+  c.append(h(`<div class="callout"><b>הגשה:</b> שלח לי בצ'אט את טבלת הסיכום של כל תרגיל ושתיים-שלוש שורות פרשנות. אני בודק כמו מנחה.</div>`));
+}
+async function setupDownload(card) {
+  const row = $("#dl-row", card), note = $("#dl-note", card);
+  let dl = null;
+  try { dl = await window.claude?.use?.("downloads"); } catch (e) {}
+  if (!dl) { note.textContent = "ההורדה לא זמינה בתצוגה הזו. הקובץ ai-engineer-course.zip נמצא גם בצ'אט."; return; }
+  note.remove();
+  const b = h(`<button class="btn primary">הורדת ai-engineer-course.zip</button>`);
+  b.addEventListener("click", async () => {
+    if (!window.REPO_ZIP_B64) { toast("הקובץ עדיין נטען, נסה שוב בעוד רגע"); return; }
+    const bin = atob(window.REPO_ZIP_B64), bytes = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+    try { await dl.save({ filename: "ai-engineer-course.zip", data: new Blob([bytes]) }); toast("נשמר"); }
+    catch (e) { if (e && e.code !== "declined") toast("ההורדה לא הצליחה כאן. הקובץ נמצא גם בצ'אט."); }
+  });
+  row.append(b);
+}
+
+function stQuiz(L, c, id) {
+  const answers = new Array(L.quiz.length).fill(null);
+  const best = Progress.get(["quiz", id]);
+  const head = h(`<div class="row"><span class="muted">${L.quiz.length} שאלות. בוחרים תשובה ורואים מיד הסבר.</span><span class="spacer"></span>${best ? `<span class="pill done">שיא: ${best.best}/${best.total}</span>` : ""}</div>`);
+  c.append(head);
+  const scoreBox = h(`<div class="card" hidden><div class="score" id="score"></div><div class="muted" id="score-note"></div><div><button class="btn" id="retry">שוב מההתחלה</button></div></div>`);
+  L.quiz.forEach((q, qi) => {
+    const card = h(`<div class="card q"><h3><span class="qn">${qi + 1}.</span>${esc(q.q)}</h3></div>`);
+    const opts = q.options.map((o, oi) => {
+      const b = h(`<button class="opt"></button>`); b.textContent = o;
+      b.addEventListener("click", () => {
+        if (answers[qi] !== null) return;
+        answers[qi] = oi;
+        opts.forEach((x, xi) => { x.disabled = true; if (xi === q.correct) x.classList.add("right"); else if (xi === oi) x.classList.add("wrong"); });
+        card.append(h(`<div class="why"><b>${oi === q.correct ? "נכון." : "לא בדיוק."}</b> ${q.explain}</div>`));
+        if (answers.every((a) => a !== null)) finish();
+      });
+      card.append(b); return b;
+    });
+    c.append(card);
+  });
+  c.append(scoreBox);
+  function finish() {
+    const score = answers.filter((a, i) => a === L.quiz[i].correct).length;
+    const prev = Progress.get(["quiz", id]);
+    Progress.set(["quiz", id], { best: Math.max(score, prev ? prev.best : 0), last: score, total: L.quiz.length });
+    scoreBox.hidden = false;
+    $("#score", scoreBox).textContent = `${score} מתוך ${L.quiz.length}`;
+    $("#score-note", scoreBox).textContent = score >= 8 ? "מוכן לתחנה האחרונה." : "כדאי לחזור לשקופיות של השאלות שבהן טעית, ולנסות שוב.";
+    scoreBox.scrollIntoView({ behavior: "smooth", block: "center" });
+  }
+  $("#retry", scoreBox).addEventListener("click", () => route());
+}
+
+function stSum(L, c) {
+  const S = L.summary;
+  c.append(h(`<div class="card"><h3>מה חשוב לזכור</h3><div class="stack">${S.points.map((p) => `<div class="sum-pt"><h4>${p.t}</h4><p>${p.b}</p></div>`).join("")}</div></div>`));
+  c.append(h(`<div class="card"><h3>מילון מושגים</h3><dl class="gl">${S.glossary.map(([t, d]) => `<div><dt>${esc(t)}</dt><dd>${esc(d)}</dd></div>`).join("")}</dl></div>`));
+  c.append(h(`<div class="card"><h3>לקריאה נוספת</h3><ul class="clean">${S.reading.map((r) => `<li><a href="${r.url}" target="_blank" rel="noopener" dir="ltr">${esc(r.title)}</a><div class="muted" style="font-size:.88rem">${esc(r.note)}</div></li>`).join("")}</ul></div>`));
+}
+
+/* ---------------- simulation: sampling ---------------- */
+function mountSampling(host) {
+  const CTX = [
+    { name: "עובדה", prompt: "The capital of France is", logits: { " Paris": 9.2, " the": 5.1, " a": 4.4, " located": 3.9, " Lyon": 2.6, " known": 2.4, " not": 1.8, " also": 1.5, " one": 1.2, " PARIS": 0.6 } },
+    { name: "פתוח", prompt: "My favorite color is", logits: { " blue": 4.6, " green": 4.1, " red": 3.9, " purple": 3.5, " black": 3.2, " yellow": 2.9, " orange": 2.6, " pink": 2.5, " white": 2.1, " teal": 1.6 } },
+    { name: "סיווג", prompt: "Request: Admin rights on prod AWS\nLabel:", logits: { " needs_security": 7.4, " needs_manager": 5.6, " auto_approve": 3.1, " Needs": 2.2, " security": 1.9, " The": 1.0, " needs": 0.9, " N": 0.4, " admin": 0.2, " I": 0.1 } },
+  ];
+  host.innerHTML = `<div class="sim">
+    <div class="seg" role="group" aria-label="הקשר">${CTX.map((x, i) => `<button data-c="${i}" aria-pressed="${i === 0}">${x.name}</button>`).join("")}</div>
+    <div class="knob"><div class="knob-head"><label for="sm-t">Temperature</label><b id="sm-tv"></b></div><input id="sm-t" type="range" min="0" max="2" step="0.05" value="1"><small>0 = תמיד המוביל. מעל 1 ההתפלגות משתטחת.</small></div>
+    <div class="knob"><div class="knob-head"><label for="sm-p">Top-p</label><b id="sm-pv"></b></div><input id="sm-p" type="range" min="0.05" max="1" step="0.05" value="1"><small>שומרים מובילים עד שהסכום מגיע ל-p.</small></div>
+    <div class="knob"><div class="knob-head"><label for="sm-k">Top-k</label><b id="sm-kv"></b></div><input id="sm-k" type="range" min="0" max="10" step="1" value="0"><small>רק k המובילים. 0 = כבוי.</small></div>
+    <div class="prompt-line" id="sm-prompt"></div>
+    <div class="stats"><span>במאגר: <b id="sm-pool"></b></span><span>המוביל: <b id="sm-top"></b></span><span>אנטרופיה: <b id="sm-ent"></b> ביט</span></div>
+    <div class="bars" id="sm-bars"></div>
+    <div class="row"><button class="btn small primary" id="sm-1">דגום טוקן</button><button class="btn small" id="sm-20">דגום 20</button><button class="btn small" id="sm-clr">נקה</button></div>
+    <div class="chips" id="sm-chips"></div><div class="stats" id="sm-tally"></div></div>`;
+  let ci = 0, last = null, picks = [];
+  const g = (id) => host.querySelector("#" + id);
+  function compute() {
+    const T = +g("sm-t").value, P = +g("sm-p").value, K = +g("sm-k").value;
+    const e = Object.entries(CTX[ci].logits).sort((a, b) => b[1] - a[1]);
+    let pr;
+    if (T < 0.05) pr = e.map((_, i) => (i ? 0 : 1));
+    else { const s = e.map(([, z]) => z / T), m = Math.max(...s), x = s.map((v) => Math.exp(v - m)), sum = x.reduce((a, b) => a + b, 0); pr = x.map((v) => v / sum); }
+    const keep = e.map((_, i) => !(K > 0 && i >= K));
+    let cum = 0;
+    for (let i = 0; i < e.length; i++) { if (!keep[i]) continue; if (cum >= P - 1e-9) keep[i] = false; cum += pr[i]; }
+    const mass = pr.reduce((a, p, i) => a + (keep[i] ? p : 0), 0);
+    return { T, P, K, e, pr, keep, fin: pr.map((p, i) => (keep[i] ? p / mass : 0)) };
+  }
+  const pct = (p) => (p >= 0.995 ? "100%" : p > 0 && p < 0.001 ? "<0.1%" : (p * 100).toFixed(1) + "%");
+  const show = (t) => t.replace(/^ /, "␣");
+  function draw() {
+    const s = compute();
+    g("sm-tv").textContent = s.T.toFixed(2); g("sm-pv").textContent = s.P.toFixed(2); g("sm-kv").textContent = s.K ? s.K : "כבוי";
+    const pl = g("sm-prompt"); pl.textContent = CTX[ci].prompt; const nx = document.createElement("span"); nx.className = "nx"; nx.textContent = last || " ___"; pl.append(nx);
+    g("sm-bars").innerHTML = "";
+    s.e.forEach(([t, z], i) => {
+      const r = document.createElement("div");
+      r.className = "brow" + (s.keep[i] ? "" : " cut") + (last === t ? " pick" : "");
+      r.innerHTML = `<span class="t"></span><span class="tr"><span class="f" style="width:${((s.keep[i] ? s.fin[i] : s.pr[i]) * 100).toFixed(2)}%"></span></span><span class="v">${s.keep[i] ? pct(s.fin[i]) : "cut"}</span>`;
+      r.querySelector(".t").textContent = show(t);
+      g("sm-bars").append(r);
+    });
+    g("sm-pool").textContent = `${s.keep.filter(Boolean).length}/${s.e.length}`;
+    g("sm-top").textContent = pct(s.fin[0]);
+    g("sm-ent").textContent = (-s.fin.reduce((a, p) => a + (p > 0 ? p * Math.log2(p) : 0), 0)).toFixed(2);
+    const ch = g("sm-chips"); ch.innerHTML = "";
+    picks.slice(-40).forEach((t) => { const c = document.createElement("span"); c.className = "chip"; c.textContent = show(t); ch.append(c); });
+    g("sm-tally").innerHTML = picks.length ? `<span>נדגמו: <b>${picks.length}</b></span><span>תשובות שונות: <b>${new Set(picks).size}</b></span>` : `<span>לחץ על דגום 20 וראה כמה תשובות שונות יוצאות.</span>`;
+  }
+  function sample(n) {
+    const s = compute();
+    for (let k = 0; k < n; k++) { let r = Math.random(), a = 0, pick = s.e[0][0]; for (let i = 0; i < s.fin.length; i++) { a += s.fin[i]; if (r <= a && s.fin[i] > 0) { pick = s.e[i][0]; break; } } last = pick; picks.push(pick); }
+    draw();
+  }
+  host.querySelectorAll(".seg button").forEach((b) => b.addEventListener("click", () => { ci = +b.dataset.c; last = null; picks = []; host.querySelectorAll(".seg button").forEach((x) => x.setAttribute("aria-pressed", String(x === b))); draw(); }));
+  ["sm-t", "sm-p", "sm-k"].forEach((id) => g(id).addEventListener("input", () => { last = null; picks = []; draw(); }));
+  g("sm-1").addEventListener("click", () => sample(1));
+  g("sm-20").addEventListener("click", () => sample(20));
+  g("sm-clr").addEventListener("click", () => { last = null; picks = []; draw(); });
+  draw(); sample(20);
+}
+
+/* ---------------- animation: token loop ---------------- */
+function mountTokenLoop(host) {
+  const TOK = [["The", 791], [" capital", 6864], [" of", 315], [" France", 9822], [" is", 374]];
+  const T = 0.7;
+  const STEPS = [
+    { pick: " Paris", logits: [[" Paris", 9.2], [" the", 5.1], [" located", 3.9], [" Lyon", 2.6], [" not", 1.8]] },
+    { pick: ".", logits: [[".", 8.1], [",", 5.6], [" and", 4.2], [" France", 2.0], ["!", 1.4]] },
+    { pick: "<end_of_turn>", logits: [["<end_of_turn>", 7.6], [" It", 4.9], ["\\n", 4.1], [" The", 2.9], [" Paris", 1.2]] },
+  ];
+  const sm = (l) => { const s = l.map(([, z]) => z / T), m = Math.max(...s), e = s.map((x) => Math.exp(x - m)), sum = e.reduce((a, b) => a + b, 0); return e.map((x) => x / sum); };
+  const scenes = [
+    { st: 0, t: "1. הקלט הוא טקסט", b: "המשתמש שולח מחרוזת. המודל לא רואה אותיות, ולכן קודם מפרקים אותה." },
+    { st: 1, t: "2. Tokenizer מפרק לטוקנים", b: "כל קטע מקבל מספר מאוצר קבוע. הרווח הוא חלק מהטוקן. על הטוקנים האלה משלמים." },
+  ];
+  STEPS.forEach((s, k) => {
+    const n = k + 1;
+    scenes.push({ st: 2, k, mode: "model", t: `${n}·א. המודל מעבד את כל הרצף`, b: `כל ${TOK.length + k} הטוקנים נכנסים בבת אחת. רצף ארוך יותר = כל צעד יקר יותר.` });
+    scenes.push({ st: 3, k, mode: "logits", t: `${n}·ב. ציון (logit) לכל טוקן`, b: "המודל לא מחזיר מילה אלא ציונים לכל האוצר. ציון גבוה = מתאים יותר." });
+    scenes.push({ st: 4, k, mode: "probs", t: `${n}·ג. Softmax עם temperature ${T}`, b: "מחלקים ב-T ומעבירים ב-softmax. הסכום 1. T נמוך מחדד את המוביל." });
+    scenes.push({ st: 5, k, mode: "pick", t: `${n}·ד. דוגמים ומוסיפים לרצף`, b: s.pick === "<end_of_turn>" ? "נבחר טוקן הסיום. הלולאה נעצרת: stop_reason = end_turn." : `נדגם "${s.pick.trim()}". הוא נוסף לסוף הרצף, והלולאה חוזרת למודל.` });
+  });
+  scenes.push({ st: -1, mode: "end", t: "סיכום", b: "3 טוקני פלט = 3 סיבובים מלאים. לכן פלט יקר מקלט, ארוך = איטי, ובכל סיבוב הדגימה יכלה ליפול אחרת." });
+
+  host.innerHTML = `<div class="sim"><div class="pipe">${["Text", "Tokenize", "Model", "Logits", "Softmax ÷T", "Sample"].map((x, i) => `<div data-p="${i}"><b>${x}</b></div>`).join("")}</div>
+    <div class="stage" id="tl-stage" aria-live="polite"></div><div class="cap"><b id="tl-t"></b><div id="tl-b" class="muted"></div></div>
+    <div class="row"><button class="btn small primary" id="tl-play">השהה</button><button class="btn small" id="tl-prev">→</button><button class="btn small" id="tl-next">←</button><span class="spacer"></span><span class="counter" id="tl-c"></span></div></div>`;
+  const g = (id) => host.querySelector("#" + id);
+  let i = 0, playing = !matchMedia("(prefers-reduced-motion: reduce)").matches, timer = null;
+  const tk = (t, id, cls = "") => { const e = document.createElement("span"); e.className = "tk " + cls; e.innerHTML = `<span></span><small>${id ?? ""}</small>`; e.firstChild.textContent = t; return e; };
+  const seq = (k, hl) => { const r = document.createElement("div"); r.className = "seq"; TOK.forEach(([t, id]) => r.append(tk(t, id))); for (let j = 0; j < k; j++) r.append(tk(STEPS[j].pick, "", hl && j === k - 1 ? "new" : "")); return r; };
+  function bars(stage, k, mode) {
+    const l = STEPS[k].logits, p = sm(l), mx = Math.max(...l.map(([, z]) => z));
+    const w = document.createElement("div"); w.className = "bars";
+    l.forEach(([t, z], j) => {
+      const r = document.createElement("div"); r.className = "brow" + (mode === "pick" && t === STEPS[k].pick ? " pick" : "");
+      const width = mode === "logits" ? (z / mx) * 100 : p[j] * 100;
+      r.innerHTML = `<span class="t"></span><span class="tr"><span class="f" style="width:${mode === "pick" ? width.toFixed(1) : 0}%"></span></span><span class="v">${mode === "logits" ? "z=" + z.toFixed(1) : (p[j] * 100).toFixed(1) + "%"}</span>`;
+      r.querySelector(".t").textContent = t;
+      w.append(r);
+      if (mode !== "pick") requestAnimationFrame(() => requestAnimationFrame(() => { r.querySelector(".f").style.width = width.toFixed(1) + "%"; }));
+    });
+    stage.append(w);
+  }
+  function show(n) {
+    i = (n + scenes.length) % scenes.length;
+    const s = scenes[i], stage = g("tl-stage");
+    stage.innerHTML = "";
+    if (i === 0) { const d = document.createElement("div"); d.className = "prompt-line"; d.textContent = '"The capital of France is"'; stage.append(d); }
+    else if (i === 1) { const r = document.createElement("div"); r.className = "seq"; TOK.forEach(([t, id]) => r.append(tk(t, id, "new"))); stage.append(r); }
+    else if (s.mode === "model") { stage.append(seq(s.k)); const m = document.createElement("div"); m.className = "llm"; m.textContent = "LLM"; stage.append(m); }
+    else if (s.mode === "logits" || s.mode === "probs") { stage.append(seq(s.k)); bars(stage, s.k, s.mode); const f = document.createElement("div"); f.className = "formula-s"; f.textContent = s.mode === "logits" ? "logits: raw scores, any real number" : `P = exp(z/${T}) / Σ exp(z/${T})`; stage.append(f); }
+    else if (s.mode === "pick") { bars(stage, s.k, "pick"); stage.append(seq(s.k + 1, true)); }
+    else { stage.append(seq(STEPS.length)); const f = document.createElement("div"); f.className = "formula-s"; f.textContent = `input_tokens=${TOK.length}  output_tokens=${STEPS.length}  stop_reason="end_turn"`; stage.append(f); }
+    host.querySelectorAll(".pipe div").forEach((d) => d.classList.toggle("on", +d.dataset.p === s.st));
+    g("tl-t").textContent = s.t; g("tl-b").textContent = s.b; g("tl-c").textContent = `${i + 1}/${scenes.length}`;
+  }
+  const tick = () => { clearTimeout(timer); if (playing) timer = setTimeout(() => { show(i + 1); tick(); }, scenes[i].mode === "end" ? 6000 : 3300); };
+  const setP = (p) => { playing = p; g("tl-play").textContent = p ? "השהה" : "נגן"; tick(); };
+  g("tl-play").addEventListener("click", () => setP(!playing));
+  g("tl-next").addEventListener("click", () => { setP(false); show(i + 1); });
+  g("tl-prev").addEventListener("click", () => { setP(false); show(i - 1); });
+  show(0); setP(playing);
+  return () => clearTimeout(timer);
+}
+
+/* ---------------- boot ---------------- */
+route();
+Progress.init();
+</script>
+<script src="repo.js?v=13" defer></script>

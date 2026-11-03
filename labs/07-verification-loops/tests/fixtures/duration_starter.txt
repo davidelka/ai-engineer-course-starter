@@ -1,0 +1,76 @@
+....FFFFFFFF                                                             [100%]
+=================================== FAILURES ===================================
+______________________ test_number_and_unit[two weeks-14] ______________________
+tests/test_visible.py:10: in test_number_and_unit
+    assert parse_duration(text) == days
+           ^^^^^^^^^^^^^^^^^^^^
+solution.py:6: in parse_duration
+    n = int(m.group(1))
+            ^^^^^^^
+E   AttributeError: 'NoneType' object has no attribute 'group'
+____________________________ test_decimal_rounds_up ____________________________
+tests/test_visible.py:14: in test_decimal_rounds_up
+    assert parse_duration("1.5 weeks") == 11
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+solution.py:6: in parse_duration
+    n = int(m.group(1))
+            ^^^^^^^
+E   AttributeError: 'NoneType' object has no attribute 'group'
+________________________________ test_fortnight ________________________________
+tests/test_visible.py:18: in test_fortnight
+    assert parse_duration("a fortnight") == 14
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+solution.py:6: in parse_duration
+    n = int(m.group(1))
+            ^^^^^^^
+E   AttributeError: 'NoneType' object has no attribute 'group'
+_____________________________ test_case_and_spaces _____________________________
+tests/test_visible.py:22: in test_case_and_spaces
+    assert parse_duration("  3 Days ") == 3
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+solution.py:6: in parse_duration
+    n = int(m.group(1))
+            ^^^^^^^
+E   AttributeError: 'NoneType' object has no attribute 'group'
+_________________________________ test_hebrew __________________________________
+tests/test_visible.py:26: in test_hebrew
+    assert parse_duration("שבועיים") == 14
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+solution.py:6: in parse_duration
+    n = int(m.group(1))
+            ^^^^^^^
+E   AttributeError: 'NoneType' object has no attribute 'group'
+__________________________ test_unknown_is_none[soon] __________________________
+tests/test_visible.py:31: in test_unknown_is_none
+    assert parse_duration(text) is None
+           ^^^^^^^^^^^^^^^^^^^^
+solution.py:6: in parse_duration
+    n = int(m.group(1))
+            ^^^^^^^
+E   AttributeError: 'NoneType' object has no attribute 'group'
+____________________________ test_unknown_is_none[] ____________________________
+tests/test_visible.py:31: in test_unknown_is_none
+    assert parse_duration(text) is None
+           ^^^^^^^^^^^^^^^^^^^^
+solution.py:6: in parse_duration
+    n = int(m.group(1))
+            ^^^^^^^
+E   AttributeError: 'NoneType' object has no attribute 'group'
+_________________ test_unknown_is_none[until the project ends] _________________
+tests/test_visible.py:31: in test_unknown_is_none
+    assert parse_duration(text) is None
+           ^^^^^^^^^^^^^^^^^^^^
+solution.py:6: in parse_duration
+    n = int(m.group(1))
+            ^^^^^^^
+E   AttributeError: 'NoneType' object has no attribute 'group'
+=========================== short test summary info ============================
+FAILED tests/test_visible.py::test_number_and_unit[two weeks-14] - AttributeE...
+FAILED tests/test_visible.py::test_decimal_rounds_up - AttributeError: 'NoneT...
+FAILED tests/test_visible.py::test_fortnight - AttributeError: 'NoneType' obj...
+FAILED tests/test_visible.py::test_case_and_spaces - AttributeError: 'NoneTyp...
+FAILED tests/test_visible.py::test_hebrew - AttributeError: 'NoneType' object...
+FAILED tests/test_visible.py::test_unknown_is_none[soon] - AttributeError: 'N...
+FAILED tests/test_visible.py::test_unknown_is_none[] - AttributeError: 'NoneT...
+FAILED tests/test_visible.py::test_unknown_is_none[until the project ends] - ...
+8 failed, 4 passed in 0.07s

@@ -1,0 +1,75 @@
+# LiteLLM proxy + Postgres + two mock providers, for lesson 25, exercise 7.
+#
+#   cd labs/25-llm-gateway/litellm
+#   cp .env.example .env && ./make_env.sh     # or fill .env by hand (see .env.example)
+#   docker compose up -d
+#   docker compose logs -f litellm            # wait for "Uvicorn running on http://0.0.0.0:4000"
+#
+# Why Postgres: LiteLLM keeps virtual keys, teams, budgets and spend logs in a database.
+# Without DATABASE_URL, /key/generate fails ("No connected db.") and a configured budget is
+# not enforced at all (the docs: it "keeps serving requests past $100 with no per-request error").
+#
+# Ports (all bound to 127.0.0.1, nothing is exposed to your network):
+#   4000   LiteLLM proxy (OpenAI format /v1/chat/completions, Anthropic format /v1/messages, admin API, UI at /ui)
+#   18765  mock-ok, so scenarios.py can measure "direct to the provider" latency
+#
+# The mock providers are the repo's own mockllm (stdlib only), mounted read-only into a
+# plain Python image. mock-down fails every request with 529, for the fallback scenario.
+
+services:
+  litellm:
+    # Pinned on purpose (lesson 25: supply chain). v1.106.6 was the newest release on
+    # 2026-10-28. If this tag does not pull, pick the newest vX.Y.Z from
+    # https://docs.litellm.ai/release_notes and write down which one you used.
+    image: docker.litellm.ai/berriai/litellm:v1.106.6
+    command: ["--config", "/app/config.yaml", "--port", "4000"]
+    ports:
+      - "127.0.0.1:4000:4000"
+    volumes:
+      - ./config.yaml:/app/config.yaml:ro
+    environment:
+      LITELLM_MASTER_KEY: ${LITELLM_MASTER_KEY:?set it in .env}
+      LITELLM_SALT_KEY: ${LITELLM_SALT_KEY:?set it in .env}
+      DATABASE_URL: postgresql://litellm:${POSTGRES_PASSWORD:-litellm}@db:5432/litellm
+      # Optional: only needed for the real-haiku model in config.yaml.
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+    depends_on:
+      db:
+        condition: service_healthy
+      mock-ok:
+        condition: service_started
+      mock-down:
+        condition: service_started
+
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: litellm
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-litellm}
+      POSTGRES_DB: litellm
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U litellm"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    volumes:
+      - litellm_pg:/var/lib/postgresql/data
+
+  mock-ok:
+    image: python:3.12-slim
+    working_dir: /app
+    volumes:
+      - ../../../mockllm:/app/mockllm:ro
+    command: ["python", "-m", "mockllm", "--host", "0.0.0.0", "--port", "8765", "-v"]
+    ports:
+      - "127.0.0.1:18765:8765"
+
+  mock-down:
+    image: python:3.12-slim
+    working_dir: /app
+    volumes:
+      - ../../../mockllm:/app/mockllm:ro
+    command: ["python", "-m", "mockllm", "--host", "0.0.0.0", "--port", "8765", "--fail-rate", "1.0", "--status", "529", "-v"]
+
+volumes:
+  litellm_pg:

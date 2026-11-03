@@ -1,0 +1,33 @@
+{
+  "_note": "HAND-WRITTEN example in the shape of a real reply, used by --offline. NOT a recording of a model.",
+  "findings": [
+    {
+      "requirement_id": "REQ-3",
+      "quote": "route requests to the appropriate track according to the policy, etc.",
+      "explanation": "\"Appropriate\" and \"etc.\" leave the routing rules to the implementer. Two implementers will route Figma editor seats or unknown tools differently.",
+      "problem": "ambiguous",
+      "suggested_rewrite": "List the rules in order with the first match winning, as in SPEC-006 REQ-4, and one acceptance criterion per rule."
+    },
+    {
+      "requirement_id": null,
+      "quote": "WHEN a manager approves a request, THE SYSTEM SHALL mark it approved.",
+      "explanation": "Nothing says which manager may approve which request, whether security requests need the security team, or what happens when someone approves their own request.",
+      "problem": "missing_requirement",
+      "suggested_rewrite": "Split into an authority requirement (who may approve each route) and a refusal requirement (403, request unchanged)."
+    },
+    {
+      "requirement_id": "REQ-4",
+      "quote": "The system should handle invalid input gracefully.",
+      "explanation": "No status code, error shape or rule for what counts as invalid. One implementer returns 400 with text, another 422 with JSON.",
+      "problem": "untestable",
+      "suggested_rewrite": "IF the body does not match the contract, THEN THE SYSTEM SHALL respond 422 with error code validation_error and SHALL NOT store anything."
+    },
+    {
+      "requirement_id": "REQ-1",
+      "quote": "store it quickly and return it",
+      "explanation": "\"Quickly\" has no number, and \"return it\" does not say which status code or fields.",
+      "problem": "untestable",
+      "suggested_rewrite": "respond 201 with the stored request; move speed to an NFR with a p95 target in milliseconds."
+    }
+  ]
+}

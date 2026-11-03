@@ -1,0 +1,210 @@
+# Exercise 2: YOUR semantic layer for acme.db. Validated by datakit.semantic.load_layer.
+# Start: a copy of the reference with pieces removed. Complete every TODO, then run
+#   python labs/08-enterprise-data/render_context.py
+#   python -m pytest -q labs/08-enterprise-data/tests/test_ex2_semantic.py
+# The data you are describing (data/acme/corpus/structured/acme.db):
+#   tickets(id, customer_id, customer_plan, subject, priority P1-P4, status open|pending|solved|closed,
+#           created_at, first_response_minutes, sla_target_minutes (NULL for starter), sla_breached 0/1,
+#           assigned_team, red_folder 0/1, incident_id)
+#   customers(id, name, plan, region, seats, arr_usd, currency, red_folder 0/1)
+#   systems(name, owner_team, tier, ...), teams(id, name, lead_id, ...), employees(...), access_grants(...)
+# Business facts you need (from the Acme documents):
+#   - sup-escalation: "A ticket whose first response comes after the target is counted as an SLA breach
+#     in the weekly support report." Starter = "community only": no target.
+#   - co-glossary: "Red Folder: the list of the 25 accounts with the highest ARR".
+#   - The weekly support report counts pending tickets (waiting for the customer) as open.
+
+version: 1
+name: acme_ops
+description: >-
+  Nightly extract of Acme's operational systems (HR, IT asset register, Okta access log,
+  Salesforce, Zendesk) into one SQLite file. Read-only. One row per business object.
+dialect: sqlite
+today: "2026-10-31"
+conventions:
+  - Dates are ISO-8601 text. Compare with string operators or date()/strftime().
+  - tickets.created_at is Israel local time without a zone, e.g. 2026-08-19T14:12:00.
+  - Booleans are integers 0/1 (red_folder, sla_breached, approved_tool, sensitive).
+  - Every table has _source_system and _extracted_at (UTC) columns. Use them for provenance, not for business answers.
+
+tables:
+  employees:
+    description: All 120 Acme employees (HiBob / Pulse HR portal export).
+    grain: one row per employee
+    primary_key: id
+    source: HiBob (Pulse HR portal)
+    freshness_hours: 48
+    columns:
+      id: {type: text, description: "Employee id, E001..E120"}
+      name: {type: text, description: "Full name, as in the company directory"}
+      email: {type: text, sensitivity: pii, description: "Work email, firstname.lastname@acme.example"}
+      title: {type: text, description: "Job title"}
+      team: {type: text, description: "Team id, FK teams.id"}
+      manager_id: {type: text, description: "Direct manager, FK employees.id; NULL for the CEO"}
+      location: {type: text, values: [Tel Aviv, Haifa, Berlin]}
+      start_date: {type: text, sensitivity: pii, description: "First working day (HR data)"}
+  teams:
+    description: The 20 teams, with lead, parent lead, main office and headcount.
+    grain: one row per team
+    primary_key: id
+    source: HiBob (Pulse HR portal)
+    freshness_hours: 48
+    columns:
+      id: {type: text, description: "Team id, e.g. core-api, identity, support-il"}
+      name: {type: text, description: "Display name, e.g. Identity"}
+      department: {type: text, values: [company, engineering, it_security, product, sales_support, finance, hr]}
+      lead_id: {type: text, description: "Team lead, FK employees.id"}
+      parent_lead_id: {type: text, description: "The lead's manager, FK employees.id"}
+      main_location: {type: text, values: [Tel Aviv, Haifa, Berlin]}
+      headcount: {type: integer, description: "People in the team, including the lead"}
+  systems:
+    description: Services and SaaS tools from the IT asset register, reconciled with the Service Catalog.
+    grain: one row per system
+    primary_key: name
+    source: IT asset register (Google Sheet)
+    freshness_hours: 168
+    columns:
+      name: {type: text, description: "System name, e.g. auth-service, flow-api, salesforce"}
+      owner_team: {type: text, description: "Owning team, FK teams.id"}
+      tier: {type: integer, values: [1, 2, 3], description: "1 = most critical"}
+      data_classification: {type: text, values: [internal, confidential, restricted]}
+      approved_tool: {type: integer, values: [0, 1], description: "1 = on the SaaS access policy's approved list"}
+      kind: {type: text, values: [service, platform, saas]}
+      sensitive: {type: integer, values: [0, 1], description: "1 = production, customer data or financial data"}
+  access_grants:
+    description: Access granted to employees on systems (Okta + access-bot audit log), 2023-2026.
+    grain: one row per grant
+    primary_key: id
+    source: Okta + access-bot audit log
+    freshness_hours: 24
+    columns:
+      id: {type: text, description: "Grant id, G0001.."}
+      employee_id: {type: text, description: "Who got access, FK employees.id"}
+      system: {type: text, description: "FK systems.name"}
+      level: {type: text, values: [viewer, read, member, editor, write, admin]}
+      granted_at: {type: text, description: "Date, YYYY-MM-DD"}
+      approved_by: {type: text, description: "FK employees.id, or the literal 'system:auto' for auto_approve"}
+      route: {type: text, values: [auto_approve, needs_manager, needs_security]}
+      expires_at: {type: text, description: "Date or NULL. needs_security grants since 2026-06-01 expire after 90 days (policy v2.2)"}
+      policy_version: {type: text, values: ["2.1", "2.2"]}
+  customers:
+    description: Customer accounts from Salesforce.
+    grain: one row per customer account
+    primary_key: id
+    source: Salesforce
+    freshness_hours: 24
+    columns:
+      id: {type: text, description: "CUST-1001.."}
+      name: {type: text, description: "Company name"}
+      plan: {type: text, values: [starter, team, business, enterprise]}
+      region: {type: text, values: [il-central-1, eu-central-1]}
+      seats: {type: integer}
+      arr_usd: {type: integer, sensitivity: financial, description: "Annualised list price in USD (not booked revenue); 0 for starter"}
+      currency: {type: text, values: [USD, ILS, EUR], description: "Billing currency"}
+      red_folder: {type: integer, values: [0, 1], description: "1 = one of the 25 highest-ARR accounts"}
+  tickets:
+    description: Zendesk support tickets created May-October 2026 (a 200-ticket extract, not all tickets).
+    grain: one row per ticket
+    primary_key: id
+    source: Zendesk API
+    freshness_hours: 24
+    columns:
+      id: {type: text, description: "T-10001.."}
+      customer_id: {type: text, description: "FK customers.id"}
+      customer_plan: {type: text, values: [starter, team, business, enterprise], description: "Plan at ticket time"}
+      subject: {type: text}
+      priority: {type: text, values: [P1, P2, P3, P4], description: "P1 critical .. P4 low"}
+      status: {type: text, values: [open, pending, solved, closed]}
+      created_at: {type: text, description: "Israel local time, YYYY-MM-DDTHH:MM:SS"}
+      first_response_minutes: {type: integer, description: "Minutes to the first human reply (FRT)"}
+      sla_target_minutes: {type: integer, description: "FRT target for priority x plan (sup-escalation); NULL for starter = community only"}
+      sla_breached: {type: integer, values: [0, 1], description: "1 = first response after the target"}
+      assigned_team: {type: text, values: [support-il, support-emea], description: "FK teams.id"}
+      red_folder: {type: integer, values: [0, 1], description: "Customer was Red Folder when the ticket was created"}
+      incident_id: {type: text, description: "Linked incident, e.g. INC-2026-08-19 (Aug 19 outage), INC-2026-06-03 (June billing); NULL if none"}
+
+# Join paths. Only these joins are "known good"; anything else is a guess.
+relationships:
+  # TODO(ex2): tickets -> customers, and systems -> owning team (the 'who owns X' path)
+  - {from: tickets.assigned_team, to: teams.id, kind: many_to_one}
+  - {from: employees.team, to: teams.id, kind: many_to_one}
+  - {from: employees.manager_id, to: employees.id, kind: many_to_one, note: "self join: the manager"}
+  - {from: teams.lead_id, to: employees.id, kind: one_to_one, note: "who leads the team"}
+  - {from: access_grants.employee_id, to: employees.id, kind: many_to_one}
+  - {from: access_grants.system, to: systems.name, kind: many_to_one}
+
+# Business terms: words people use -> what they mean in SQL.
+terms:
+  # TODO(ex2): 'open ticket' (what counts as open?) and 'Red Folder' with synonyms
+  - term: enterprise customer
+    synonyms: [enterprise account, enterprise plan]
+    means: "customers.plan = 'enterprise' (for tickets at the time: tickets.customer_plan = 'enterprise')"
+  - term: August outage
+    synonyms: [the August incident, flow-api outage, INC-2026-08-19]
+    means: "tickets.incident_id = 'INC-2026-08-19'"
+  - term: June billing incident
+    synonyms: [EUR overcharge, INC-2026-06-03]
+    means: "tickets.incident_id = 'INC-2026-06-03'"
+  - term: system owner
+    synonyms: [who owns, owning team, service owner]
+    means: "systems.owner_team -> teams.id; the person is teams.lead_id -> employees.name"
+  - term: security review
+    synonyms: [security route, needs security]
+    means: "access_grants.route = 'needs_security'"
+  - term: active grant
+    synonyms: [current access, valid grant]
+    means: "access_grants.expires_at IS NULL OR access_grants.expires_at >= '2026-10-31'"
+  - term: ARR
+    synonyms: [annual recurring revenue, revenue]
+    means: "customers.arr_usd (list price, USD). Financial: only roles that may see financial data."
+
+# Metrics: one definition, used everywhere. expr is evaluated over table, after filter.
+metrics:
+  # TODO(ex2): sla_breach_rate (which tickets belong in the denominator?), open_tickets, red_folder_arr
+  - name: median_first_response_minutes
+    synonyms: [typical FRT, median FRT]
+    table: tickets
+    expr: "first_response_minutes"
+    description: "SQLite has no MEDIAN(): ORDER BY first_response_minutes and take the middle row, or report AVG and say so."
+  - name: headcount
+    synonyms: [number of employees, people]
+    table: employees
+    expr: "COUNT(*)"
+    description: "Count employees rows. teams.headcount holds the same number per team."
+
+# Roles: what each kind of user may query. sees = sensitivities allowed beyond the default.
+roles:
+  analyst:
+    description: Default Company Brain user. All tables, no PII, no financial columns.
+    tables: all
+    sees: []
+  support_lead:
+    description: Customer Support leads.
+    tables: [tickets, customers, teams, systems]
+    sees: [financial]
+  finance:
+    description: Finance team.
+    tables: [customers, tickets, teams]
+    sees: [financial]
+  manager:
+    description: A team lead. Sees PII, but only for their own team's people and grants.
+    tables: all
+    sees: [pii]
+    row_policy:
+      employees: "team = :team"
+      access_grants: "employee_id IN (SELECT id FROM employees WHERE team = :team)"
+  people_ops:
+    description: People team (HR). Everything except financial columns.
+    tables: all
+    sees: [pii]
+
+limits:
+  row_limit: 200
+  timeout_ms: 2000
+
+# Verified question -> SQL pairs: the best few-shot examples are ones a human checked.
+verified_queries:
+  - question: "What is the SLA breach rate for enterprise tickets?"
+    sql: "SELECT ROUND(1.0 * SUM(sla_breached) / COUNT(*), 4) AS sla_breach_rate FROM tickets WHERE sla_target_minutes IS NOT NULL AND customer_plan = 'enterprise'"
+  - question: "Who leads the team that owns flow-api?"
+    sql: "SELECT s.name AS system, t.name AS team, e.name AS lead FROM systems s JOIN teams t ON t.id = s.owner_team JOIN employees e ON e.id = t.lead_id WHERE s.name = 'flow-api'"

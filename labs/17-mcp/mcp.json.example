@@ -1,0 +1,15 @@
+{
+  "mcpServers": {
+    "acme": {
+      "type": "stdio",
+      "command": "${ACME_REPO}/.venv/bin/python",
+      "args": ["-m", "mcpkit", "--read-only"],
+      "env": { "PYTHONPATH": "${ACME_REPO}" }
+    },
+    "acme-http": {
+      "type": "http",
+      "url": "http://127.0.0.1:8765/mcp",
+      "headers": { "Authorization": "Bearer ${ACME_MCP_TOKEN}" }
+    }
+  }
+}

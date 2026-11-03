@@ -1,0 +1,40 @@
+{
+  "receipt": {
+    "merchant": "Cafe Noir",
+    "date": "2026-10-14",
+    "currency": "ILS",
+    "subtotal": 314.0,
+    "tip": 31.4,
+    "total": 345.4,
+    "vat": 52.69,
+    "alcohol_total": 84.0,
+    "card_last4": "4417",
+    "item_lines": 5,
+    "guests": 2
+  },
+  "whiteboard": {
+    "title": "Company Brain v2 (draft)",
+    "components": [
+      "Web App",
+      "API Gateway",
+      "Company Brain",
+      "pgvector",
+      "Claude Haiku 5.5",
+      "Audit Log"
+    ],
+    "arrows": 5,
+    "todo_note": "TODO: add rate limiter",
+    "date": "28/10"
+  },
+  "error_dialog": {
+    "app_name": "Spendwise",
+    "error_code": "SPW-4013",
+    "message": "Upload failed: the receipt image is larger than 10 MB (12.4 MB).",
+    "request_id": "7f3a-91c2-e04b",
+    "buttons": [
+      "Retry",
+      "Cancel"
+    ],
+    "timestamp": "2026-10-30 09:41:07"
+  }
+}

@@ -1,0 +1,35 @@
+# gatewaykit configuration for Company Brain in MODE=live, LLM_PATH=gateway (lesson 25's format).
+# Used IN-PROCESS by cbrain/gateway.py (the brain creates its three virtual keys at start: brain-answer,
+# brain-flow, brain-router, with the budgets in gateway.py). The policy is NOT here: the brain loads
+# labs/25-llm-gateway/policy.yaml, the file Security owns (confidential -> anthropic only, us/eu).
+#
+# Needs ANTHROPIC_API_KEY, and OPENAI_API_KEY for the fallback deployment (gatewaykit creates every
+# deployment's client at start: a missing key is a startup error, on purpose). Without an OpenAI key,
+# delete the openai-global deployment: internal questions then have no fallback, which is a choice.
+model_list:
+  - model_name: haiku
+    deployments:
+      - id: anthropic-us
+        model: anthropic:claude-haiku-5-5
+        api_key_env: ANTHROPIC_API_KEY
+        region: us
+      - id: openai-global            # policy.yaml: internal/public only, never confidential
+        model: openai:gpt-5.4-mini
+        api_key_env: OPENAI_API_KEY
+        region: global
+
+router:
+  retries_per_deployment: 1
+  failure_threshold: 3
+  cooldown_s: 30
+
+cache:
+  enabled: false                     # answers depend on the employee's ACL: a shared cache is a leak risk
+
+audit:
+  path: state/gateway_audit.jsonl    # overridden by the brain: STATE_DIR/gateway_audit.jsonl
+  log_content: none
+  retention_days: 365
+
+restore_pii_in_response: true
+policy: ../../../../labs/25-llm-gateway/policy.yaml

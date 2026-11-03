@@ -1,0 +1,54 @@
+# The owner's job criteria. The matcher (jobagent/match.py) reads ONLY this file: change the
+# file, not the code, when the criteria change. The admin API (PUT /preferences) validates
+# a new version against jobagent/prefs.py before saving it.
+
+owner: Me
+experience_years: 5          # mostly automation; backend and system work too
+
+# Target categories. Anything else scores 0 on category and lands in "other jobs".
+# cv: the file the owner attaches by hand to the Gmail draft (the agent never attaches files).
+targets:
+  backend:
+    cv: CV_Backend.pdf
+    accept_seniority: [mid, senior]   # Mid 3-4 roles are fine for backend
+  automation:
+    cv: CV_Automation.pdf
+    accept_seniority: [senior, mid]
+    prefer_hardware: true             # HW / validation automation, not web testing
+    web_score: 25                     # category points for web-only automation (out of 50)
+  embedded:
+    cv: CV_Embedded.pdf
+    accept_seniority: [mid, senior]   # system / embedded, C/C++
+  rust:
+    cv: CV_Rust.pdf
+    accept_seniority: [junior, mid, senior, lead]   # any Rust role
+
+secondary_points: 35         # a target category that is only SECONDARY in the role (e.g. Fullstack + Backend)
+
+# Where. Regions come from the city (jobagent/prefs.py REGIONS).
+location:
+  home_region: south
+  rules:
+    - {region: south, modes: [onsite, hybrid, remote, null], points: 30}
+    - {region: center, modes: [hybrid, remote], points: 30}
+    - {region: center, modes: [null], points: 15}       # mode unknown: worth a look
+    - {region: center, modes: [onsite], points: 10}
+    - {region: any, modes: [remote], points: 30}
+  unknown_location_points: 15
+  default_points: 5
+
+# Experience fit.
+experience:
+  ok_up_to_years: 6           # years_required <= 6: full points
+  stretch_up_to_years: 8      # 7-8: partial points
+  stretch_points: 8           # points for 7-8 required years
+  junior_points: 5            # a junior role for someone with 5 years
+  lead_points: 8              # team lead / principal, unless the category accepts lead
+
+thresholds:
+  match: 90                   # score >= 90 (needs full category, location and experience fit)
+  maybe: 60                   # score >= 60 and some category fit
+# Score = category (0-50) + location (0-30) + experience (0-20).
+
+show_other_jobs: true         # list non-matching jobs briefly at the end of the digest
+morning_only_sources: [airtable]

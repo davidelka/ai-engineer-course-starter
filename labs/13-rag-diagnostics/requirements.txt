@@ -1,0 +1,12 @@
+# Lesson 13 (RAG diagnostics). Verified on PyPI, November 2026.
+# Nothing new for the offline path and for the live LLM judge: ragkit.diagnose needs only the root
+# requirements (httpx, pydantic) plus evalkit/llmkit from this repo. numpy is needed for the "best"
+# pipeline (dense retrieval, lesson 10).
+numpy>=2.0                    # dense retrieval in the "best" pipeline (lesson 10)
+# Optional, exercise 8 (local NLI model MoritzLaurer/mDeBERTa-v3-base-xnli-multilingual-nli-2mil7):
+transformers>=4.46            # 5.22.1 current; AutoModelForSequenceClassification. Needs PyTorch: on a
+                              # laptop without a GPU install the CPU wheel FIRST:
+                              #   uv pip install torch --index-url https://download.pytorch.org/whl/cpu
+sentencepiece>=0.2            # the mDeBERTa-v3 tokenizer is SentencePiece-based
+# Ragas (0.4.3 current) is NOT required: the lesson compares its metric definitions with ours, and
+# the lab computes the same quantities with ragkit.diagnose. If you want to try it: uv pip install ragas

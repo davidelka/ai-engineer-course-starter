@@ -1,0 +1,120 @@
+# Exercise 6, the ready-made way: the same few-shot comparison with promptfoo.
+# Run from this folder:
+#   npx promptfoo@latest eval -c promptfooconfig.yaml
+#   npx promptfoo@latest view          # matrix of prompts x providers x test cases in the browser
+# Keys are read from ANTHROPIC_API_KEY / OPENAI_API_KEY in your environment.
+# Generated from data/acme by the course repo; edit the prompt .txt files freely.
+description: Acme SaaS access routing — zero-shot vs few-shot
+
+prompts:
+  - id: file://zero_shot.txt
+    label: zero-shot
+  - id: file://few_shot.txt
+    label: few-shot-6
+
+providers:
+  - id: anthropic:messages:claude-haiku-5-5
+    config:
+      max_tokens: 2000
+  # Uncomment to compare a second provider. Check the current model list first.
+  # - id: openai:responses:gpt-5.4-mini
+  #   config:
+  #     reasoning:
+  #       effort: low
+  #     max_output_tokens: 2000
+
+defaultTest:
+  assert:
+    # Same scoring rule as Prompt Lab: the first label that appears in the output must match.
+    - type: javascript
+      value: |
+        const labels = ['auto_approve', 'needs_manager', 'needs_security'];
+        const out = String(output).toLowerCase();
+        const hits = labels.map(l => [out.indexOf(l), l]).filter(h => h[0] >= 0).sort((a, b) => a[0] - b[0]);
+        return hits.length > 0 && hits[0][1] === context.vars.label;
+
+evaluateOptions:
+  repeat: 3
+  maxConcurrency: 4
+
+tests:
+  - description: t01
+    vars:
+      request: "Read access to the Platform team Confluence space"
+      label: auto_approve
+  - description: t02
+    vars:
+      request: "Slack account for a new intern on the support team"
+      label: auto_approve
+  - description: t03
+    vars:
+      request: "Viewer access to the marketing Figma files"
+      label: auto_approve
+  - description: t04
+    vars:
+      request: "Standard member seat in Miro to join the retro board"
+      label: auto_approve
+  - description: t05
+    vars:
+      request: "Read-only access to the public SDK repository on GitHub"
+      label: auto_approve
+  - description: t06
+    vars:
+      request: "Zoom license for a new account manager"
+      label: auto_approve
+  - description: t07
+    vars:
+      request: "Join the #incident-review Jira project as a regular member"
+      label: auto_approve
+  - description: t08
+    vars:
+      request: "Figma editor seat for a contractor designing the onboarding flow"
+      label: needs_manager
+  - description: t09
+    vars:
+      request: "Notion workspace for the research team's meeting notes"
+      label: needs_manager
+  - description: t10
+    vars:
+      request: "Write access to the billing-service team repository on GitHub"
+      label: needs_manager
+  - description: t11
+    vars:
+      request: "Paid Miro board owner plan for running customer journey workshops (no customer data uploaded)"
+      label: needs_manager
+  - description: t12
+    vars:
+      request: "Linear account to try it out for sprint planning instead of Jira"
+      label: needs_manager
+  - description: t13
+    vars:
+      request: "Grammarly Business seat for the documentation writer"
+      label: needs_manager
+  - description: t14
+    vars:
+      request: "Write access to the shared design-tokens repo owned by the frontend team"
+      label: needs_manager
+  - description: t15
+    vars:
+      request: "Admin rights in the company Slack workspace"
+      label: needs_security
+  - description: t16
+    vars:
+      request: "Read-only access to the production Postgres database to debug a customer issue"
+      label: needs_security
+  - description: t17
+    vars:
+      request: "Export of last quarter's CRM contacts to a spreadsheet for a campaign"
+      label: needs_security
+  - description: t18
+    vars:
+      request: "Connect the Calendly app to my Google Workspace account via OAuth"
+      label: needs_security
+  - description: t19
+    vars:
+      request: "Viewer access to NetSuite to check vendor invoices"
+      label: needs_security
+  - description: t20
+    vars:
+      request: "kubectl access to the production Kubernetes cluster for on-call"
+      label: needs_security

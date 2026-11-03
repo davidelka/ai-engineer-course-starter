@@ -1,0 +1,11 @@
+results/*
+!results/.gitkeep
+state/
+*.db
+*.db-wal
+*.db-shm
+deploy/terraform/.terraform/
+deploy/terraform/*.tfstate*
+deploy/terraform/tfplan
+deploy/terraform/terraform.tfvars
+inbox/

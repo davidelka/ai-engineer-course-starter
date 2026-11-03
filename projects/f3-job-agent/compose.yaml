@@ -1,0 +1,79 @@
+# Local deployment of the job agent: free by default (heuristic extractor, file delivery).
+#
+#   cd projects/f3-job-agent
+#   docker compose up --build -d            # scheduler + admin API on http://127.0.0.1:8080
+#   docker compose logs -f agent            # the scheduler; runs at 08:30, 15:00, 21:00 Israel time
+#   docker compose run --rm agent run --slot auto --force   # one run now
+#   docker compose down                     # stop (the state volume stays)
+#
+# With Claude Haiku 5.5 as the extractor (a fraction of a cent per run), key as a compose SECRET:
+#   set -a; . ../../.env; set +a
+#   EXTRACTOR=llm docker compose up --build -d
+#
+# Your real WhatsApp exports: put the bridge's JSON/TXT files in ./inbox (mounted read-only).
+
+name: job-agent
+
+x-hardening: &hardening
+  read_only: true
+  tmpfs: ["/tmp"]
+  cap_drop: [ALL]
+  security_opt: ["no-new-privileges:true"]
+  restart: unless-stopped
+
+x-build: &build
+  context: ../..                         # repo root: the image needs llmkit/, obskit/, ...
+  dockerfile: projects/f3-job-agent/deploy/Dockerfile
+  args:
+    APP_VERSION: compose-dev
+
+x-env: &env
+  EXTRACTOR: ${EXTRACTOR:-heuristic}
+  LLM_MODEL: ${LLM_MODEL:-anthropic:claude-haiku-5-5}
+  DELIVERY: file
+  DRAFTS: file
+  WHATSAPP_DIR: /inbox/whatsapp
+  AIRTABLE_FIXTURE: /inbox/airtable/new_jobs.json
+  ANTHROPIC_API_KEY_FILE: /run/secrets/anthropic_api_key
+  PREFS_PATH: /data/preferences.yaml     # on the volume: PUT /preferences can change it
+
+services:
+  agent:
+    <<: *hardening
+    build: *build
+    image: job-agent:dev
+    command: ["schedule", "--run"]
+    environment: *env
+    volumes:
+      - state:/data
+      - ${INBOX:-./data}:/inbox:ro       # default: the demo files in ./data
+    secrets: [anthropic_api_key]
+    deploy:
+      resources:
+        limits: { cpus: "0.5", memory: 512M }
+
+  admin:
+    <<: *hardening
+    image: job-agent:dev
+    depends_on: [agent]
+    command: ["serve", "--host", "0.0.0.0", "--port", "8080"]
+    environment:
+      <<: *env
+      ADMIN_TOKEN: ${ADMIN_TOKEN:-}      # empty = read-only API
+    volumes:
+      - state:/data
+      - ${INBOX:-./data}:/inbox:ro
+    ports:
+      - "127.0.0.1:8080:8080"            # localhost only: a personal admin tool
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8080/healthz', timeout=2)"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+
+volumes:
+  state: {}
+
+secrets:
+  anthropic_api_key:
+    environment: ANTHROPIC_API_KEY       # from the shell that runs compose; may be empty offline

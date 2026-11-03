@@ -1,0 +1,17 @@
+# The dependencies of the container image, pinned exactly by uv.lock.
+# Change a dependency here, then run `uv lock` in this folder and commit both files.
+[project]
+name = "company-brain-mini"
+version = "0.1.0"
+description = "Company Brain mini API, the service lesson 27 containerizes and deploys"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi>=0.162",
+    "uvicorn>=0.54",
+    "httpx>=0.28",
+    "pydantic>=2.14",
+]
+
+[tool.uv]
+# The code (service/ and llmkit/) is copied into the image, not installed as a package.
+package = false

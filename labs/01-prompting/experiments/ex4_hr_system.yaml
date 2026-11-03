@@ -1,0 +1,34 @@
+# Exercise 4 — system prompt for an HR policy assistant.
+# 10 questions; 3 of them (h08-h10) have NO answer in the documents.
+# Pass rule: answerable -> the reply contains the right fact;
+#            unanswerable -> the reply points to hr@acme.example instead of inventing a policy.
+# Tip: run with --variants mine once your prompt is written, then compare with naive.
+name: ex4-hr-system
+cases: ../../../data/acme/hr_questions.jsonl
+user_template: |
+  <documents>
+  {documents}
+  </documents>
+
+  <question>{question}</question>
+repeats: 3
+max_workers: 4
+scorer: contains_any
+
+defaults:
+  provider: anthropic
+  model: claude-haiku-5-5
+  max_tokens: 3000
+  effort: low
+
+variants:
+  - name: naive
+    system_file: ../prompts/hr_system_naive.md
+    context: {documents: ../../../data/acme/hr_policies.md}
+  - name: mine
+    system_file: ../prompts/hr_system_mine.md
+    context: {documents: ../../../data/acme/hr_policies.md}
+
+# USD per 1M tokens, from Anthropic pricing (prompts under 100K tokens)
+prices:
+  claude-haiku-5-5: {input: 0.10, output: 0.50}

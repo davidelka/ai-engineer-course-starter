@@ -1,0 +1,5 @@
+# Lesson 19 needs no new Python packages: pyyaml and pydantic are already in the root requirements.txt.
+# Optional, Node.js (not pip): Mermaid CLI to export diagrams as SVG/PNG
+#   npx -y @mermaid-js/mermaid-cli@12.0.0 -i results/company-brain.mmd -o results/company-brain.svg
+pyyaml>=6.0
+pydantic>=2.7

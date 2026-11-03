@@ -1,0 +1,40 @@
+{"id": "k01", "text": "How many vacation days carry over to next year?", "label": "knowledge", "tags": ["policy", "how_many_trap"], "note": "Starts with 'how many' but the answer is in the vacation policy, not the database."}
+{"id": "k02", "text": "Who approves a Figma editor seat?", "label": "knowledge", "tags": ["access_policy"], "note": "Names a system and a level, but asks ABOUT the policy."}
+{"id": "k03", "text": "How long does a security review take for admin access?", "label": "knowledge", "tags": ["access_policy"], "note": "SLA question about needs_security."}
+{"id": "k04", "text": "What is the policy for connecting OAuth apps to Google Workspace?", "label": "knowledge", "tags": ["access_policy"], "note": "Policy question with 'oauth'."}
+{"id": "k05", "text": "Do I need my manager's approval for a Notion account?", "label": "knowledge", "tags": ["access_policy"], "note": "First person, but a question about the rules."}
+{"id": "k06", "text": "What's the process to get access to aws-production?", "label": "knowledge", "tags": ["access_policy"], "note": "Process question; the employee did not ask to be granted anything yet."}
+{"id": "k07", "text": "מי מאשר הרשאת admin ב-GitHub?", "label": "knowledge", "tags": ["access_policy", "hebrew"], "note": "Hebrew policy question."}
+{"id": "k08", "text": "כמה זמן לוקח לקבל אישור מצוות האבטחה?", "label": "knowledge", "tags": ["access_policy", "hebrew"], "note": "Hebrew SLA question."}
+{"id": "k09", "text": "What is Blue Room?", "label": "knowledge", "tags": ["acronym"], "note": "Internal jargon from the glossary."}
+{"id": "k10", "text": "How long was flow-api fully unavailable on August 19, 2026?", "label": "knowledge", "tags": ["incident"], "note": "Postmortem question (confidential for most roles)."}
+{"id": "k11", "text": "What is the parental leave policy in 2026?", "label": "knowledge", "tags": ["policy"], "note": "Version question."}
+{"id": "k12", "text": "Which runbook covers billing invoice failures?", "label": "knowledge", "tags": ["engineering"], "note": "Plain document question."}
+{"id": "k13", "text": "מה נוהל העבודה מהבית?", "label": "knowledge", "tags": ["policy", "hebrew"], "note": "Hebrew policy question."}
+{"id": "k14", "text": "When do needs_security grants expire?", "label": "knowledge", "tags": ["access_policy"], "note": "Policy detail: 90 days."}
+{"id": "k15", "text": "Is Miro on the approved list?", "label": "knowledge", "tags": ["access_policy"], "note": "Yes/no policy question naming a system."}
+{"id": "k16", "text": "Can contractors see the engineering postmortems?", "label": "knowledge", "tags": ["policy"], "note": "Starts with 'Can' but not 'can I get'."}
+{"id": "d01", "text": "How many open P1 tickets do we have right now?", "label": "data", "tags": ["tickets"], "note": "M1's canonical data question."}
+{"id": "d02", "text": "כמה עובדים יש בכל משרד?", "label": "data", "tags": ["employees", "hebrew"], "note": "Hebrew count per office."}
+{"id": "d03", "text": "What is the total ARR of the Red Folder customers?", "label": "data", "tags": ["customers"], "note": "Aggregation over customers (finance columns)."}
+{"id": "d04", "text": "List the customers with the most open tickets.", "label": "data", "tags": ["customers", "tickets"], "note": "A list from two tables."}
+{"id": "d05", "text": "How many people are on the Engine team?", "label": "data", "tags": ["employees"], "note": "Count over employees."}
+{"id": "d06", "text": "Who currently has admin on aws-production?", "label": "data", "tags": ["grants", "access_word"], "note": "Names a system and a level, but asks for current grants: data, not a request."}
+{"id": "d07", "text": "How many tickets did support close last week?", "label": "data", "tags": ["tickets"], "note": "Time-filtered count."}
+{"id": "d08", "text": "Show the number of employees per department.", "label": "data", "tags": ["employees"], "note": "Group by."}
+{"id": "d09", "text": "כמה לקוחות יש לנו בגרמניה?", "label": "data", "tags": ["customers", "hebrew"], "note": "Hebrew count with a filter."}
+{"id": "d10", "text": "Which customers have an ARR above 100k?", "label": "data", "tags": ["customers"], "note": "Filter over a numeric column."}
+{"id": "a01", "text": "I need a Figma editor seat for the new dashboard designs.", "label": "access_request", "tags": ["needs_manager"], "note": "flowkit sample r2."}
+{"id": "a02", "text": "Please give me read access to Salesforce, I need to check renewal dates for my accounts.", "label": "access_request", "tags": ["needs_security"], "note": "flowkit sample r3."}
+{"id": "a03", "text": "I need admin on aws-production for 7 days to migrate the queue cluster.", "label": "access_request", "tags": ["needs_security"], "note": "flowkit sample r4."}
+{"id": "a04", "text": "Can I get a Notion member account? Our design team keeps its research notes there.", "label": "access_request", "tags": ["needs_manager"], "note": "flowkit sample r5."}
+{"id": "a05", "text": "Please add Yossi Cohen to GitHub with read access, he joins my project next week.", "label": "access_request", "tags": ["for_someone_else"], "note": "flowkit sample r6 (a person who does not exist)."}
+{"id": "a06", "text": "צריכה גישת עריכה ל-Figma בשביל העיצובים החדשים", "label": "access_request", "tags": ["hebrew"], "note": "Hebrew request."}
+{"id": "a07", "text": "אפשר לקבל הרשאת קריאה ל-Jira?", "label": "access_request", "tags": ["hebrew"], "note": "Hebrew polite request phrased as a question."}
+{"id": "a08", "text": "I want to connect a third-party OAuth app to Google Workspace so I can share files with an external agency.", "label": "access_request", "tags": ["needs_security"], "note": "flowkit sample r8."}
+{"id": "a09", "text": "figma editor for dana.levi@acme.example please", "label": "access_request", "tags": ["no_verb", "hard"], "note": "No request verb: the rules are unsure, the model decides."}
+{"id": "a10", "text": "What's the policy for Zendesk read access, and can you file one for me?", "label": "access_request", "tags": ["mixed", "hard"], "note": "Mixed: asks about the policy AND asks to file. The router prompt says: choose access_request."}
+{"id": "a11", "text": "Grant me write access to the billing-service repo.", "label": "access_request", "tags": ["imperative"], "note": "Imperative."}
+{"id": "a12", "text": "תן לי admin ב-datadog לשבוע", "label": "access_request", "tags": ["hebrew", "needs_security"], "note": "Hebrew imperative."}
+{"id": "a13", "text": "We need a PagerDuty seat for the new on-call engineer, Avital Tal.", "label": "access_request", "tags": ["for_someone_else", "hard"], "note": "'We need' is not in the rules: the model decides."}
+{"id": "a14", "text": "Hi, Jira read access for the sprint reviews would be great", "label": "access_request", "tags": ["indirect", "hard"], "note": "Indirect wish without a verb the rules know."}

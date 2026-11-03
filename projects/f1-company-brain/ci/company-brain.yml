@@ -1,0 +1,53 @@
+# GitHub Actions: the Company Brain regression gate, offline (no keys, no paid calls, about 2 minutes).
+# GitHub only reads workflows from .github/workflows/ at the repository root:
+#   mkdir -p .github/workflows && cp projects/f1-company-brain/ci/company-brain.yml .github/workflows/
+#
+# What runs: the environment tests of the project (tests/test_f1_company_brain.py, which include the
+# unified evaluation's regression gate: knowledge, routing, workflow, security floors), the static checks
+# of the architecture, the Dockerfile and the Terraform, and the project's own milestone tests against
+# the reference functions (F1_MINE points them at a mine.py that re-exports the references).
+name: company-brain
+
+on:
+  push:
+    paths: ["projects/f1-company-brain/**", "projects/m1-knowledge-assistant/**", "flowkit/**", "guardkit/**",
+            "gatewaykit/**", "mcpkit/**", "toolkit/**", "ragkit/**", "obskit/**", "evalkit/**", "archkit/**",
+            "deploykit/**", "tests/test_f1_company_brain.py", "data/acme/**"]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  offline-gate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v5
+      - uses: astral-sh/setup-uv@v7
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: |
+          uv venv
+          uv pip install -r requirements.txt
+      - name: Environment tests + evaluation gate
+        run: uv run python -m pytest -q tests/test_f1_company_brain.py
+      - name: Architecture, Dockerfile, Terraform
+        working-directory: projects/f1-company-brain
+        run: uv run python -m cbrain arch
+      - name: Milestone tests against the reference
+        working-directory: projects/f1-company-brain
+        run: |
+          printf 'from cbrain.router import rule_intent\nfrom cbrain.workflow import approvals_for\nfrom cbrain.guards import harden_route, request_classification\n' > /tmp/ref_mine.py
+          F1_MINE=/tmp/ref_mine.py uv run python -m pytest -q tests
+      - name: Evaluation report (artifact)
+        if: always()
+        working-directory: projects/f1-company-brain
+        run: uv run python -m cbrain eval --json results/eval_ci.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: company-brain-eval
+          path: projects/f1-company-brain/results/eval_ci.json

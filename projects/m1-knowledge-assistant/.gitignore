@@ -1,0 +1,5 @@
+.index/
+results/*
+!results/.gitkeep
+data/recorded/*.jsonl
+!data/recorded/.gitkeep

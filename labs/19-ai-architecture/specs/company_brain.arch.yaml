@@ -1,0 +1,165 @@
+# Company Brain: architecture spec, version for lesson 19.
+# Phase 2 (questions over Acme knowledge, with citations) + phase 3 (access-request workflow).
+#
+# This version has a few problems ON PURPOSE. arch_check.py finds them (exercise 4).
+#
+# Conventions
+#   flows go in the direction the data travels; responses are drawn only where they matter.
+#   classification: public | internal | confidential | pii
+#   fallback: another component id, or static_message | cached_response | queue_for_human
+
+system: company-brain
+description: >
+  Acme employees ask questions about policies and docs in Slack or the web UI and get answers with
+  citations. Access requests ("I need admin on GitHub") go to a workflow that routes them by the
+  SaaS access policy: auto_approve, needs_manager or needs_security.
+
+boundaries:
+  - {id: employees,      name: "Employee devices (Slack, browser)", trust: untrusted}
+  - {id: acme_vpc,       name: "Acme VPC (AWS)",                    trust: trusted}
+  - {id: anthropic,      name: "Anthropic API",                     trust: third_party, notes: "DPA signed, no training on API data"}
+  - {id: openai,         name: "OpenAI API",                        trust: third_party}
+  - {id: acme_saas,      name: "Acme SaaS (Confluence, Okta)",      trust: third_party}
+  - {id: tracing_saas,   name: "Langfuse Cloud",                    trust: third_party}
+
+components:
+  # --- entry points
+  - {id: slack_app, name: "Slack app", kind: client, boundary: employees, tech: "Slack Bolt"}
+  - {id: web_ui,    name: "Web UI",    kind: client, boundary: employees, tech: "React"}
+
+  # --- our services
+  - {id: api_gateway,  name: "API",             kind: service,   boundary: acme_vpc, tech: "FastAPI", traced: true}
+  - {id: input_guard,  name: "Input guard",     kind: guardrail, boundary: acme_vpc, tech: "rules + injection classifier"}
+  - {id: pii_redactor, name: "PII redactor",    kind: classifier, boundary: acme_vpc, tech: "Presidio"}
+  - {id: keyword_router, name: "Keyword router", kind: service,  boundary: acme_vpc, tech: "regex rules",
+     notes: "deterministic fallback when the intent model is unavailable"}
+
+  - id: intent_router
+    name: "Intent router"
+    kind: llm
+    boundary: anthropic
+    model: anthropic:claude-haiku-5-5
+    retry: {max_attempts: 3}
+    fallback: keyword_router
+    traced: true
+
+  - {id: retriever, name: "Hybrid retriever", kind: retriever, boundary: acme_vpc, tech: "BM25 + vectors, RRF"}
+  - {id: vector_db, name: "Vector store",     kind: datastore, boundary: acme_vpc, tech: "Postgres + pgvector"}
+
+  - id: answer_llm
+    name: "Answer model"
+    kind: llm
+    boundary: anthropic
+    model: anthropic:claude-sonnet-5-5
+    timeout_s: 30
+    retry: {max_attempts: 2}
+    fallback: answer_llm_backup
+    traced: true
+
+  - id: answer_llm_backup
+    name: "Answer model (backup)"
+    kind: llm
+    boundary: openai
+    model: openai:gpt-5.4-mini
+    timeout_s: 30
+    retry: {max_attempts: 2}
+    fallback: static_message
+    traced: true
+
+  - {id: output_guard,   name: "Output guard",   kind: guardrail, boundary: acme_vpc, tech: "citation + policy check"}
+  - {id: response_cache, name: "Response cache", kind: cache,     boundary: acme_vpc, tech: "Redis, exact match"}
+
+  # --- access-request workflow (phase 3)
+  - {id: access_workflow, name: "Access workflow", kind: service, boundary: acme_vpc, tech: "LangGraph + checkpoints", traced: true}
+
+  - id: policy_llm
+    name: "Policy router"
+    kind: llm
+    boundary: anthropic
+    model: anthropic:claude-haiku-5-5
+    timeout_s: 20
+    retry: {max_attempts: 3}
+
+  - {id: approval_ui, name: "Approval (Slack buttons)", kind: human_approval, boundary: acme_vpc, tech: "signed Slack interactions"}
+  - {id: grant_tool,  name: "Grant access tool",        kind: tool, boundary: acme_vpc, side_effects: write, tech: "Okta API client"}
+  - {id: okta,        name: "Okta",                     kind: external_api, boundary: acme_saas}
+  - {id: audit_log,   name: "Audit log",                kind: datastore, boundary: acme_vpc, tech: "append-only table"}
+
+  # --- knowledge ingestion
+  - {id: confluence, name: "Confluence", kind: external_api, boundary: acme_saas}
+  - {id: ingest_job, name: "Nightly ingestion", kind: batch_job, boundary: acme_vpc, tech: "chunk + embed"}
+
+  # --- first-class operations
+  - {id: tracing,     name: "Tracing",     kind: observability, boundary: tracing_saas, tech: "Langfuse"}
+  - {id: eval_runner, name: "Eval runner", kind: eval,          boundary: acme_vpc, tech: "golden set, nightly + on every prompt change"}
+
+flows:
+  # question path
+  - {from: slack_app,    to: api_gateway,   data: "question + user id",  classification: pii}
+  - {from: web_ui,       to: api_gateway,   data: "question + user id",  classification: pii}
+  - {from: api_gateway,  to: input_guard,   data: "question",            classification: pii}
+  - {from: input_guard,  to: pii_redactor,  data: "question",            classification: pii}
+  - {from: pii_redactor, to: intent_router, data: "redacted question"}
+  - {from: intent_router, to: retriever,    data: "question (route=qa)"}
+  - {from: retriever,    to: vector_db,     data: "query"}
+  - {from: retriever,    to: answer_llm,    data: "question + top-k chunks"}
+  - {from: answer_llm,   to: output_guard,  data: "draft answer"}
+  - {from: output_guard, to: response_cache, data: "answer"}
+  - {from: output_guard, to: api_gateway,   data: "answer + citations"}
+  - {from: api_gateway,  to: slack_app,     data: "answer + citations"}
+
+  # access-request path
+  - {from: intent_router,   to: access_workflow, data: "access request (route=access)"}
+  - {from: slack_app,       to: access_workflow, data: "/access slash command (legacy shortcut)", classification: pii}
+  - {from: access_workflow, to: policy_llm,      data: "request + SaaS policy"}
+  - {from: policy_llm,      to: access_workflow, data: "route decision"}
+  - {from: access_workflow, to: approval_ui,     data: "needs_manager / needs_security request"}
+  - {from: approval_ui,     to: grant_tool,      data: "approved request"}
+  - {from: access_workflow, to: grant_tool,      data: "auto_approve request",
+     approval_exempt: "SaaS access policy v2.1: auto_approve track (read or standard seat on the approved list)"}
+  - {from: grant_tool,      to: okta,            data: "grant"}
+  - {from: grant_tool,      to: audit_log,       data: "who, what, approved by"}
+
+  # ingestion
+  - {from: confluence, to: ingest_job, data: "pages"}
+  - {from: ingest_job, to: vector_db,  data: "chunks + embeddings"}
+
+  # operations
+  - {from: api_gateway,     to: tracing,     data: "raw request logs", classification: pii}
+  - {from: access_workflow, to: tracing,     data: "workflow traces"}
+  - {from: eval_runner,     to: api_gateway, data: "golden questions"}
+
+budget:
+  fixed_monthly_usd: 250        # assumption: hosting + Postgres + tracing plan. Replace with real quotes.
+  monthly_limit_usd: 800
+  paths:
+    - name: question
+      requests_per_day: 1500
+      prompt_cache_hit_rate: 0.8
+      response_cache_hit_rate: 0.10
+      calls:
+        - {name: intent_router, model: claude-haiku-5-5,  input_tokens: 700,  cacheable_tokens: 550,  output_tokens: 30}
+        - {name: answer,        model: claude-sonnet-5-5, input_tokens: 7000, cacheable_tokens: 1500, output_tokens: 450}
+      latency_budget_ms: 8000
+      stages:
+        - {name: input_guard,   p95_ms: 120, p50_ms: 60}
+        - {name: pii_redaction, p95_ms: 80,  p50_ms: 40}
+        - {name: intent_router, p95_ms: 900, p50_ms: 450}
+        - {name: vector_search, p95_ms: 250, p50_ms: 90,  group: retrieval}
+        - {name: bm25_search,   p95_ms: 150, p50_ms: 50,  group: retrieval}
+        - {name: answer_llm,    p95_ms: 6000, p50_ms: 3500}
+        - {name: output_guard,  p95_ms: 200, p50_ms: 80}
+    - name: access_request
+      requests_per_day: 120
+      prompt_cache_hit_rate: 0.6
+      calls:
+        - {name: intent_router, model: claude-haiku-5-5, input_tokens: 700,  cacheable_tokens: 550,  output_tokens: 30}
+        - {name: policy_router, model: claude-haiku-5-5, input_tokens: 2600, cacheable_tokens: 1900, output_tokens: 180,
+           calls_per_request: 1.2}
+      latency_budget_ms: 5000
+      stages:
+        - {name: input_guard,   p95_ms: 120, p50_ms: 60}
+        - {name: pii_redaction, p95_ms: 80,  p50_ms: 40}
+        - {name: intent_router, p95_ms: 900, p50_ms: 450}
+        - {name: policy_llm,    p95_ms: 2500, p50_ms: 1200}
+        - {name: checkpoint,    p95_ms: 100, p50_ms: 30}

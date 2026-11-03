@@ -1,0 +1,37 @@
+# Allowlist: exclude everything, then add back only what the image needs.
+# (Docker uses <Dockerfile>.dockerignore next to the Dockerfile before a root .dockerignore.)
+*
+!llmkit/
+!ragkit/
+!datakit/
+!ctxkit/
+!flowkit/
+!toolkit/
+!guardkit/
+!obskit/
+!gatewaykit/
+!mcpkit/
+!evalkit/
+!servekit/
+!mockllm/
+!data/acme/corpus/docs/
+!data/acme/corpus/golden/
+!data/acme/corpus/structured/
+!data/acme/saas_access_policy.md
+!labs/25-llm-gateway/policy.yaml
+!labs/16-workflows/data/
+!projects/m1-knowledge-assistant/acmeqa/
+!projects/m1-knowledge-assistant/data/
+!projects/f1-company-brain/cbrain/
+!projects/f1-company-brain/data/
+!projects/f1-company-brain/arch/
+!projects/f1-company-brain/mine.py
+!projects/f1-company-brain/deploy/pyproject.toml
+!projects/f1-company-brain/deploy/uv.lock
+# Never in the image, even inside an allowed folder (these lines must come AFTER the ! lines):
+**/__pycache__
+**/*.pyc
+**/.env
+**/.index
+**/results
+projects/m1-knowledge-assistant/data/recorded/

@@ -1,0 +1,36 @@
+# Lesson 22: Arize Phoenix (trace UI) + an OpenTelemetry Collector in front of it.
+#
+#   docker compose -f labs/22-observability/collector/compose.yaml up -d
+#   Phoenix UI:          http://localhost:6006
+#   send spans directly: python labs/22-observability/trace_demo.py --otlp http://localhost:6006/v1/traces
+#   or via the Collector (tail sampling + a second redaction pass):
+#                        python labs/22-observability/trace_demo.py --otlp http://localhost:4318/v1/traces
+#
+# Versions: Phoenix 21.0.0 was the latest release on PyPI/GitHub on 2026-11-01 (Phoenix
+# converts gen_ai.* attributes to its own format since 15.10.0). Docker Hub was not
+# reachable when this file was written, so the image tag below is "latest": replace it
+# with the exact version tag you see on hub.docker.com/r/arizephoenix/phoenix/tags.
+# Collector contrib v0.164.0 was the latest release tag on GitHub on 2026-11-01.
+services:
+  phoenix:
+    image: arizephoenix/phoenix:latest
+    ports:
+      - "6006:6006"   # UI and OTLP/HTTP (/v1/traces)
+      - "4317:4317"   # OTLP/gRPC
+    environment:
+      - PHOENIX_WORKING_DIR=/mnt/data
+    volumes:
+      - phoenix_data:/mnt/data
+
+  otelcol:
+    image: otel/opentelemetry-collector-contrib:0.164.0
+    command: ["--config=/etc/otelcol/config.yaml"]
+    volumes:
+      - ./otel-collector.yaml:/etc/otelcol/config.yaml:ro
+    ports:
+      - "4318:4318"   # OTLP/HTTP in (the app sends here)
+    depends_on:
+      - phoenix
+
+volumes:
+  phoenix_data:

@@ -1,0 +1,54 @@
+{
+  "_note": "HAND-WRITTEN example in the shape of a real reply, used by --offline. It is NOT a recording of a model. Findings 6 and 7 are deliberately bad (an invented quote and a non-existent requirement id) so you can watch ground_findings drop them. Run the live command to see what a real model says.",
+  "findings": [
+    {
+      "requirement_id": "REQ-3",
+      "quote": "THEN THE SYSTEM SHALL respond 401 with error code `unauthenticated` on every endpoint.",
+      "explanation": "A request with no X-Actor header AND an invalid body breaks both REQ-3 and REQ-2. One implementer checks headers first and returns 401, another validates the body first and returns 422. REQ-10 fixes the order of its checks; REQ-2 and REQ-3 do not.",
+      "problem": "ambiguous",
+      "suggested_rewrite": "Add to REQ-3: \"The identity check runs before any validation of the body, query or path, so a request that fails both gets 401.\" and an acceptance criterion for it."
+    },
+    {
+      "requirement_id": "REQ-4",
+      "quote": "OR the tool is one of AWS, GCP, Kubernetes, NetSuite, Payroll.",
+      "explanation": "Only AWS has an acceptance criterion (AC-4.7). An implementation that forgets Kubernetes, NetSuite, Payroll or GCP passes every listed criterion, so the tests derived from this spec cannot catch it.",
+      "problem": "missing_case",
+      "suggested_rewrite": "Add AC-4.8: GIVEN each of GCP, Kubernetes, NetSuite and Payroll with `read` and no flags WHEN created THEN `route` is `needs_security`."
+    },
+    {
+      "requirement_id": "REQ-9",
+      "quote": "OR the caller is the requester of that request",
+      "explanation": "It is not stated how the caller and the requester are compared. With an exact comparison, Sec@acme.example can approve a request created by sec@acme.example; with a case-insensitive comparison, they cannot.",
+      "problem": "ambiguous",
+      "suggested_rewrite": "\"OR the caller's X-Actor equals the request's requester, compared case-insensitively\", plus an acceptance criterion with different letter case."
+    },
+    {
+      "requirement_id": null,
+      "quote": "note:\n          type: [string, \"null\"]",
+      "explanation": "The contract's Decision body has a `note` (up to 500 characters), but no requirement says whether the note is stored, returned or logged, and AccessRequest has no field for it. One implementer drops it silently, another adds an undocumented field.",
+      "problem": "inconsistent_with_contract",
+      "suggested_rewrite": "Either remove `note` from the contract, or add to REQ-8: \"THE SYSTEM SHALL store the note and include it in the audit record of the approval\" and add the field to AccessRequest."
+    },
+    {
+      "requirement_id": "REQ-11",
+      "quote": "WHEN a request's status is set or changed (including approval at creation)",
+      "explanation": "Refused approvals (403) change nothing, so they are not audited. For an approval workflow the security team usually wants to see who tried to approve what. Implementers will differ on whether to log refusals.",
+      "problem": "missing_requirement",
+      "suggested_rewrite": "Add REQ-12: \"IF an approval is refused with 403, THE SYSTEM SHALL write one audit record with to_status set to the unchanged status and a reason field.\" or state in Out of scope that refusals are not audited."
+    },
+    {
+      "requirement_id": "REQ-8",
+      "quote": "Approvals expire after 30 days unless renewed by the manager.",
+      "explanation": "The expiry period is not connected to any acceptance criterion.",
+      "problem": "untestable",
+      "suggested_rewrite": "Add an acceptance criterion for expiry."
+    },
+    {
+      "requirement_id": "REQ-12",
+      "quote": "no request that needs a human is ever approved without one",
+      "explanation": "The intent promises this, but no requirement covers what happens when the approver's role changes after the request was created.",
+      "problem": "missing_case",
+      "suggested_rewrite": "State that authority is checked at approval time, with the caller's current X-Role."
+    }
+  ]
+}

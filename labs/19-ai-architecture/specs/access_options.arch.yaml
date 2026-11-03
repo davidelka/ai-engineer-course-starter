@@ -1,0 +1,62 @@
+# Budget-only spec for exercise 6 (the ADR): the two candidate designs for Company Brain's
+# access-request flow, side by side. Only cost_model.py is meant to run on it:
+#   python labs/19-ai-architecture/cost_model.py labs/19-ai-architecture/specs/access_options.arch.yaml
+#
+# Token numbers are ESTIMATES from the lesson 14-16 labs; replace them with your own
+# measurements if you have them (llmkit results carry usage).
+
+system: access-options
+description: "Option A: agent with tools. Option B: fixed workflow with LLM steps."
+
+boundaries:
+  - {id: acme_vpc,  name: "Acme VPC",      trust: trusted}
+  - {id: anthropic, name: "Anthropic API", trust: third_party}
+
+components:
+  - {id: workflow,    name: "Fixed workflow (LangGraph)", kind: service, boundary: acme_vpc}
+  - {id: agent_loop,  name: "Agent loop",                 kind: service, boundary: acme_vpc}
+  - {id: policy_llm,  name: "Policy step",  kind: llm, boundary: anthropic, model: anthropic:claude-haiku-5-5}
+  - {id: agent_llm,   name: "Agent model",  kind: llm, boundary: anthropic, model: anthropic:claude-sonnet-5-5}
+
+flows:
+  - {from: workflow,   to: policy_llm, data: "request + policy"}
+  - {from: agent_loop, to: agent_llm,  data: "request + policy + tool schemas + history"}
+
+budget:
+  fixed_monthly_usd: 0
+  paths:
+    - name: B_fixed_workflow
+      requests_per_day: 120
+      prompt_cache_hit_rate: 0.6
+      calls:
+        - {name: intent_router, model: claude-haiku-5-5, input_tokens: 700,  cacheable_tokens: 550,  output_tokens: 30}
+        # extract + route in one structured call (lesson 3 schema); 1.2 = 20% need one repair
+        - {name: policy_step,   model: claude-haiku-5-5, input_tokens: 2600, cacheable_tokens: 1900, output_tokens: 180,
+           calls_per_request: 1.2}
+      latency_budget_ms: 5000
+      stages:
+        - {name: guard_and_redact, p95_ms: 200,  p50_ms: 100}
+        - {name: intent_router,    p95_ms: 900,  p50_ms: 450}
+        - {name: policy_step,      p95_ms: 2500, p50_ms: 1200}
+        - {name: checkpoint,       p95_ms: 100,  p50_ms: 30}
+
+    - name: A_agent_with_tools
+      requests_per_day: 120
+      prompt_cache_hit_rate: 0.7
+      calls:
+        - {name: intent_router, model: claude-haiku-5-5,  input_tokens: 700,  cacheable_tokens: 550,  output_tokens: 30}
+        # ~4 loop steps on average (lookup user, lookup tool on the approved list, decide, grant or escalate).
+        # Every step resends the system prompt, the tool schemas, the policy and the growing history.
+        - {name: agent_step,    model: claude-sonnet-5-5, input_tokens: 4200, cacheable_tokens: 3400, output_tokens: 250,
+           calls_per_request: 4}
+      latency_budget_ms: 5000
+      stages:
+        - {name: guard_and_redact, p95_ms: 200,  p50_ms: 100}
+        - {name: intent_router,    p95_ms: 900,  p50_ms: 450}
+        - {name: agent_step_1,     p95_ms: 3000, p50_ms: 1500}
+        - {name: tool_call_1,      p95_ms: 400,  p50_ms: 150}
+        - {name: agent_step_2,     p95_ms: 3000, p50_ms: 1500}
+        - {name: tool_call_2,      p95_ms: 400,  p50_ms: 150}
+        - {name: agent_step_3,     p95_ms: 3000, p50_ms: 1500}
+        - {name: tool_call_3,      p95_ms: 400,  p50_ms: 150}
+        - {name: agent_step_4,     p95_ms: 3000, p50_ms: 1500}

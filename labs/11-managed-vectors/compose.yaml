@@ -1,0 +1,61 @@
+# Lesson 11: local Qdrant + PostgreSQL/pgvector for the lab.
+#   docker compose -f labs/11-managed-vectors/compose.yaml up -d
+#   docker compose -f labs/11-managed-vectors/compose.yaml ps            # both "healthy"?
+#   docker compose -f labs/11-managed-vectors/compose.yaml down          # stop (data kept)
+#   docker compose -f labs/11-managed-vectors/compose.yaml down -v       # stop AND delete the data
+# Image tags verified on Docker Hub / GitHub releases, November 2026. Pinned on purpose:
+# a vector DB upgrade can change index formats; upgrade deliberately, after a snapshot.
+name: l11-vectors
+
+services:
+  qdrant:
+    image: qdrant/qdrant:v1.20.0
+    ports:
+      - "127.0.0.1:6333:6333"     # REST + web UI: http://localhost:6333/dashboard
+      - "127.0.0.1:6334:6334"     # gRPC
+    volumes:
+      - qdrant_data:/qdrant/storage
+      - qdrant_snapshots:/qdrant/snapshots
+    environment:
+      QDRANT__LOG_LEVEL: INFO
+      QDRANT__TELEMETRY_DISABLED: "true"
+      # QDRANT__SERVICE__API_KEY: change-me   # turn on for anything but localhost
+    healthcheck:
+      # the image has no curl; bash's /dev/tcp is enough to see the port is open
+      test: ["CMD-SHELL", "bash -c ':> /dev/tcp/127.0.0.1/6333' || exit 1"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    restart: unless-stopped
+
+  postgres:
+    image: pgvector/pgvector:0.8.7-pg18    # PostgreSQL 18 + pgvector 0.8.7
+    ports:
+      - "127.0.0.1:5432:5432"
+    environment:
+      POSTGRES_USER: ragkit
+      POSTGRES_PASSWORD: ragkit           # local lab only; never reuse
+      POSTGRES_DB: ragkit
+    command:
+      - postgres
+      - -c
+      - shared_buffers=512MB              # keep HNSW pages in memory
+      - -c
+      - maintenance_work_mem=1GB          # HNSW builds fast only if the graph fits here
+      - -c
+      - max_parallel_maintenance_workers=2
+    volumes:
+      - pg_data:/var/lib/postgresql       # PG 18 images keep data under /var/lib/postgresql/18/
+      - ./init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ragkit -d ragkit"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    shm_size: 1g                          # parallel index builds use shared memory
+    restart: unless-stopped
+
+volumes:
+  qdrant_data:
+  qdrant_snapshots:
+  pg_data:

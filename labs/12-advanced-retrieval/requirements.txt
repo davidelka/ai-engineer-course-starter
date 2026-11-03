@@ -1,0 +1,8 @@
+# Lesson 12 (hybrid search, rewriting, version filter, reranking). Verified on PyPI, November 2026.
+# Nothing new for the offline path: ragkit's fusion, versions and rewriting need only the root
+# requirements (httpx, pydantic) plus numpy from lesson 10.
+numpy>=2.0                    # dense retrieval (lesson 10)
+sentence-transformers>=5.1    # local cross-encoder rerankers (CrossEncoder): BAAI/bge-reranker-v2-m3,
+                              # cross-encoder/mmarco-mMiniLMv2-L12-H384-v1. Needs PyTorch: install the
+                              # CPU wheel FIRST (see labs/10-embeddings/requirements.txt).
+# Cohere Rerank is called over httpx (already in the root requirements): no SDK needed.

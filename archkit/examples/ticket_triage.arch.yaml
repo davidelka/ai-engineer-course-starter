@@ -1,0 +1,104 @@
+# REFERENCE SOLUTION for lesson 19, exercise 7 (ticket triage). One good answer, not the only one.
+# Try the exercise before reading it.
+
+system: ticket-triage
+description: >
+  Classify and route Acme support tickets, alert on-call for urgent ones, and draft replies for agents.
+  Pattern: event-driven workflow (queue + worker) with two LLM steps. No agent: the steps are known.
+
+boundaries:
+  - {id: customers, name: "Customers (email, web form)", trust: untrusted}
+  - {id: acme_vpc,  name: "Acme VPC (AWS)",              trust: trusted}
+  - {id: anthropic, name: "Anthropic API",               trust: third_party, notes: "DPA + zero data retention approved"}
+  - {id: saas,      name: "Zendesk, PagerDuty",          trust: third_party}
+
+components:
+  - {id: email_inbox, name: "Support mailbox", kind: client, boundary: customers, tech: "SES inbound"}
+  - {id: web_form,    name: "Web form",        kind: client, boundary: customers}
+  - {id: intake_api,  name: "Intake API",      kind: service, boundary: acme_vpc, tech: "FastAPI"}
+  - {id: input_guard, name: "Input guard",     kind: guardrail, boundary: acme_vpc,
+     tech: "size cap, strip HTML/quoted history, injection heuristics"}
+  - {id: ticket_queue, name: "Ticket queue",   kind: queue, boundary: acme_vpc, tech: "SQS + DLQ",
+     notes: "absorbs the 3x peak after incidents"}
+  - {id: triage_worker, name: "Triage worker", kind: service, boundary: acme_vpc, tech: "Python worker", traced: true}
+  - {id: keyword_rules, name: "Keyword rules", kind: service, boundary: acme_vpc,
+     tech: "regex, he/en/ar", notes: "runs FIRST on every ticket: breach/outage words force P1. Also the fallback."}
+
+  - id: triage_llm
+    name: "Triage model"
+    kind: llm
+    boundary: anthropic
+    model: anthropic:claude-haiku-5-5
+    timeout_s: 15
+    retry: {max_attempts: 3}
+    fallback: keyword_rules
+    pii_allowed: true
+    traced: true
+
+  - {id: kb_retriever, name: "Help-center search", kind: retriever, boundary: acme_vpc, tech: "hybrid, 400 articles"}
+  - {id: kb_index,     name: "Help-center index",  kind: datastore, boundary: acme_vpc, tech: "pgvector"}
+
+  - id: draft_llm
+    name: "Draft model"
+    kind: llm
+    boundary: anthropic
+    model: anthropic:claude-haiku-5-5
+    timeout_s: 45
+    retry: {max_attempts: 2}
+    fallback: static_message     # "no draft available": the agent writes it, nothing breaks
+    pii_allowed: true
+    traced: true
+
+  - {id: output_guard, name: "Draft check", kind: guardrail, boundary: acme_vpc,
+     tech: "no refunds/promises, no other customer's data, citations to articles"}
+  - {id: alert_redactor, name: "Alert redactor", kind: classifier, boundary: acme_vpc,
+     tech: "allow-list: ticket id, category, priority only"}
+  - {id: zendesk,   name: "Zendesk",   kind: external_api, boundary: saas, pii_allowed: true}
+  - {id: pagerduty, name: "PagerDuty", kind: external_api, boundary: saas}
+  - {id: audit_log, name: "Decision log", kind: datastore, boundary: acme_vpc,
+     tech: "ticket id, labels, model + prompt version"}
+  - {id: tracing,     name: "Tracing",     kind: observability, boundary: acme_vpc, tech: "Langfuse self-hosted"}
+  - {id: eval_runner, name: "Eval runner", kind: eval, boundary: acme_vpc,
+     tech: "300 labeled tickets: category accuracy, P1 recall; weekly draft usefulness"}
+
+flows:
+  - {from: email_inbox,   to: intake_api,    data: "ticket", classification: pii}
+  - {from: web_form,      to: intake_api,    data: "ticket", classification: pii}
+  - {from: intake_api,    to: input_guard,   data: "ticket", classification: pii}
+  - {from: input_guard,   to: ticket_queue,  data: "clean ticket", classification: pii}
+  - {from: ticket_queue,  to: triage_worker, data: "clean ticket", classification: pii}
+  - {from: triage_worker, to: keyword_rules, data: "ticket text", classification: pii}
+  - {from: triage_worker, to: triage_llm,    data: "ticket", classification: pii}
+  - {from: triage_llm,    to: triage_worker, data: "category, priority, language"}
+  - {from: triage_worker, to: zendesk,       data: "ticket fields + queue", classification: pii}
+  - {from: triage_worker, to: alert_redactor, data: "P1 / security alert", classification: pii}
+  - {from: alert_redactor, to: pagerduty,    data: "ticket id, category, priority"}
+  - {from: triage_worker, to: audit_log,     data: "decision + versions"}
+  - {from: triage_worker, to: kb_retriever,  data: "ticket summary", classification: pii}
+  - {from: kb_retriever,  to: kb_index,      data: "query"}
+  - {from: kb_retriever,  to: draft_llm,     data: "ticket + top articles", classification: pii}
+  - {from: draft_llm,     to: output_guard,  data: "draft", classification: pii}
+  - {from: output_guard,  to: zendesk,       data: "draft as internal note", classification: pii}
+  - {from: triage_worker, to: tracing,       data: "traces", classification: pii}
+  - {from: zendesk,       to: eval_runner,   data: "agent labels + draft feedback"}
+
+budget:
+  fixed_monthly_usd: 180          # assumption: worker + queue + Postgres + self-hosted Langfuse
+  monthly_limit_usd: 700
+  paths:
+    - name: triage
+      requests_per_day: 2500
+      days: 22
+      prompt_cache_hit_rate: 0.9
+      calls:
+        # ~700 tokens of instructions + category definitions + 8 few-shot examples are cacheable
+        - {name: triage, model: claude-haiku-5-5, input_tokens: 1500, cacheable_tokens: 700, output_tokens: 60}
+        - {name: draft,  model: claude-haiku-5-5, input_tokens: 4500, cacheable_tokens: 900, output_tokens: 350}
+      latency_budget_ms: 60000
+      stages:
+        - {name: intake_and_guard, p95_ms: 300,   p50_ms: 120}
+        - {name: queue_wait,       p95_ms: 20000, p50_ms: 2000}
+        - {name: keyword_rules,    p95_ms: 30,    p50_ms: 10}
+        - {name: triage_llm,       p95_ms: 2500,  p50_ms: 1200}
+        - {name: zendesk_update,   p95_ms: 1500,  p50_ms: 400, group: notify}
+        - {name: pagerduty_alert,  p95_ms: 1200,  p50_ms: 300, group: notify}

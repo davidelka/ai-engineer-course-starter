@@ -1,0 +1,1125 @@
+[
+ {
+  "qid": "q001",
+  "source_id": "hr-vacation-2026",
+  "quote": "Up to 5 unused days may be carried over to the next calendar year. Carried-over days expire on March 31.",
+  "paths": [
+   [
+    "Vacation Policy (effective January 2026)",
+    "Carry-over"
+   ]
+  ]
+ },
+ {
+  "qid": "q002",
+  "source_id": "fin-travel-2026",
+  "quote": "Per diem increased from $75 to $85 in standard cities and from $95 to $110 in high-cost cities.",
+  "paths": [
+   [
+    "Travel Policy (effective February 2026)",
+    "7. Summary of changes from 2025"
+   ]
+  ]
+ },
+ {
+  "qid": "q003",
+  "source_id": "it-password-mfa-2026",
+  "quote": "Passwords must be at least 14 characters long.",
+  "paths": [
+   [
+    "Password and MFA Policy (effective January 15, 2026)",
+    "Passwords and passphrases"
+   ]
+  ]
+ },
+ {
+  "qid": "q003",
+  "source_id": "it-password-mfa-2026",
+  "quote": "There is no forced periodic rotation.",
+  "paths": [
+   [
+    "Password and MFA Policy (effective January 15, 2026)",
+    "Passwords and passphrases"
+   ]
+  ]
+ },
+ {
+  "qid": "q004",
+  "source_id": "hr-remote-work-2026",
+  "quote": "Employees may work remotely up to 2 days per week. Tuesday and Wednesday are office days for all teams.",
+  "paths": [
+   [
+    "Remote Work Policy (effective March 2026)",
+    "The rules"
+   ]
+  ]
+ },
+ {
+  "qid": "q004",
+  "source_id": "co-allhands-2026-07",
+  "quote": "It is not 3 days, as was said at the January all-hands.",
+  "paths": [
+   [
+    "All-hands notes: July 14, 2026",
+    "4. People and Finance updates"
+   ]
+  ]
+ },
+ {
+  "qid": "q005",
+  "source_id": "eng-service-catalog",
+  "quote": "| flow-scheduler | Engine | Dana Levi | 1 | engine-oncall (shared with flow-engine) | flow-scheduler-prod |",
+  "paths": [
+   [
+    "Engineering Service Catalog",
+    "Production services"
+   ]
+  ]
+ },
+ {
+  "qid": "q005",
+  "source_id": "eng-service-catalog",
+  "quote": "A proposal to move flow-scheduler from Engine to Platform was discussed in May 2026 and postponed. Engine remains the owner.",
+  "paths": [
+   [
+    "Engineering Service Catalog",
+    "Recent ownership changes"
+   ]
+  ]
+ },
+ {
+  "qid": "q006",
+  "source_id": "sales-pricing-2026",
+  "quote": "| Team | $12 | $15 | 15,000 | 3-100 |",
+  "paths": [
+   [
+    "Acme Flow Price List (effective January 1, 2026)",
+    "Plans"
+   ]
+  ]
+ },
+ {
+  "qid": "q007",
+  "source_id": "sales-sla-2026",
+  "quote": "at least 99.95% of the time in each calendar month for Enterprise customers",
+  "paths": [
+   [
+    "Acme Flow Service Level Agreement (2026)",
+    "1. Uptime commitment"
+   ]
+  ]
+ },
+ {
+  "qid": "q008",
+  "source_id": "fin-procurement-2026",
+  "quote": "| up to $7,500 | direct manager |",
+  "paths": [
+   [
+    "Procurement Policy (effective April 2026)",
+    "Approval thresholds"
+   ]
+  ]
+ },
+ {
+  "qid": "q009",
+  "source_id": "it-saas-access-v2-2",
+  "quote": "Security reviews are completed within 2 business days.",
+  "paths": [
+   [
+    "Acme Ltd. — SaaS Access Policy (v2.2)",
+    "Process"
+   ]
+  ]
+ },
+ {
+  "qid": "q010",
+  "source_id": "hr-parental-leave-2026",
+  "quote": "The non-birth parent receives 15 paid days of leave from Acme (three working weeks), to be taken within the first 6 months after the birth or adoption.",
+  "paths": [
+   [
+    "Parental Leave Policy (effective April 2026)",
+    "Non-birth parent (Israel)"
+   ]
+  ]
+ },
+ {
+  "qid": "q011",
+  "source_id": "sup-escalation",
+  "quote": "| P2 | 2 hours | 4 business hours | 1 business day | community only |",
+  "paths": [
+   [
+    "Support Priorities and Escalation",
+    "First response targets"
+   ]
+  ]
+ },
+ {
+  "qid": "q011",
+  "source_id": "sup-meeting-2026-09-he",
+  "quote": "זו הצעה בלבד ולא החלטה.",
+  "paths": [
+   [
+    "סיכום ישיבת צוות התמיכה החודשית - 7 בספטמבר 2026",
+    "4. הצעה: שינוי יעדי P2"
+   ]
+  ]
+ },
+ {
+  "qid": "q012",
+  "source_id": "eng-pm-2026-03-scheduler",
+  "quote": "In total, 4,812 duplicate runs were executed for 167 customers.",
+  "paths": [
+   [
+    "Postmortem: Duplicate scheduled runs from flow-scheduler",
+    "Summary"
+   ]
+  ]
+ },
+ {
+  "qid": "q013",
+  "source_id": "eng-pm-2026-06-billing",
+  "quote": "The June 2 invoice run (for May usage) overcharged 312 customers who are billed in euros.",
+  "paths": [
+   [
+    "Postmortem: EUR invoices overcharged in the June 2026 invoice run",
+    "Summary"
+   ]
+  ]
+ },
+ {
+  "qid": "q013",
+  "source_id": "eng-pm-2026-06-billing",
+  "quote": "The total overcharge was €48,900, an average of about €157 per affected customer.",
+  "paths": [
+   [
+    "Postmortem: EUR invoices overcharged in the June 2026 invoice run",
+    "Summary"
+   ]
+  ]
+ },
+ {
+  "qid": "q014",
+  "source_id": "eng-pm-2026-08-api",
+  "quote": "- **Duration of full unavailability:** 47 minutes (14:06 to 14:53 Israel time)",
+  "paths": [
+   [
+    "Postmortem: flow-api outage on August 19, 2026"
+   ]
+  ]
+ },
+ {
+  "qid": "q015",
+  "source_id": "sales-pricing-2026",
+  "quote": "| API rate limit (requests/min) | 60 | 300 | 1,000 | 5,000 |",
+  "paths": [
+   [
+    "Acme Flow Price List (effective January 1, 2026)",
+    "Limits and features by plan"
+   ]
+  ]
+ },
+ {
+  "qid": "q015",
+  "source_id": "eng-architecture",
+  "quote": "API rate limits per customer depend on the plan: Starter 60 requests per minute, Team 300, Business 1,000, Enterprise 5,000.",
+  "paths": [
+   [
+    "Acme Flow Architecture Overview",
+    "6. Scaling and limits"
+   ]
+  ]
+ },
+ {
+  "qid": "q016",
+  "source_id": "sales-pricing-2026",
+  "quote": "| Business | $6 |",
+  "paths": [
+   [
+    "Acme Flow Price List (effective January 1, 2026)",
+    "Overage"
+   ]
+  ]
+ },
+ {
+  "qid": "q017",
+  "source_id": "sup-escalation",
+  "quote": "| P2 | 2 hours | 4 business hours | 1 business day | community only |",
+  "paths": [
+   [
+    "Support Priorities and Escalation",
+    "First response targets"
+   ]
+  ]
+ },
+ {
+  "qid": "q018",
+  "source_id": "fin-travel-2026",
+  "quote": "up to $300 in high-cost cities (London, New York, San Francisco, Zurich, Paris, Tokyo)",
+  "paths": [
+   [
+    "Travel Policy (effective February 2026)",
+    "3. Hotels"
+   ]
+  ]
+ },
+ {
+  "qid": "q019",
+  "source_id": "hr-relocation",
+  "quote": "Israel to Berlin",
+  "paths": [
+   [
+    "Relocation Policy",
+    "Relocation packages"
+   ]
+  ]
+ },
+ {
+  "qid": "q019",
+  "source_id": "hr-relocation",
+  "quote": "8,000 EUR",
+  "paths": [
+   [
+    "Relocation Policy",
+    "Relocation packages"
+   ]
+  ]
+ },
+ {
+  "qid": "q019",
+  "source_id": "hr-relocation",
+  "quote": "The lump sum is paid with the first salary after the move and is subject to tax.",
+  "paths": [
+   [
+    "Relocation Policy",
+    "Relocation packages"
+   ]
+  ]
+ },
+ {
+  "qid": "q020",
+  "source_id": "hr-sick-leave",
+  "quote": "Employees in Israel accrue 1.5 sick days per month of employment, up to 18 days per year, as required by law.",
+  "paths": [
+   [
+    "Sick Leave Policy",
+    "Accrual"
+   ]
+  ]
+ },
+ {
+  "qid": "q021",
+  "source_id": "it-laptop-policy",
+  "quote": "Report a lost or stolen laptop to IT (it@acme.example) and to Security (security@acme.example) within 1 hour of noticing.",
+  "paths": [
+   [
+    "Laptop and Endpoint Policy",
+    "Lost or stolen laptop"
+   ]
+  ]
+ },
+ {
+  "qid": "q021",
+  "source_id": "it-laptop-faq",
+  "quote": "Report a lost or stolen laptop to IT (it@acme.example) and to Security (security@acme.example) within 1 hour of noticing.",
+  "paths": [
+   [
+    "New Hire Laptop FAQ"
+   ]
+  ]
+ },
+ {
+  "qid": "q022",
+  "source_id": "it-password-mfa-2026",
+  "quote": "SMS codes and phone calls are no longer accepted as a second factor.",
+  "paths": [
+   [
+    "Password and MFA Policy (effective January 15, 2026)",
+    "Multi-factor authentication"
+   ]
+  ]
+ },
+ {
+  "qid": "q023",
+  "source_id": "it-password-mfa-2026",
+  "quote": "A FIDO2 security key (YubiKey) is mandatory for: anyone with admin rights in any system, anyone with access to production infrastructure, and the Finance team.",
+  "paths": [
+   [
+    "Password and MFA Policy (effective January 15, 2026)",
+    "Multi-factor authentication"
+   ]
+  ]
+ },
+ {
+  "qid": "q024",
+  "source_id": "sup-refund-policy",
+  "quote": "A customer may cancel an annual plan and receive a full refund within 14 days of the initial purchase.",
+  "paths": [
+   [
+    "Refund Policy",
+    "Annual plans"
+   ]
+  ]
+ },
+ {
+  "qid": "q024",
+  "source_id": "sup-refund-policy",
+  "quote": "After 14 days, annual plans are not refundable.",
+  "paths": [
+   [
+    "Refund Policy",
+    "Annual plans"
+   ]
+  ]
+ },
+ {
+  "qid": "q025",
+  "source_id": "sup-refund-policy",
+  "quote": "- From $1,000 to $10,000: the VP Customer Support, Shira Levin.",
+  "paths": [
+   [
+    "Refund Policy",
+    "Approval limits"
+   ]
+  ]
+ },
+ {
+  "qid": "q026",
+  "source_id": "it-saas-access-v2-2",
+  "quote": "The tool is on the approved list: Jira, Confluence, Slack, Google Workspace, Zoom, Miro, Figma (viewer), GitHub (read).",
+  "paths": [
+   [
+    "Acme Ltd. — SaaS Access Policy (v2.2)",
+    "auto_approve"
+   ]
+  ]
+ },
+ {
+  "qid": "q027",
+  "source_id": "hr-remote-work-2026",
+  "quote": "Acme provides a one-time home office allowance of 1,500 NIS, claimed through the expense system within 60 days of the purchase.",
+  "paths": [
+   [
+    "Remote Work Policy (effective March 2026)",
+    "The rules"
+   ]
+  ]
+ },
+ {
+  "qid": "q027",
+  "source_id": "hr-expenses",
+  "quote": "is claimed in Spendwise under the category \"Home office\", within 60 days of the purchase.",
+  "paths": [
+   [
+    "Business Expenses and Reimbursement Policy",
+    "Home office and equipment"
+   ]
+  ]
+ },
+ {
+  "qid": "q028",
+  "source_id": "hr-expenses",
+  "quote": "- Meals with customers or partners: up to 250 NIS per person, including tip.",
+  "paths": [
+   [
+    "Business Expenses and Reimbursement Policy",
+    "Meals"
+   ]
+  ]
+ },
+ {
+  "qid": "q029",
+  "source_id": "hr-sick-leave",
+  "quote": "A medical certificate is required for absences of 3 or more consecutive days.",
+  "paths": [
+   [
+    "Sick Leave Policy",
+    "Documentation"
+   ]
+  ]
+ },
+ {
+  "qid": "q030",
+  "source_id": "sales-sla-2026",
+  "quote": "Scheduled maintenance takes place in the weekly maintenance window, Sunday 02:00 to 06:00 UTC, and is announced at least 72 hours in advance on the status page.",
+  "paths": [
+   [
+    "Acme Flow Service Level Agreement (2026)",
+    "4. Scheduled maintenance"
+   ]
+  ]
+ },
+ {
+  "qid": "q031",
+  "source_id": "sec-incident-response",
+  "quote": "Personal data breaches affecting EU residents must be reported to the competent data protection authority within 72 hours of becoming aware of the breach",
+  "paths": [
+   [
+    "Security Incident Response Policy",
+    "Notification obligations"
+   ]
+  ]
+ },
+ {
+  "qid": "q032",
+  "source_id": "sec-data-classification",
+  "quote": "Never copied to laptops, spreadsheets, Slack, tickets or any AI tool, including Acme-approved AI tools.",
+  "paths": [
+   [
+    "Data Classification Policy",
+    "The four levels",
+    "Restricted"
+   ]
+  ]
+ },
+ {
+  "qid": "q033",
+  "source_id": "sec-data-classification",
+  "quote": "Acme's internal Knowledge Assistant indexes documents classified Public, Internal and Confidential.",
+  "paths": [
+   [
+    "Data Classification Policy",
+    "The Knowledge Assistant"
+   ]
+  ]
+ },
+ {
+  "qid": "q033",
+  "source_id": "sec-data-classification",
+  "quote": "Restricted information is never indexed.",
+  "paths": [
+   [
+    "Data Classification Policy",
+    "The Knowledge Assistant"
+   ]
+  ]
+ },
+ {
+  "qid": "q034",
+  "source_id": "eng-deploy-process",
+  "quote": "If the canary error rate is more than 0.5 percentage points higher, or p99 latency more than 20% higher, Conveyor rolls back automatically.",
+  "paths": [
+   [
+    "Deploy Process for Acme Flow",
+    "The pipeline"
+   ]
+  ]
+ },
+ {
+  "qid": "q035",
+  "source_id": "eng-deploy-process",
+  "quote": "`billing-service` is frozen from the 1st of the month at 00:00 UTC until the invoice run finishes on the 2nd.",
+  "paths": [
+   [
+    "Deploy Process for Acme Flow",
+    "When you cannot deploy"
+   ]
+  ]
+ },
+ {
+  "qid": "q036",
+  "source_id": "hr-sick-leave",
+  "quote": "Berlin employees report sick to their manager and to Katrin Vogel, the Berlin office manager.",
+  "paths": [
+   [
+    "Sick Leave Policy",
+    "Berlin employees"
+   ]
+  ]
+ },
+ {
+  "qid": "q037",
+  "source_id": "eng-runbook-flow-api",
+  "quote": "Do not restart flow-api pods while the backlog is high unless instructed by the incident commander.",
+  "paths": [
+   [
+    "On-call Runbook: flow-api",
+    "Alerts and what to do",
+    "WebhookIngestBacklog"
+   ]
+  ]
+ },
+ {
+  "qid": "q038",
+  "source_id": "sup-refund-policy",
+  "quote": "After 14 days, annual plans are not refundable.",
+  "paths": [
+   [
+    "Refund Policy",
+    "Annual plans"
+   ]
+  ]
+ },
+ {
+  "qid": "q038",
+  "source_id": "sales-partner-northwind-notes",
+  "quote": "Nobody at Acme ever asks for passwords.",
+  "paths": [
+   [
+    "Partner onboarding notes: Northwind Integrations GmbH",
+    "Internal follow-up (Lena, July 9)"
+   ]
+  ]
+ },
+ {
+  "qid": "q039",
+  "source_id": "hr-onboarding-he",
+  "quote": "הדרכת אבטחת מידע מקוונת היא חובה, ויש להשלים אותה תוך 14 יום מתחילת העבודה.",
+  "paths": [
+   [
+    "נוהל קליטת עובד חדש",
+    "השבועיים הראשונים"
+   ]
+  ]
+ },
+ {
+  "qid": "q040",
+  "source_id": "eng-pm-2026-08-api",
+  "quote": "A configuration change to auth-service reduced its database connection pool from 200 to 20 connections per pod.",
+  "paths": [
+   [
+    "Postmortem: flow-api outage on August 19, 2026",
+    "Summary"
+   ]
+  ]
+ },
+ {
+  "qid": "q040",
+  "source_id": "eng-service-catalog",
+  "quote": "| auth-service | Identity | Gil Avraham | 1 | identity-oncall: weekly, handover Thursday 10:00; secondary is platform-oncall | auth-service-prod |",
+  "paths": [
+   [
+    "Engineering Service Catalog",
+    "Production services"
+   ]
+  ]
+ },
+ {
+  "qid": "q041",
+  "source_id": "eng-pm-2026-08-api",
+  "quote": "Monthly availability of flow-api for August 2026 was 99.89%",
+  "paths": [
+   [
+    "Postmortem: flow-api outage on August 19, 2026",
+    "Impact"
+   ]
+  ]
+ },
+ {
+  "qid": "q041",
+  "source_id": "sales-sla-2026",
+  "quote": "below 99.95% but at least 99.5%",
+  "paths": [
+   [
+    "Acme Flow Service Level Agreement (2026)",
+    "2. Service credits"
+   ]
+  ]
+ },
+ {
+  "qid": "q042",
+  "source_id": "eng-pm-2026-03-scheduler",
+  "quote": "- **Incident commander:** Yonatan Peled (engine-oncall primary)",
+  "paths": [
+   [
+    "Postmortem: Duplicate scheduled runs from flow-scheduler"
+   ]
+  ]
+ },
+ {
+  "qid": "q042",
+  "source_id": "eng-runbook-flow-engine",
+  "quote": "Rotation name: engine-oncall. Weekly, handover on Sunday at 10:00 Israel time in #engine-oncall.",
+  "paths": [
+   [
+    "On-call Runbook: flow-engine",
+    "Rotation"
+   ]
+  ]
+ },
+ {
+  "qid": "q043",
+  "source_id": "eng-pm-2026-06-billing",
+  "quote": "A Berlin support agent notices three tickets complaining about unusually high overage charges and opens a P2 escalation.",
+  "paths": [
+   [
+    "Postmortem: EUR invoices overcharged in the June 2026 invoice run",
+    "Timeline (UTC)"
+   ]
+  ]
+ },
+ {
+  "qid": "q043",
+  "source_id": "co-org-chart",
+  "quote": "- Customer Support EMEA: lead Jonas Becker, 5 people (Berlin).",
+  "paths": [
+   [
+    "Acme Org Chart Summary (October 2026)",
+    "Customer Support (reports to Shira Levin)"
+   ]
+  ]
+ },
+ {
+  "qid": "q044",
+  "source_id": "eng-pm-2026-08-api",
+  "quote": "1. All configuration changes go through the canary stage in Conveyor. Owner: Boaz Nahum (Platform). Done September 1, 2026.",
+  "paths": [
+   [
+    "Postmortem: flow-api outage on August 19, 2026",
+    "Action items"
+   ]
+  ]
+ },
+ {
+  "qid": "q044",
+  "source_id": "eng-deploy-process",
+  "quote": "all configuration changes now go through the canary stage like code changes.",
+  "paths": [
+   [
+    "Deploy Process for Acme Flow",
+    "Configuration changes"
+   ]
+  ]
+ },
+ {
+  "qid": "q045",
+  "source_id": "co-glossary",
+  "quote": "**Lighthouse:** the analytics data warehouse (ClickHouse) owned by the Data team.",
+  "paths": [
+   [
+    "Acme Glossary of Internal Terms",
+    "Code names and internal tools"
+   ]
+  ]
+ },
+ {
+  "qid": "q045",
+  "source_id": "eng-service-catalog",
+  "quote": "| lighthouse | Data | Eitan Klein | 3 | business hours, #data-help | none |",
+  "paths": [
+   [
+    "Engineering Service Catalog",
+    "Production services"
+   ]
+  ]
+ },
+ {
+  "qid": "q045",
+  "source_id": "eng-service-catalog",
+  "quote": "Alerts outside business hours create tickets, not pages.",
+  "paths": [
+   [
+    "Engineering Service Catalog",
+    "Tier definitions"
+   ]
+  ]
+ },
+ {
+  "qid": "q046",
+  "source_id": "eng-service-catalog",
+  "quote": "| billing-service | Billing | Rina Sasson | 1 | billing-oncall: weekly, handover Wednesday 12:00 | billing-prod |",
+  "paths": [
+   [
+    "Engineering Service Catalog",
+    "Production services"
+   ]
+  ]
+ },
+ {
+  "qid": "q046",
+  "source_id": "co-org-chart",
+  "quote": "- Billing team: lead Rina Sasson, 6 people. Owns billing-service.",
+  "paths": [
+   [
+    "Acme Org Chart Summary (October 2026)",
+    "Engineering (reports to Michal Ben-David)"
+   ]
+  ]
+ },
+ {
+  "qid": "q047",
+  "source_id": "eng-service-catalog",
+  "quote": "Engineers join a rotation as primary only after 90 days at Acme and at least one week as a shadow.",
+  "paths": [
+   [
+    "Engineering Service Catalog",
+    "On-call rules that apply to every rotation"
+   ]
+  ]
+ },
+ {
+  "qid": "q047",
+  "source_id": "hr-onboarding-he",
+  "quote": "עובדי הנדסה יכולים להצטרף לסבב הכוננות כראשיים רק אחרי 90 יום.",
+  "paths": [
+   [
+    "נוהל קליטת עובד חדש",
+    "תוכנית 30-60-90"
+   ]
+  ]
+ },
+ {
+  "qid": "q048",
+  "source_id": "sales-pricing-2026",
+  "quote": "| EU data residency | no | no | add-on, $4 per user/month | included |",
+  "paths": [
+   [
+    "Acme Flow Price List (effective January 1, 2026)",
+    "Limits and features by plan"
+   ]
+  ]
+ },
+ {
+  "qid": "q048",
+  "source_id": "co-glossary",
+  "quote": "**Tidewater:** the EU data residency project that launched the eu-central-1 (Frankfurt) region in October 2025.",
+  "paths": [
+   [
+    "Acme Glossary of Internal Terms",
+    "Code names and internal tools"
+   ]
+  ]
+ },
+ {
+  "qid": "q049",
+  "source_id": "eng-oncall-scheduler-he",
+  "quote": "תגמול כוננות: 350 ש\"ח לכל יום חול בכוננות ו-600 ש\"ח לכל יום שישי, שבת או חג.",
+  "paths": [
+   [
+    "הערות כונן: flow-scheduler",
+    "כוננות: פרטים מעשיים"
+   ]
+  ]
+ },
+ {
+  "qid": "q049",
+  "source_id": "hr-expenses",
+  "quote": "Employees who are on an on-call rotation receive a monthly communication allowance of 120 NIS, paid automatically with the salary.",
+  "paths": [
+   [
+    "Business Expenses and Reimbursement Policy",
+    "Mobile phone and internet"
+   ]
+  ]
+ },
+ {
+  "qid": "q050",
+  "source_id": "co-glossary",
+  "quote": "Owned by the Engine team.",
+  "paths": [
+   [
+    "Acme Glossary of Internal Terms",
+    "Code names and internal tools"
+   ]
+  ]
+ },
+ {
+  "qid": "q050",
+  "source_id": "co-org-chart",
+  "quote": "- Engine team: lead Dana Levi, 8 people. Owns flow-engine and flow-scheduler, and runs the Kestrel project.",
+  "paths": [
+   [
+    "Acme Org Chart Summary (October 2026)",
+    "Engineering (reports to Michal Ben-David)"
+   ]
+  ]
+ },
+ {
+  "qid": "q050",
+  "source_id": "co-offices",
+  "quote": "- Teams: most of Engineering (Core API, Engine, Identity, Data, Platform) and the VP Engineering.",
+  "paths": [
+   [
+    "Acme Office Locations",
+    "Haifa (HFA-1)"
+   ]
+  ]
+ },
+ {
+  "qid": "q051",
+  "source_id": "co-glossary",
+  "quote": "**Blue Room:** the weekly incident review meeting, every Thursday at 11:00 Israel time, chaired by the VP Engineering. Every SEV1 and SEV2 postmortem is reviewed there.",
+  "paths": [
+   [
+    "Acme Glossary of Internal Terms",
+    "Meetings and processes"
+   ]
+  ]
+ },
+ {
+  "qid": "q052",
+  "source_id": "eng-deploy-process",
+  "quote": "Production deploys are blocked during Quiet Hours unless a CAB exception is granted.",
+  "paths": [
+   [
+    "Deploy Process for Acme Flow",
+    "When you cannot deploy"
+   ]
+  ]
+ },
+ {
+  "qid": "q052",
+  "source_id": "co-glossary",
+  "quote": "**Quiet Hours:** the period in which production deploys are blocked: from Thursday 15:00 to Sunday 09:00 Israel time, and from 15:00 on the eve of an Israeli public holiday until 09:00 on the next working day.",
+  "paths": [
+   [
+    "Acme Glossary of Internal Terms",
+    "Meetings and processes"
+   ]
+  ]
+ },
+ {
+  "qid": "q053",
+  "source_id": "sec-incident-response",
+  "quote": "For a SEV1, the IC notifies the ERT within 30 minutes of declaring the incident.",
+  "paths": [
+   [
+    "Security Incident Response Policy",
+    "Roles"
+   ]
+  ]
+ },
+ {
+  "qid": "q053",
+  "source_id": "co-glossary",
+  "quote": "**ERT (Executive Response Team):** the group notified for every SEV1 security incident: the CEO, the CTO, the CISO and the VP Customer Support.",
+  "paths": [
+   [
+    "Acme Glossary of Internal Terms",
+    "Meetings and processes"
+   ]
+  ]
+ },
+ {
+  "qid": "q054",
+  "source_id": "co-glossary",
+  "quote": "**Red Folder:** the list of the 25 accounts with the highest ARR, maintained by Shira Levin (VP Customer Support).",
+  "paths": [
+   [
+    "Acme Glossary of Internal Terms",
+    "Meetings and processes"
+   ]
+  ]
+ },
+ {
+  "qid": "q054",
+  "source_id": "sup-escalation",
+  "quote": "Tickets from Red Folder accounts skip L1 and go straight to L2.",
+  "paths": [
+   [
+    "Support Priorities and Escalation",
+    "Escalation rules"
+   ]
+  ]
+ },
+ {
+  "qid": "q055",
+  "source_id": "co-glossary",
+  "quote": "**Orca:** the 2025 migration of all services from self-managed virtual machines to Kubernetes (Amazon EKS). Completed in November 2025.",
+  "paths": [
+   [
+    "Acme Glossary of Internal Terms",
+    "Code names and internal tools"
+   ]
+  ]
+ },
+ {
+  "qid": "q056",
+  "source_id": "co-glossary",
+  "quote": "**Pulse:** the HR portal (built on HiBob), used for vacation requests, sick days, payslips, reviews and benefits.",
+  "paths": [
+   [
+    "Acme Glossary of Internal Terms",
+    "Code names and internal tools"
+   ]
+  ]
+ },
+ {
+  "qid": "q057",
+  "source_id": "co-glossary",
+  "quote": "Members: Boaz Nahum (Platform), Michal Ben-David (VP Engineering) and the on-call engineer of the affected service.",
+  "paths": [
+   [
+    "Acme Glossary of Internal Terms",
+    "Meetings and processes"
+   ]
+  ]
+ },
+ {
+  "qid": "q057",
+  "source_id": "eng-deploy-process",
+  "quote": "To request an exception, post in #cab with the change, the reason it cannot wait, the rollback plan, and the name of an on-call engineer who will watch the deploy.",
+  "paths": [
+   [
+    "Deploy Process for Acme Flow",
+    "When you cannot deploy"
+   ]
+  ]
+ },
+ {
+  "qid": "q058",
+  "source_id": "co-glossary",
+  "quote": "**Fixit:** the IT ticketing system. Emails to it@acme.example create Fixit tickets.",
+  "paths": [
+   [
+    "Acme Glossary of Internal Terms",
+    "Code names and internal tools"
+   ]
+  ]
+ },
+ {
+  "qid": "q058",
+  "source_id": "it-helpdesk",
+  "quote": "Email: it@acme.example (creates a Fixit ticket automatically)",
+  "paths": [
+   [
+    "IT Helpdesk",
+    "How to get help"
+   ]
+  ]
+ },
+ {
+  "qid": "q059",
+  "source_id": "co-parking-tlv-he",
+  "quote": "לחברה יש 18 מקומות חניה בחניון הבניין, בקומה מינוס 2.",
+  "paths": [
+   [
+    "נוהל חניה במשרד תל אביב (TLV-1)",
+    "כמה מקומות יש"
+   ]
+  ]
+ },
+ {
+  "qid": "q060",
+  "source_id": "co-parking-tlv-he",
+  "quote": "ההזמנה נעשית באפליקציית החניה של הבניין, עד השעה 18:00 ביום שלפני.",
+  "paths": [
+   [
+    "נוהל חניה במשרד תל אביב (TLV-1)",
+    "איך מזמינים מקום"
+   ]
+  ]
+ },
+ {
+  "qid": "q061",
+  "source_id": "hr-health-insurance-he",
+  "quote": "עבור בני משפחה Acme משלמת 50% מהפרמיה, והעובד משלם את היתרה בניכוי מהשכר.",
+  "paths": [
+   [
+    "ביטוח בריאות קבוצתי לעובדי Acme",
+    "מי משלם"
+   ]
+  ]
+ },
+ {
+  "qid": "q062",
+  "source_id": "hr-health-insurance-he",
+  "quote": "אחרי ההשתתפות של Acme העובד משלם 48 ש\"ח לבן משפחה בוגר ו-19 ש\"ח לילד.",
+  "paths": [
+   [
+    "ביטוח בריאות קבוצתי לעובדי Acme",
+    "מי משלם"
+   ]
+  ]
+ },
+ {
+  "qid": "q063",
+  "source_id": "hr-reserve-duty-he",
+  "quote": "על כל 10 ימי מילואים מצטברים בשנה קלנדרית, העובד מקבל מענק של 500 ש\"ח, עד תקרה של 3,000 ש\"ח בשנה.",
+  "paths": [
+   [
+    "נוהל שירות מילואים",
+    "מענק מילואים"
+   ]
+  ]
+ },
+ {
+  "qid": "q064",
+  "source_id": "eng-oncall-scheduler-he",
+  "quote": "אם יש pod תקוע במצב Terminating על node שמתרוקן (draining), למחוק אותו בכוח",
+  "paths": [
+   [
+    "הערות כונן: flow-scheduler",
+    "התראות נפוצות",
+    "SchedulerLeaderLost"
+   ]
+  ]
+ },
+ {
+  "qid": "q064",
+  "source_id": "eng-oncall-scheduler-he",
+  "quote": "זה הלקח מהתקלה של מרץ.",
+  "paths": [
+   [
+    "הערות כונן: flow-scheduler",
+    "התראות נפוצות",
+    "SchedulerLeaderLost"
+   ]
+  ]
+ },
+ {
+  "qid": "q065",
+  "source_id": "it-ai-usage-he",
+  "quote": "מידע ברמת Restricted: אסור בכל כלי AI, כולל הכלים המאושרים.",
+  "paths": [
+   [
+    "מדיניות שימוש בכלי בינה מלאכותית (AI)",
+    "מה מותר להכניס לכלים"
+   ]
+  ]
+ },
+ {
+  "qid": "q066",
+  "source_id": "sup-meeting-2026-09-he",
+  "quote": "זמן תגובה ראשונה (FRT) חציוני: 38 דקות לכל הקריאות.",
+  "paths": [
+   [
+    "סיכום ישיבת צוות התמיכה החודשית - 7 בספטמבר 2026",
+    "1. נתוני אוגוסט"
+   ]
+  ]
+ },
+ {
+  "qid": "q067",
+  "source_id": "co-haifa-office-he",
+  "quote": "ההסעה יוצאת בשעות 08:15, 08:45 ו-09:15",
+  "paths": [
+   [
+    "מדריך למשרד חיפה (HFA-1)",
+    "כתובת והגעה"
+   ]
+  ]
+ },
+ {
+  "qid": "q068",
+  "source_id": "hr-vacation-2026-he",
+  "quote": "עובד במשרה מלאה מקבל 14 ימי חופשה בתשלום בשנת העבודה הראשונה.",
+  "paths": [
+   [
+    "מדיניות חופשה (בתוקף מינואר 2026)",
+    "מכסת ימי חופשה"
+   ]
+  ]
+ },
+ {
+  "qid": "q068",
+  "source_id": "hr-vacation-2026",
+  "quote": "Full-time employees receive 14 paid vacation days in their first year of employment.",
+  "paths": [
+   [
+    "Vacation Policy (effective January 2026)",
+    "Annual allowance"
+   ]
+  ]
+ },
+ {
+  "qid": "q069",
+  "source_id": "eng-service-catalog",
+  "quote": "| flow-api | Core API | Itai Barak | 1 | core-api-oncall: weekly, handover Sunday 10:00 | flow-api-prod |",
+  "paths": [
+   [
+    "Engineering Service Catalog",
+    "Production services"
+   ]
+  ]
+ }
+]

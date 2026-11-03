@@ -1,0 +1,13 @@
+# Copy to terraform.tfvars (git-ignored) and edit.
+region    = "us-east-1"
+image_tag = "v1"
+
+# Your own IP while testing: curl -s https://checkip.amazonaws.com
+allowed_cidr = "203.0.113.7/32"
+
+# Needed for the microphone in the browser (secure context). Request one in ACM for a domain you own.
+certificate_arn = ""
+
+tutor = "llm"
+stt   = "openai"
+tts   = "openai"

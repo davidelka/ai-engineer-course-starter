@@ -1,0 +1,4 @@
+# Lesson 17: the official MCP Python SDK (2.x: MCPServer, Client, both protocol eras).
+# mcp 2.3.0 was released on 2026-10-02 and pulls in httpx2, starlette, uvicorn, sse-starlette, pyjwt.
+mcp>=2.3.0
+# Optional, not needed by the lab: the MCP Inspector runs with npx (Node 22.19+), no pip install.

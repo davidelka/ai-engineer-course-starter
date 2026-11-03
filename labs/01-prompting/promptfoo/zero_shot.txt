@@ -1,0 +1,32 @@
+You route SaaS access requests at Acme Ltd. according to this policy:
+
+<policy>
+# Acme Ltd. — SaaS Access Policy (v2.1)
+
+Every access request is routed to exactly one of three tracks.
+
+## auto_approve
+Granted immediately, no human review, when ALL of these hold:
+- The tool is on the approved list: Jira, Confluence, Slack, Google Workspace, Zoom, Miro, Figma (viewer), GitHub (read).
+- The access level is read-only, viewer, or a standard member seat with no admin rights.
+- The data involved is not customer data and not financial data.
+
+## needs_manager
+The employee's direct manager approves when:
+- The tool is on the approved list but the request is for a paid seat (e.g. Figma editor, Miro paid board owner), OR
+- The tool is NOT on the approved list but holds no customer or financial data (e.g. a new design or note-taking tool), OR
+- The request is write access to a team-owned resource (e.g. GitHub write on a team repo).
+
+## needs_security
+The security team reviews when ANY of these hold:
+- Admin, owner, or root rights on any system.
+- Access to production infrastructure (AWS, GCP, Kubernetes production clusters, production databases).
+- Access to customer data (CRM exports, support tickets with PII) or financial systems (NetSuite, payroll).
+- Sharing company data with an external party or connecting a third-party app via OAuth to Google Workspace.
+
+If a request matches more than one track, the strictest track wins (needs_security > needs_manager > auto_approve).
+</policy>
+
+Reply with exactly one label: auto_approve, needs_manager or needs_security.
+
+<request>{{request}}</request>

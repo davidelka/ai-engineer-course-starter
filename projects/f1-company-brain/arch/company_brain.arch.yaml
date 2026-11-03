@@ -1,0 +1,208 @@
+# Company Brain (final project F1): the architecture as data (archkit, lesson 19).
+#
+#   python -m cbrain arch          # validates this file with archkit's five rules, lints the ADRs,
+#                                  # writes results/arch.mmd and results/arch.html (Mermaid)
+#   python -m cbrain cost          # the budget section below at 200 employees, plus AWS (deploykit)
+#
+# This spec describes what the code in cbrain/ does, not a wish list: every component names the module
+# (or course package) that implements it. tests/test_f1_company_brain.py checks that the rules pass.
+#
+# Conventions (archkit): flows go in the direction the data travels. classification: public |
+# internal | confidential | pii. fallback: a component id or static_message | cached_response |
+# queue_for_human.
+
+system: company-brain
+description: >
+  Acme's internal assistant for ~200 employees. Questions over Acme's 55 documents with citations and
+  per-role access (phase 2, the M1 package acmeqa); data questions over acme.db via text-to-SQL; access
+  requests as a LangGraph approval workflow with human gates (phase 3, flowkit); served as one FastAPI
+  service plus an MCP server, with guard layers, a gateway in front of every model call, traces, an
+  evaluation suite and a container deployment on ECS Fargate (phase 4).
+
+boundaries:
+  - {id: employees,   name: "Employee devices (browser, Claude Code / Desktop)", trust: untrusted}
+  - {id: authors,     name: "Document authors and partners (text inside documents)", trust: untrusted,
+     notes: "Partner emails pasted into docs (sales-partner-northwind-notes) carry injections"}
+  - {id: acme_vpc,    name: "Acme AWS account (VPC, ECS task, EFS)",  trust: trusted}
+  - {id: anthropic,   name: "Anthropic API",                           trust: third_party,
+     notes: "Commercial terms: no training on API data. Confidential allowed by policy.yaml"}
+  - {id: openai,      name: "OpenAI API (fallback for internal data only)", trust: third_party}
+  - {id: tracing_ops, name: "Tracing backend (Phoenix in compose, CloudWatch in AWS)", trust: trusted}
+
+components:
+  # ---------------------------------------------------------------- entry points
+  - {id: web_ui,     name: "Web UI (ui/index.html)", kind: client, boundary: employees, tech: "single page, Hebrew RTL"}
+  - {id: mcp_client, name: "MCP client (Claude Code)", kind: client, boundary: employees, tech: "stdio or Streamable HTTP"}
+
+  # ---------------------------------------------------------------- the service
+  - {id: api,        name: "Brain API (service.py)", kind: service, boundary: acme_vpc, tech: "FastAPI, API keys -> Principal", traced: true}
+  - {id: mcp_server, name: "Brain MCP server (mcp_server.py)", kind: service, boundary: acme_vpc,
+     tech: "mcpkit read tools + brain tools, same keys", traced: true}
+  - {id: input_guard, name: "Input screen (guards.Screens)", kind: guardrail, boundary: acme_vpc, tech: "guardkit HeuristicDetector"}
+  - {id: rule_router, name: "Intent rules (router.rule_intent)", kind: service, boundary: acme_vpc,
+     tech: "regex EN/HE + acmeqa data router", notes: "decides ~92% of messages without a model"}
+  - {id: gateway,    name: "LLM gateway (gatewaykit)", kind: classifier, boundary: acme_vpc,
+     tech: "virtual key per purpose, budgets, policy by data classification, redaction, audit",
+     notes: "the brain labels each call with request_classification; the gateway enforces policy.yaml"}
+
+  - id: router_llm
+    name: "Intent model (structured output)"
+    kind: llm
+    boundary: anthropic
+    model: anthropic:claude-haiku-5-5
+    timeout_s: 10
+    retry: {max_attempts: 3}
+    fallback: rule_router          # model down or unsure -> "knowledge", the path with no side effects
+    traced: true
+
+  # ---------------------------------------------------------------- knowledge (M1, acmeqa)
+  - {id: retriever,   name: "Hybrid retriever + ACL + versions (acmeqa)", kind: retriever, boundary: acme_vpc,
+     tech: "BM25 + e5-small, RRF, ACL as where-before-ranking"}
+  - {id: doc_index,   name: "Document index (acmeqa .index)", kind: datastore, boundary: acme_vpc,
+     tech: "BM25 + NumpyVectorStore files on EFS (ADR-0003)"}
+  - {id: context_guard, name: "Context screen + spotlight (guards)", kind: guardrail, boundary: acme_vpc,
+     tech: "drop flagged chunks, datamark + nonce, instruction hierarchy, canary"}
+  - id: answer_llm
+    name: "Answer model"
+    kind: llm
+    boundary: anthropic
+    model: anthropic:claude-haiku-5-5
+    timeout_s: 30
+    retry: {max_attempts: 3}
+    fallback: answer_llm_backup
+    traced: true
+  - id: answer_llm_backup
+    name: "Answer model (fallback, internal data only)"
+    kind: llm
+    boundary: openai
+    model: openai:gpt-5.4-mini
+    timeout_s: 30
+    retry: {max_attempts: 2}
+    fallback: static_message       # and confidential context never falls back here: policy.yaml
+    traced: true
+  - {id: output_guard, name: "Output validator (guardkit.validate)", kind: guardrail, boundary: acme_vpc,
+     tech: "images, unknown domains, credential requests, refund promises, canary"}
+  - {id: text_to_sql, name: "Text-to-SQL (datakit via acmeqa)", kind: tool, boundary: acme_vpc, side_effects: read,
+     tech: "semantic layer roles, read-only connection, guard + repair"}
+  - {id: acme_db,     name: "acme.db (directory, grants, tickets, customers)", kind: datastore, boundary: acme_vpc,
+     tech: "SQLite, read-only"}
+
+  # ---------------------------------------------------------------- access requests (flowkit)
+  - {id: confirm_gate, name: "Preview + confirmation (Brain.preview, ConfirmationGate)", kind: human_approval,
+     boundary: acme_vpc, tech: "single-use token bound to requester + text; MCP: elicitation"}
+  - {id: workflow,    name: "Approval workflow (flowkit on LangGraph)", kind: service, boundary: acme_vpc,
+     tech: "intake -> enrich -> policy (+harden_route) -> file -> gates -> decision -> notify", traced: true}
+  - id: intake_llm
+    name: "Intake extraction + risk summary"
+    kind: llm
+    boundary: anthropic
+    model: anthropic:claude-haiku-5-5
+    timeout_s: 20
+    retry: {max_attempts: 3}
+    fallback: queue_for_human      # unreadable request -> needs_info; risk summary -> raw facts for the reviewer
+    traced: true
+  - {id: acme_tools,  name: "Acme read tools (toolkit)", kind: tool, boundary: acme_vpc, side_effects: read,
+     tech: "lookup_employee, get_system_info, list_access_grants, check_policy"}
+  - {id: file_tool,   name: "create_access_request (toolkit)", kind: tool, boundary: acme_vpc, side_effects: write,
+     tech: "idempotency key; records a PENDING request, grants nothing by itself"}
+  - {id: approval_ui, name: "Approvals tab (manager / security)", kind: human_approval, boundary: acme_vpc,
+     tech: "flowkit judge_decision: REQ-8/9 against the directory"}
+  - {id: decision_tool, name: "apply_decision + notify (flowkit)", kind: tool, boundary: acme_vpc, side_effects: write,
+     tech: "conditional status update (REQ-10), audit (REQ-11), idempotent outbox"}
+  - {id: state_db,    name: "State (checkpoints.db, requests.db)", kind: datastore, boundary: acme_vpc,
+     tech: "SQLite on EFS, one writer task (ADR-0003)"}
+
+  # ---------------------------------------------------------------- knowledge ingestion
+  - {id: doc_sources, name: "Acme documents (55, incl. pasted partner emails)", kind: external_api, boundary: authors}
+  - {id: ingest_job,  name: "Ingestion (acmeqa IngestJob)", kind: batch_job, boundary: acme_vpc,
+     tech: "manifest, incremental, classification metadata"}
+
+  # ---------------------------------------------------------------- operations
+  - {id: tracing,     name: "Traces (obskit)", kind: observability, boundary: tracing_ops,
+     tech: "OpenTelemetry GenAI spans, PII redaction before export, JSONL / OTLP"}
+  - {id: eval_suite,  name: "Unified evaluation (cbrain.evaluate)", kind: eval, boundary: acme_vpc,
+     tech: "knowledge 79, routing 40, workflow 20, security 33+23; pytest gate in CI"}
+
+flows:
+  # question path
+  - {from: web_ui,       to: api,           data: "question + API key", classification: pii}
+  - {from: mcp_client,   to: mcp_server,    data: "tool call + bearer key", classification: pii}
+  - {from: mcp_server,   to: api,           data: "same Brain object (in-process)", classification: pii}
+  - {from: api,          to: input_guard,   data: "question", classification: pii}
+  - {from: input_guard,  to: rule_router,   data: "screened question", classification: internal}
+  - {from: rule_router,  to: gateway,       data: "unsure messages only (~8%)", classification: internal}
+  - {from: gateway,      to: router_llm,    data: "message in <message> tags", classification: internal}
+  - {from: rule_router,  to: retriever,     data: "knowledge / data question + document role", classification: internal}
+  - {from: retriever,    to: doc_index,     data: "query with ACL where", classification: internal}
+  - {from: retriever,    to: context_guard, data: "top chunks (any classification the role may see)", classification: confidential}
+  - {from: context_guard, to: gateway,      data: "spotlighted sources + question, labeled with the classification", classification: confidential}
+  - {from: gateway,      to: answer_llm,    data: "answer request", classification: confidential}
+  - {from: gateway,      to: answer_llm_backup, data: "answer request (internal/public only)", classification: internal}
+  - {from: answer_llm,   to: output_guard,  data: "draft answer with [n] citations", classification: confidential}
+  - {from: answer_llm_backup, to: output_guard, data: "draft answer", classification: internal}
+  - {from: output_guard, to: api,           data: "answer + citations (or the safe replacement)", classification: confidential}
+  - {from: rule_router,  to: text_to_sql,   data: "data question + data role", classification: internal}
+  - {from: text_to_sql,  to: acme_db,       data: "guarded SELECT", classification: internal}
+  - {from: api,          to: web_ui,        data: "SSE events", classification: confidential}
+
+  # access-request path
+  - {from: rule_router,  to: confirm_gate,  data: "access request -> preview (nothing filed)", classification: internal}
+  - {from: confirm_gate, to: workflow,      data: "confirmed text + authenticated requester", classification: internal}
+  - {from: workflow,     to: gateway,       data: "intake prompt, risk facts", classification: internal}
+  - {from: gateway,      to: intake_llm,    data: "IntakeRequest extraction / risk summary", classification: internal}
+  - {from: intake_llm,   to: workflow,      data: "fields (validated by Pydantic)", classification: internal}
+  - {from: workflow,     to: acme_tools,    data: "lookups, check_policy", classification: internal}
+  - {from: workflow,     to: file_tool,     data: "file the pending request", classification: internal,
+     approval_exempt: "the employee confirmed the preview (confirm_gate); filing records a PENDING request and grants nothing. Granting happens only after approval_ui, or under the auto_approve track of SaaS access policy v2.2 (basic seats on the approved list), never for text the injection screen flagged (harden_route)."}
+  - {from: workflow,     to: approval_ui,   data: "paused at manager / security gate", classification: internal}
+  - {from: approval_ui,  to: decision_tool, data: "human decision (approver = authenticated principal)", classification: internal}
+  - {from: workflow,     to: state_db,      data: "checkpoints after every step", classification: internal}
+  - {from: decision_tool, to: state_db,     data: "status + audit + outbox", classification: internal}
+
+  # ingestion
+  - {from: doc_sources,  to: ingest_job,    data: "documents with classification metadata", classification: confidential}
+  - {from: ingest_job,   to: doc_index,     data: "chunks + embeddings", classification: confidential}
+
+  # operations
+  - {from: api,          to: tracing,       data: "spans, PII-redacted before export", classification: internal}
+  - {from: workflow,     to: tracing,       data: "LLM and tool spans", classification: internal}
+  - {from: eval_suite,   to: api,           data: "golden questions, routing set, workflow cases, attacks", classification: internal}
+
+# Cost model at 200 employees (python -m cbrain cost). Token sizes come from the offline traces and
+# M1's measurements; replace them with the live trace numbers after milestone 10.
+# Assumptions: 22 working days a month; 0.5 questions per employee per day (100/day); 1 access request
+# per employee per month (~9/day); the router model is called for 8% of messages (measured, routing eval);
+# 15% of questions are data questions. Prompt cache: the answer system block (~1,200 tokens with the guard
+# text) is read from cache when questions are less than 5 minutes apart: ~50% during the work day.
+budget:
+  fixed_monthly_usd: 0            # AWS is computed separately by deploykit (python -m cbrain cost)
+  monthly_limit_usd: 25           # the sum of the three gateway virtual-key budgets (15 + 5 + 2) plus margin
+  paths:
+    - name: ask
+      requests_per_day: 100
+      days: 22
+      prompt_cache_hit_rate: 0.5
+      calls:
+        - {name: router_llm, model: claude-haiku-5-5, input_tokens: 650, cacheable_tokens: 0, output_tokens: 60, calls_per_request: 0.08}
+        - {name: answer_llm, model: claude-haiku-5-5, input_tokens: 2600, cacheable_tokens: 1200, output_tokens: 250, calls_per_request: 0.85}
+        - {name: text_to_sql, model: claude-haiku-5-5, input_tokens: 1800, cacheable_tokens: 1200, output_tokens: 180, calls_per_request: 0.15}
+      latency_budget_ms: 8000
+      stages:
+        - {name: input_guard,  p95_ms: 5,    p50_ms: 1}
+        - {name: rules,        p95_ms: 5,    p50_ms: 1}
+        - {name: retrieval,    p95_ms: 250,  p50_ms: 60}
+        - {name: gateway,      p95_ms: 30,   p50_ms: 10}
+        - {name: answer_llm,   p95_ms: 6000, p50_ms: 3000}
+        - {name: output_guard, p95_ms: 5,    p50_ms: 1}
+    - name: access_request
+      requests_per_day: 9
+      days: 22
+      prompt_cache_hit_rate: 0.0
+      calls:
+        - {name: preview_intake, model: claude-haiku-5-5, input_tokens: 750, cacheable_tokens: 0, output_tokens: 120}
+        - {name: workflow_intake, model: claude-haiku-5-5, input_tokens: 750, cacheable_tokens: 0, output_tokens: 120}
+        - {name: risk_summary, model: claude-haiku-5-5, input_tokens: 500, cacheable_tokens: 0, output_tokens: 160, calls_per_request: 0.4}
+      latency_budget_ms: 5000
+      stages:
+        - {name: preview,      p95_ms: 2500, p50_ms: 1200}
+        - {name: workflow_run, p95_ms: 2500, p50_ms: 1200}

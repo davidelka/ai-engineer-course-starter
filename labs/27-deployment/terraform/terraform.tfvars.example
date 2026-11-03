@@ -1,0 +1,16 @@
+# Copy to terraform.tfvars (git-ignored) and edit.
+#   cp terraform.tfvars.example terraform.tfvars
+
+region    = "us-east-1"
+image_tag = "v1" # change for every new image: tags in ECR are immutable
+
+# Only you may reach the load balancer. Your public IP: curl -s https://checkip.amazonaws.com
+allowed_cidr = "203.0.113.7/32"
+
+# Smallest Fargate size. ARM64 is about 20% cheaper but needs a linux/arm64 image.
+cpu              = 256
+memory           = 512
+cpu_architecture = "X86_64"
+
+min_count = 1
+max_count = 2

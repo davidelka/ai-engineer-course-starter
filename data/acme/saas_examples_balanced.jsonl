@@ -1,0 +1,6 @@
+{"request": "Read-only access to the team Jira board", "label": "auto_approve"}
+{"request": "Editor seat in Figma for a new product designer", "label": "needs_manager"}
+{"request": "Admin rights on the production AWS account", "label": "needs_security"}
+{"request": "Google Workspace account for a new hire in finance", "label": "auto_approve"}
+{"request": "Airtable workspace for tracking event logistics (no customer data)", "label": "needs_manager"}
+{"request": "Access to support tickets containing customer phone numbers", "label": "needs_security"}

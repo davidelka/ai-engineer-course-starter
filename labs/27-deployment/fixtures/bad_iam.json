@@ -1,0 +1,47 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "WhatTheTutorialSaid",
+      "Effect": "Allow",
+      "Action": "*",
+      "Resource": "*"
+    },
+    {
+      "Sid": "ReadSecrets",
+      "Effect": "Allow",
+      "Action": ["secretsmanager:*"],
+      "Resource": "*"
+    },
+    {
+      "Sid": "ReadDocsBucket",
+      "Effect": "Allow",
+      "Action": ["s3:Get*", "s3:ListBucket"],
+      "Resource": ["arn:aws:s3:::acme-docs", "arn:aws:s3:::acme-docs/*"]
+    },
+    {
+      "Sid": "DeployHelper",
+      "Effect": "Allow",
+      "Action": ["ecs:UpdateService", "iam:PassRole"],
+      "Resource": "*"
+    },
+    {
+      "Sid": "EverythingButIam",
+      "Effect": "Allow",
+      "NotAction": "iam:*",
+      "Resource": "*"
+    },
+    {
+      "Sid": "EcrLogin",
+      "Effect": "Allow",
+      "Action": "ecr:GetAuthorizationToken",
+      "Resource": "*"
+    },
+    {
+      "Sid": "NoDeletes",
+      "Effect": "Deny",
+      "Action": "s3:*",
+      "Resource": "*"
+    }
+  ]
+}

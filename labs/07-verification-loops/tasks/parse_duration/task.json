@@ -1,0 +1,16 @@
+{
+  "id": "parse_duration",
+  "title": "Access-request durations in days",
+  "module": "solution.py",
+  "smoke": "parse_duration('3 days')",
+  "spec": [
+    "Implement parse_duration(text: str) -> int | None: turn a free-text duration from an Acme access request into whole days.",
+    "- '<n> <unit>' where unit is day/days (1), week/weeks (7) or month/months (30), and n is a whole number or a decimal with a dot.",
+    "- n may also be a word: 'a' or 'an' or 'one' = 1, 'two' = 2, 'three' = 3.",
+    "- Fixed phrases: 'a fortnight' = 14, 'half a day' = 1.",
+    "- Hebrew words: 'יום' = 1, 'יומיים' = 2, 'שבוע' = 7, 'שבועיים' = 14, 'חודש' = 30.",
+    "- Fractions round UP to a whole day: '2.5 days' -> 3.",
+    "- Upper/lower case and extra spaces or tabs around or between the words do not matter.",
+    "- A zero duration, or anything else (empty text, 'soon', 'until the project ends') -> None. Never raise an exception."
+  ]
+}

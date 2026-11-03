@@ -1,0 +1,7 @@
+table_name,source_system,source_object,extracted_at,extracted_by,row_count,notes
+employees,HiBob (Pulse HR portal),export_employees_v3,2026-10-31T23:00:00Z,build_structured.py,120,People Ops nightly export
+teams,HiBob (Pulse HR portal),export_departments,2026-10-31T23:00:00Z,build_structured.py,20,team lead taken from org chart field
+systems,IT asset register (Google Sheet),sheet:systems-register,2026-10-31T23:00:00Z,build_structured.py,28,owner_team reconciled with Service Catalog 2026-09-15
+access_grants,Okta + access-bot audit log,access_register,2026-10-31T23:00:00Z,build_structured.py,300,route recorded by the access bot at grant time
+customers,Salesforce,Account,2026-10-31T23:00:00Z,build_structured.py,150,"ARR is annualised list price, not booked revenue"
+tickets,Zendesk API,tickets.json,2026-10-31T23:00:00Z,build_structured.py,200,first_response_minutes computed from first public agent comment

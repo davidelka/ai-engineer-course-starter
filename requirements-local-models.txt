@@ -1,0 +1,7 @@
+# Local embedding / reranking / NLI models (lessons 10, 12, 13, M1, M2).
+# Install CPU PyTorch FIRST, otherwise pip pulls the multi-GB CUDA build:
+#   uv pip install torch --index-url https://download.pytorch.org/whl/cpu
+#   uv pip install -r requirements-local-models.txt
+sentence-transformers>=5.1
+transformers>=4.46
+sentencepiece>=0.2

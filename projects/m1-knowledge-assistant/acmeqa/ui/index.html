@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Acme Knowledge Assistant</title>
+<style>
+  :root {
+    --bg: #f6f5f1; --surface: #ffffff; --ink: #1d1d1b; --muted: #6b6a64; --line: #e2e0d8;
+    --accent: #1f5f8b; --accent-soft: #e4eef6; --good: #2f7d4f; --good-soft: #e3f2e8;
+    --warn: #9a6a00; --warn-soft: #fbf1d9; --bad: #a33a2b; --bad-soft: #f8e4e0;
+    --mark: #fde68a; --code: #f1efe8;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #151514; --surface: #1f1f1d; --ink: #ecebe6; --muted: #a3a29b; --line: #34332f;
+      --accent: #7fb6dd; --accent-soft: #1d3140; --good: #7cc495; --good-soft: #1c3124;
+      --warn: #e2b55a; --warn-soft: #362c16; --bad: #ef8a7a; --bad-soft: #3a1f1a;
+      --mark: #6b5a12; --code: #2a2926;
+    }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink);
+         font: 16px/1.6 system-ui, "Segoe UI", "Noto Sans Hebrew", Arial, sans-serif; }
+  header { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between;
+           padding: 14px 20px; border-bottom: 1px solid var(--line); background: var(--surface); }
+  header h1 { margin: 0; font-size: 19px; font-weight: 650; }
+  header h1 small { display: block; font-size: 13px; color: var(--muted); font-weight: 400; }
+  label.role { display: flex; gap: 8px; align-items: center; font-size: 14px; color: var(--muted); }
+  select, textarea, button { font: inherit; color: inherit; }
+  select { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 6px 8px; }
+  main { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 0.9fr); gap: 20px;
+         max-width: 1200px; margin: 0 auto; padding: 20px; }
+  @media (max-width: 860px) { main { grid-template-columns: 1fr; padding: 16px; } }
+  .card { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 16px; }
+  form textarea { width: 100%; min-height: 76px; resize: vertical; border: 1px solid var(--line); border-radius: 10px;
+                  padding: 10px 12px; background: var(--bg); }
+  .row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 10px; }
+  button.primary { background: var(--accent); color: #fff; border: 0; border-radius: 10px; padding: 8px 18px;
+                   font-weight: 600; cursor: pointer; }
+  @media (prefers-color-scheme: dark) { button.primary { color: #0e1a22; } }
+  button.primary:disabled { opacity: .55; cursor: progress; }
+  .examples { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+  .ex { border: 1px solid var(--line); background: var(--bg); border-radius: 999px; padding: 4px 10px; font-size: 13px;
+        cursor: pointer; text-align: start; max-width: 100%; }
+  .ex span { color: var(--muted); }
+  .badges { display: flex; flex-wrap: wrap; gap: 6px; margin: 14px 0 6px; min-height: 26px; }
+  .badge { font-size: 12.5px; border-radius: 999px; padding: 2px 10px; background: var(--accent-soft); color: var(--accent); }
+  .badge.data { background: var(--good-soft); color: var(--good); }
+  .badge.warn { background: var(--warn-soft); color: var(--warn); }
+  .badge.bad { background: var(--bad-soft); color: var(--bad); }
+  #answer { white-space: pre-wrap; font-size: 17px; min-height: 2em; }
+  #answer[dir="ltr"] { text-align: left; }
+  .cite { display: inline-block; min-width: 1.6em; padding: 0 5px; margin: 0 1px; border-radius: 6px; border: 0;
+          background: var(--accent-soft); color: var(--accent); font-size: 12.5px; font-weight: 700; cursor: pointer;
+          vertical-align: 2px; line-height: 1.5; }
+  .cite.bad { background: var(--bad-soft); color: var(--bad); cursor: help; }
+  .refusal { padding: 10px 12px; border-radius: 10px; background: var(--warn-soft); color: var(--warn); }
+  h2 { font-size: 15px; margin: 18px 0 8px; color: var(--muted); font-weight: 600; }
+  ol.sources { margin: 0; padding-inline-start: 22px; }
+  ol.sources li { margin: 6px 0; }
+  ol.sources button { all: unset; cursor: pointer; color: var(--accent); }
+  ol.sources button:hover { text-decoration: underline; }
+  .meta { color: var(--muted); font-size: 13px; }
+  .used { font-weight: 650; }
+  pre { direction: ltr; text-align: left; background: var(--code); border-radius: 8px; padding: 10px; overflow-x: auto;
+        font-size: 13px; white-space: pre-wrap; word-break: break-word; }
+  ul.rows { margin: 4px 0; padding-inline-start: 20px; direction: ltr; text-align: left; font-family: ui-monospace, monospace; font-size: 13.5px; }
+  footer.stats { margin-top: 14px; font-size: 12.5px; color: var(--muted); direction: ltr; text-align: left; }
+  #doc .doctext { white-space: pre-wrap; max-height: 70vh; overflow-y: auto; border-top: 1px solid var(--line);
+                  margin-top: 10px; padding-top: 10px; font-size: 14.5px; }
+  #doc mark { background: var(--mark); color: inherit; border-radius: 3px; padding: 1px 0; }
+  #doc .empty { color: var(--muted); }
+  #doc h3 { margin: 0; font-size: 17px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+  .chip { font-size: 12px; border: 1px solid var(--line); border-radius: 6px; padding: 1px 7px; color: var(--muted); }
+  .chip.conf { border-color: var(--bad); color: var(--bad); }
+  .note { font-size: 13px; color: var(--muted); margin-top: 8px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Acme Knowledge Assistant <small>שאלות על המסמכים והנתונים של החברה, עם מקורות</small></h1>
+  <label class="role">תפקיד (הדגמה):
+    <select id="role" aria-label="תפקיד"></select>
+  </label>
+</header>
+<main>
+  <section>
+    <div class="card">
+      <form id="f">
+        <textarea id="q" placeholder="למשל: כמה ימי חופשה אפשר להעביר לשנה הבאה?" aria-label="שאלה"></textarea>
+        <div class="row">
+          <button class="primary" id="go" type="submit">שאל</button>
+          <span class="meta" id="status"></span>
+        </div>
+      </form>
+      <div class="examples" id="examples"></div>
+    </div>
+    <div class="card" style="margin-top:16px">
+      <div class="badges" id="badges"></div>
+      <div id="answer" aria-live="polite"><span class="meta">התשובה תופיע כאן, עם מספרי מקור שאפשר ללחוץ עליהם.</span></div>
+      <div id="data"></div>
+      <div id="srcwrap" hidden>
+        <h2>המקורות שהמודל קרא</h2>
+        <ol class="sources" id="sources"></ol>
+      </div>
+      <footer class="stats" id="stats"></footer>
+    </div>
+  </section>
+  <aside class="card" id="doc">
+    <p class="empty">לחץ על מספר מקור בתשובה, או על מקור ברשימה, כדי לפתוח כאן את המסמך עם הקטע המדויק מסומן.</p>
+  </aside>
+</main>
+<script>
+"use strict";
+const $ = (s) => document.querySelector(s);
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"}[c]));
+const isHe = (s) => /[֐-׿]/.test(s || "");
+let context = [], citations = [], lastAnswer = "";
+
+async function init() {
+  const roles = await (await fetch("/roles")).json();
+  $("#role").innerHTML = roles.map((r) => `<option value="${r.role}">${esc(r.label)} (${r.role}, ${r.visible_docs} מסמכים)</option>`).join("");
+  try { const saved = localStorage.getItem("acme-role"); if (saved) $("#role").value = saved; } catch (e) {}
+  $("#role").addEventListener("change", () => { try { localStorage.setItem("acme-role", $("#role").value); } catch (e) {} });
+  const ex = await (await fetch("/examples")).json();
+  $("#examples").innerHTML = ex.map((e, i) => `<button type="button" class="ex" data-i="${i}" dir="auto">${esc(e.q)} <span>· ${esc(e.note)}</span></button>`).join("");
+  $("#examples").addEventListener("click", (ev) => {
+    const b = ev.target.closest(".ex"); if (!b) return;
+    $("#q").value = ex[+b.dataset.i].q; ask();
+  });
+}
+
+function badge(text, cls = "") { $("#badges").insertAdjacentHTML("beforeend", `<span class="badge ${cls}">${esc(text)}</span>`); }
+
+function renderAnswer(text, refused, cits, invalid) {
+  const box = $("#answer");
+  box.dir = isHe(text) ? "rtl" : "ltr";
+  if (refused) {
+    box.dir = "rtl";
+    box.innerHTML = `<div class="refusal">לא מצאתי את התשובה במסמכים שמותר לתפקיד הזה לראות. (המודל החזיר: <bdi>${esc(text)}</bdi>)</div>`;
+    return;
+  }
+  const valid = new Set(cits.map((c) => c.n));
+  box.innerHTML = esc(text).replace(/\[(\d+(?:\s*[,;]\s*\d+)*)\]/g, (m, g) => g.split(/[,;]/).map((x) => {
+    const n = +x.trim();
+    return valid.has(n) ? `<button class="cite" data-n="${n}" title="פתח את מקור ${n}">${n}</button>`
+                        : `<span class="cite bad" title="מספר מקור שלא נשלח למודל: ציטוט מומצא">${n}?</span>`;
+  }).join(""));
+}
+
+function renderSources(used) {
+  $("#srcwrap").hidden = !context.length;
+  $("#sources").innerHTML = context.map((c) => `<li class="${used.has(c.n) ? "used" : ""}">
+      <button data-n="${c.n}" dir="auto">${esc(c.title)}</button>
+      <div class="meta" dir="ltr" style="text-align:right">${esc(c.doc_id)}${c.section ? " · " + esc(c.section) : ""}${c.effective_date ? " · " + esc(c.effective_date) : ""}${used.has(c.n) ? " · צוטט" : ""}</div></li>`).join("");
+}
+
+async function openDoc(n) {
+  const c = context.find((x) => x.n === n);
+  if (!c) return;
+  const role = $("#role").value;
+  const r = await fetch(`/docs/${encodeURIComponent(c.doc_id)}?role=${role}&start=${c.start}&end=${c.end}`);
+  const box = $("#doc");
+  if (!r.ok) { box.innerHTML = `<p class="empty">המסמך לא זמין לתפקיד הזה.</p>`; return; }
+  const d = await r.json();
+  const t = d.text, h = d.highlight;
+  const body = h ? esc(t.slice(0, h.start)) + `<mark id="hl">${esc(t.slice(h.start, h.end))}</mark>` + esc(t.slice(h.end)) : esc(t);
+  const m = d.meta;
+  box.innerHTML = `<h3 dir="auto">[${n}] ${esc(m.title || d.id)}</h3>
+    <div class="chips" dir="ltr">
+      <span class="chip">${esc(d.id)}</span><span class="chip">${esc(m.format || "")}</span>
+      <span class="chip ${m.classification === "confidential" ? "conf" : ""}">${esc(m.classification || "")}</span>
+      <span class="chip">v${esc(m.version || "?")} · ${esc(m.effective_date || "")}</span>
+      ${m.supersedes ? `<span class="chip">supersedes ${esc(m.supersedes)}</span>` : ""}
+      ${d.superseded_by && d.superseded_by.length ? `<span class="chip conf">superseded by ${esc(d.superseded_by.join(", "))}</span>` : ""}
+    </div>
+    <div class="doctext" dir="${m.language === "he" ? "rtl" : "ltr"}">${body}</div>`;
+  const hl = document.getElementById("hl");
+  if (hl) hl.scrollIntoView({block: "center", behavior: "smooth"});
+  if (window.matchMedia("(max-width: 860px)").matches) box.scrollIntoView({behavior: "smooth"});
+}
+
+function renderData(d) {
+  const rows = (d.rows || []).map((r) => `<li>${esc(r.join(" · "))}</li>`).join("");
+  $("#data").innerHTML = `
+    <h2>השאילתה שרצה (${esc(d.data_role || "")})</h2><pre>${esc(d.sql || "(לא רצה שאילתה)")}</pre>
+    ${d.columns && d.columns.length ? `<div class="meta" dir="ltr" style="text-align:left">${esc(d.columns.join(" · "))}</div><ul class="rows">${rows}</ul>` : ""}
+    ${d.assumptions && d.assumptions.length ? `<div class="note">הנחות: <bdi>${esc(d.assumptions.join("; "))}</bdi></div>` : ""}
+    ${(d.provenance || []).length ? `<h2>מקור הנתונים</h2><div class="chips" dir="ltr">${d.provenance.map((p) => `<span class="chip">${esc(p)}</span>`).join("")}</div>` : ""}
+    ${(d.warnings || []).map((w) => `<div class="note">⚠ ${esc(w)}</div>`).join("")}`;
+}
+
+async function ask() {
+  const question = $("#q").value.trim();
+  if (!question) return;
+  const role = $("#role").value;
+  context = []; citations = []; lastAnswer = "";
+  $("#badges").innerHTML = ""; $("#data").innerHTML = ""; $("#stats").textContent = ""; $("#srcwrap").hidden = true;
+  $("#answer").dir = isHe(question) ? "rtl" : "ltr"; $("#answer").textContent = "";
+  $("#go").disabled = true; $("#status").textContent = "חושב…";
+  try {
+    const resp = await fetch("/ask", {method: "POST", headers: {"content-type": "application/json", accept: "text/event-stream"},
+                                     body: JSON.stringify({question, role, stream: true})});
+    if (!resp.ok) { $("#answer").textContent = "שגיאה: " + (await resp.text()); return; }
+    const reader = resp.body.getReader(); const dec = new TextDecoder(); let buf = "";
+    for (;;) {
+      const {value, done} = await reader.read();
+      if (done) break;
+      buf += dec.decode(value, {stream: true});
+      let i;
+      while ((i = buf.indexOf("\n\n")) >= 0) {
+        const block = buf.slice(0, i); buf = buf.slice(i + 2);
+        const ev = (block.match(/^event: (.*)$/m) || [])[1];
+        const data = JSON.parse((block.match(/^data: (.*)$/m) || [, "{}"])[1]);
+        handle(ev, data);
+      }
+    }
+  } catch (e) {
+    $("#answer").textContent = "שגיאת רשת: " + e;
+  } finally {
+    $("#go").disabled = false; $("#status").textContent = "";
+  }
+}
+
+function handle(ev, d) {
+  if (ev === "route") {
+    if (d.kind === "data" && d.final === "data") badge("נתונים: SQL על acme.db", "data");
+    else if (d.fallback) badge("נשלח לנתונים, ואין שם תשובה: חזרה למסמכים", "warn");
+    else badge("מסמכים: חיפוש היברידי");
+    if (d.matched && d.matched.length) badge("ניתוב לפי: " + d.matched.join(", "));
+  } else if (ev === "sources") {
+    context = d.context; renderSources(new Set());
+    badge(`${d.context.length} קטעים מתוך ${d.candidates} מועמדים`);
+  } else if (ev === "data") {
+    renderData(d);
+    if (d.status !== "ok") badge("שאילתה: " + d.status, "bad");
+  } else if (ev === "token") {
+    lastAnswer += d.text; $("#answer").textContent = lastAnswer; $("#answer").dir = isHe(lastAnswer) ? "rtl" : "ltr";
+  } else if (ev === "answer") {
+    citations = d.citations || [];
+    renderAnswer(d.text, d.refused, citations, d.invalid_citations || []);
+    renderSources(new Set(citations.map((c) => c.n)));
+    if ((d.invalid_citations || []).length) badge(`ציטוט מומצא: [${d.invalid_citations.join(", ")}]`, "bad");
+    if (d.refused) badge("סירוב: לא במסמכים", "warn");
+  } else if (ev === "done") {
+    const u = d.usage || {};
+    $("#stats").textContent = `${d.latency_ms} ms · ttft ${d.ttft_ms ?? "-"} ms · tokens ${u.input_tokens ?? 0}+${u.output_tokens ?? 0}` +
+      (u.cached_input_tokens ? ` (cached ${u.cached_input_tokens})` : "") + ` · $${(d.cost_usd || 0).toFixed(5)} · ${d.model} · ${d.embedder} · trace ${(d.trace_id || "").slice(0, 12)}`;
+  } else if (ev === "error") {
+    badge("שגיאה", "bad"); $("#answer").textContent = d.detail;
+  }
+}
+
+document.addEventListener("click", (e) => {
+  const b = e.target.closest("button[data-n]");
+  if (b && (b.classList.contains("cite") || b.closest("#sources"))) openDoc(+b.dataset.n);
+});
+$("#f").addEventListener("submit", (e) => { e.preventDefault(); ask(); });
+$("#q").addEventListener("keydown", (e) => { if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) ask(); });
+init();
+</script>
+</body>
+</html>

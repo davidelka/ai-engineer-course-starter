@@ -1,0 +1,8 @@
+{"id": "r1", "requester": "avital.tal@acme.example", "text": "Hi, I need read access to Jira to follow the engine team board.", "expect_route": "auto_approve", "expect_status": "approved"}
+{"id": "r2", "requester": "dana.levi@acme.example", "text": "I need a Figma editor seat to work on the new dashboard designs with the design team.", "expect_route": "needs_manager", "expect_status": "pending_manager"}
+{"id": "r3", "requester": "barak.mizrahi@acme.example", "text": "Please give me read access to Salesforce, I need to check renewal dates for my accounts.", "expect_route": "needs_security", "expect_status": "pending_security"}
+{"id": "r4", "requester": "tomer.shani@acme.example", "text": "I need admin on aws-production for 7 days to migrate the queue cluster.", "expect_route": "needs_security", "expect_status": "pending_security"}
+{"id": "r5", "requester": "noa.cohen@acme.example", "text": "Can I get a Notion member account? Our design team keeps its research notes there.", "expect_route": "needs_manager", "expect_status": "pending_manager"}
+{"id": "r6", "requester": "amit.gabay@acme.example", "text": "Please add Yossi Cohen to GitHub with read access, he joins my project next week.", "expect_route": null, "expect_status": "needs_info"}
+{"id": "r7", "requester": "barak.dahan@acme.example", "text": "I need read access to jira for the sprint reviews.", "expect_route": null, "expect_status": "already_granted"}
+{"id": "r8", "requester": "alon.sasson@acme.example", "text": "I want to connect a third-party OAuth app to Google Workspace so I can share files with an external agency.", "expect_route": "needs_security", "expect_status": "pending_security"}

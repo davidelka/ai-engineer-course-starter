@@ -1,0 +1,5 @@
+# Lesson 6 extras (merged into the root requirements.txt by the course maintainer).
+fastapi>=0.150          # the access-request API (reference/ and impl/)
+schemathesis>=4.30      # property-based contract tests generated from spec/openapi.yaml
+openapi-core>=0.23      # validates every request/response in the acceptance tests against the contract
+uvicorn>=0.30           # serve.py: run the app and try it with curl

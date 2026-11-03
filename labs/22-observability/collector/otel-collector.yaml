@@ -1,0 +1,56 @@
+# OpenTelemetry Collector (contrib distribution) for lesson 22.
+# app --OTLP/HTTP--> receiver -> redaction -> tail_sampling -> batch -> Phoenix
+#
+# Processor names and keys follow the collector-contrib READMEs (redactionprocessor,
+# tailsamplingprocessor). Verify against the version you run: contrib components are
+# marked beta/alpha and their options do change between releases.
+receivers:
+  otlp:
+    protocols:
+      http:
+        endpoint: 0.0.0.0:4318
+
+processors:
+  # Second line of defense: the app already redacts (obskit RedactingSpanProcessor).
+  # This catches anything a service forgot. Values matching a pattern are masked.
+  redaction:
+    allow_all_keys: true
+    blocked_values:
+      - "[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}"          # emails
+      - "(?:\\+972[-\\s]?|0)(?:5\\d|7\\d|[23489])[-\\s]?\\d{3}[-\\s]?\\d{4}"   # Israeli phones
+      - "\\b\\d{9}\\b"                                              # 9-digit ids (no checksum here: stricter)
+    summary: info
+
+  # Tail sampling: decide AFTER the whole trace arrived, so errors and slow traces are
+  # always kept and only a share of the boring ones is stored.
+  tail_sampling:
+    decision_wait: 10s
+    num_traces: 50000
+    policies:
+      - name: keep-errors
+        type: status_code
+        status_code:
+          status_codes: [ERROR]
+      - name: keep-slow
+        type: latency
+        latency:
+          threshold_ms: 5000
+      - name: keep-some-of-the-rest
+        type: probabilistic
+        probabilistic:
+          sampling_percentage: 10
+
+  batch: {}
+
+exporters:
+  otlphttp/phoenix:
+    endpoint: http://phoenix:6006    # the exporter appends /v1/traces
+  debug:
+    verbosity: basic
+
+service:
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [redaction, tail_sampling, batch]
+      exporters: [otlphttp/phoenix, debug]

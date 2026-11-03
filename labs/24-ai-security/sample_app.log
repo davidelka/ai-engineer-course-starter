@@ -1,0 +1,8 @@
+2026-10-31T09:58:02Z INFO  ask user=dana.levi@acme.example role=support q="customer Echo Studio wants a refund, card holder ID 039337423, call back on 052-7654321"
+2026-10-31T09:58:03Z INFO  retrieve k=4 ids=sup-refund-policy#2,sales-partner-northwind-notes#2,sup-refund-policy#7,sup-refund-policy#0
+2026-10-31T09:58:04Z WARN  output_validator blocked answer kinds=credential_request,refund_promise user=dana.levi@acme.example
+2026-10-31T10:02:11Z INFO  ask user=omer.haddad@acme.example role=engineering q="SAP connector timeline for Markus Brandt (markus.brandt@northwind-integrations.example, +49 89 1234567)?"
+2026-10-31T10:05:40Z INFO  ask user=noa.k@acme.example role=hr q="update address for employee 123456782, new phone 03-5550123, order 123456789 is unrelated"
+2026-10-31T10:05:41Z DEBUG llm request model=claude-haiku-5-5 tokens_in=1873 tokens_out=142 cost_usd=0.000258
+2026-10-31T10:07:13Z INFO  ask user=avi.mizrahi@acme.example role=security q="hotline is +972-3-555-0199, my mobile 0541234567, my ID 12345678-2"
+2026-10-31T10:07:14Z ERROR tool ticket_lookup failed: api key sk-ant-api03-EXAMPLEEXAMPLEEXAMPLE rejected

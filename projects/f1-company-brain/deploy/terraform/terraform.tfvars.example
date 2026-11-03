@@ -1,0 +1,8 @@
+# Copy to terraform.tfvars (git-ignored) and fill in.
+region           = "us-east-1"
+project          = "company-brain"
+image_tag        = "v1"               # the tag you push (use the git SHA)
+mode             = "live"             # "offline" for a free smoke test of the infrastructure
+allowed_cidr     = "203.0.113.7/32"   # YOUR public IP: curl -s ifconfig.me
+alert_email      = "you@example.com"
+budget_limit_usd = 60

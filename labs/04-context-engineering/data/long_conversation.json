@@ -1,0 +1,279 @@
+{
+ "messages": [
+  {
+   "role": "user",
+   "content": "Hi! I just joined Acme. My employee ID is A-4471, in case you need it."
+  },
+  {
+   "role": "assistant",
+   "content": "Thanks, noted. I'll keep that in mind for your questions."
+  },
+  {
+   "role": "user",
+   "content": "My official start date is 12 January, and I'm in the Payments team."
+  },
+  {
+   "role": "assistant",
+   "content": "Thanks, noted. Let me know what you'd like to know about Acme's policies."
+  },
+  {
+   "role": "user",
+   "content": "My manager is Yossi Levi. He asked me to sort out HR questions with you."
+  },
+  {
+   "role": "assistant",
+   "content": "Thanks, noted. Is there an HR policy question I can help with?"
+  },
+  {
+   "role": "user",
+   "content": "I live in Beersheba, so I'll mostly work from the Beersheba office."
+  },
+  {
+   "role": "assistant",
+   "content": "Thanks, noted. Is there an HR policy question I can help with?"
+  },
+  {
+   "role": "user",
+   "content": "Also, I have a sesame allergy, which matters for team lunches."
+  },
+  {
+   "role": "assistant",
+   "content": "Thanks, noted. Let me know what you'd like to know about Acme's policies."
+  },
+  {
+   "role": "user",
+   "content": "My partner is due on 3 May, so I'll need parental leave around then."
+  },
+  {
+   "role": "assistant",
+   "content": "Thanks, noted. I'll keep that in mind for your questions."
+  },
+  {
+   "role": "user",
+   "content": "For equipment, I'd prefer a 14-inch laptop, I travel a lot."
+  },
+  {
+   "role": "assistant",
+   "content": "Thanks, noted. Is there an HR policy question I can help with?"
+  },
+  {
+   "role": "user",
+   "content": "I worked 6 years at my previous company, Orbitron."
+  },
+  {
+   "role": "assistant",
+   "content": "Thanks, noted. I'll keep that in mind for your questions."
+  },
+  {
+   "role": "user",
+   "content": "I'd love to attend PyCon Israel in June with the training budget."
+  },
+  {
+   "role": "assistant",
+   "content": "Thanks, noted. Is there an HR policy question I can help with?"
+  },
+  {
+   "role": "user",
+   "content": "I'm employed at an 80% scope, four days a week."
+  },
+  {
+   "role": "assistant",
+   "content": "Thanks, noted. I'll keep that in mind for your questions."
+  },
+  {
+   "role": "user",
+   "content": "My day off each week is Thursday."
+  },
+  {
+   "role": "assistant",
+   "content": "Thanks, noted. Let me know what you'd like to know about Acme's policies."
+  },
+  {
+   "role": "user",
+   "content": "My car's plate is 52-718-34, for the parking lottery."
+  },
+  {
+   "role": "assistant",
+   "content": "Thanks, noted. Let me know what you'd like to know about Acme's policies."
+  },
+  {
+   "role": "user",
+   "content": "How many vacation days do new employees get?"
+  },
+  {
+   "role": "assistant",
+   "content": "In the first year, full-time employees receive 14 paid vacation days, and the allowance grows by one day per year of service up to 24. Part-time employees get a proportional amount. The full details are in the policy document in the HR portal."
+  },
+  {
+   "role": "user",
+   "content": "Can I carry unused days over?"
+  },
+  {
+   "role": "assistant",
+   "content": "Yes, up to 5 unused days carry over to the next calendar year and expire on March 31. If your situation is unusual, write to hr@acme.example."
+  },
+  {
+   "role": "user",
+   "content": "What are the office days?"
+  },
+  {
+   "role": "assistant",
+   "content": "Tuesday and Wednesday are office days for all teams; you can work remotely up to 2 days a week. If your situation is unusual, write to hr@acme.example."
+  },
+  {
+   "role": "user",
+   "content": "How do I claim the home office allowance?"
+  },
+  {
+   "role": "assistant",
+   "content": "Acme gives a one-time 1,500 NIS allowance; claim it in the expense system within 60 days of the purchase. If your situation is unusual, write to hr@acme.example."
+  },
+  {
+   "role": "user",
+   "content": "Who approves working from abroad?"
+  },
+  {
+   "role": "assistant",
+   "content": "Remote work from abroad needs written approval from your department's VP, up to 10 working days a year. Your manager can also help with the practical side."
+  },
+  {
+   "role": "user",
+   "content": "What are core hours?"
+  },
+  {
+   "role": "assistant",
+   "content": "Be reachable on Slack between 10:00 and 16:00 Israel time. The full details are in the policy document in the HR portal."
+  },
+  {
+   "role": "user",
+   "content": "How do vacation requests work?"
+  },
+  {
+   "role": "assistant",
+   "content": "Requests of 3 days or more go through the HR portal at least 2 weeks ahead, approved by your direct manager. The full details are in the policy document in the HR portal."
+  },
+  {
+   "role": "user",
+   "content": "Is there a shutdown week?"
+  },
+  {
+   "role": "assistant",
+   "content": "Yes, between Rosh Hashanah and Yom Kippur; 3 vacation days are deducted automatically. If your situation is unusual, write to hr@acme.example."
+  },
+  {
+   "role": "user",
+   "content": "How many vacation days do new employees get?"
+  },
+  {
+   "role": "assistant",
+   "content": "In the first year, full-time employees receive 14 paid vacation days, and the allowance grows by one day per year of service up to 24. Part-time employees get a proportional amount. If your situation is unusual, write to hr@acme.example."
+  },
+  {
+   "role": "user",
+   "content": "Can I carry unused days over?"
+  },
+  {
+   "role": "assistant",
+   "content": "Yes, up to 5 unused days carry over to the next calendar year and expire on March 31. Your manager can also help with the practical side."
+  },
+  {
+   "role": "user",
+   "content": "What are the office days?"
+  },
+  {
+   "role": "assistant",
+   "content": "Tuesday and Wednesday are office days for all teams; you can work remotely up to 2 days a week. Your manager can also help with the practical side."
+  },
+  {
+   "role": "user",
+   "content": "How do I claim the home office allowance?"
+  },
+  {
+   "role": "assistant",
+   "content": "Acme gives a one-time 1,500 NIS allowance; claim it in the expense system within 60 days of the purchase. If your situation is unusual, write to hr@acme.example."
+  },
+  {
+   "role": "user",
+   "content": "Who approves working from abroad?"
+  },
+  {
+   "role": "assistant",
+   "content": "Remote work from abroad needs written approval from your department's VP, up to 10 working days a year. If your situation is unusual, write to hr@acme.example."
+  },
+  {
+   "role": "user",
+   "content": "What are core hours?"
+  },
+  {
+   "role": "assistant",
+   "content": "Be reachable on Slack between 10:00 and 16:00 Israel time. Your manager can also help with the practical side."
+  },
+  {
+   "role": "user",
+   "content": "How do vacation requests work?"
+  },
+  {
+   "role": "assistant",
+   "content": "Requests of 3 days or more go through the HR portal at least 2 weeks ahead, approved by your direct manager. Your manager can also help with the practical side."
+  },
+  {
+   "role": "user",
+   "content": "Is there a shutdown week?"
+  },
+  {
+   "role": "assistant",
+   "content": "Yes, between Rosh Hashanah and Yom Kippur; 3 vacation days are deducted automatically. If your situation is unusual, write to hr@acme.example."
+  }
+ ],
+ "probes": [
+  {
+   "question": "What is my employee ID?",
+   "answer": "A-4471"
+  },
+  {
+   "question": "What is my start date?",
+   "answer": "12 January"
+  },
+  {
+   "question": "Who is my manager?",
+   "answer": "Yossi Levi"
+  },
+  {
+   "question": "Which city do I live in?",
+   "answer": "Beersheba"
+  },
+  {
+   "question": "What food allergy did I mention?",
+   "answer": "sesame"
+  },
+  {
+   "question": "What is my partner's due date?",
+   "answer": "3 May"
+  },
+  {
+   "question": "What laptop screen size did I ask for?",
+   "answer": "14-inch"
+  },
+  {
+   "question": "How many years did I work at my previous company?",
+   "answer": "6 years"
+  },
+  {
+   "question": "Which conference do I want to attend?",
+   "answer": "PyCon Israel"
+  },
+  {
+   "question": "What is my scope of employment?",
+   "answer": "80%"
+  },
+  {
+   "question": "Which day did I say I do not work?",
+   "answer": "Thursday"
+  },
+  {
+   "question": "What is my car's license plate?",
+   "answer": "52-718-34"
+  }
+ ],
+ "note": "Facts appear in the first 24 messages; messages 25-56 are policy small talk."
+}

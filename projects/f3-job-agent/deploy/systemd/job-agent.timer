@@ -1,0 +1,12 @@
+[Unit]
+Description=Job agent at 08:30, 15:00 and 21:00 Israel time
+
+[Timer]
+OnCalendar=*-*-* 08:30:00 Asia/Jerusalem
+OnCalendar=*-*-* 15:00:00 Asia/Jerusalem
+OnCalendar=*-*-* 21:00:00 Asia/Jerusalem
+# The laptop was asleep at 08:30? Run once when it wakes up (due_slot decides if it is still useful).
+Persistent=true
+
+[Install]
+WantedBy=timers.target

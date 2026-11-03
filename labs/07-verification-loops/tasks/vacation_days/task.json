@@ -1,0 +1,15 @@
+{
+  "id": "vacation_days",
+  "title": "Acme vacation allowance",
+  "module": "solution.py",
+  "smoke": "vacation_days(3)",
+  "spec": [
+    "Implement vacation_days(years_of_service: float, scope: float = 1.0) -> float.",
+    "Source: Acme vacation policy (data/acme/hr_policies.md).",
+    "- years_of_service: completed time at Acme, in years (0.5, 3.2, ...). Negative -> raise ValueError.",
+    "- scope: employment scope, 0 < scope <= 1.0 (1.0 = full time). Outside that range -> raise ValueError.",
+    "- Full-time allowance: 14 days in the first year (years_of_service < 1). From the second year, one more day for every COMPLETED year of service: 14 + floor(years_of_service). Never more than 24.",
+    "- Part-time: the full-time allowance times scope, rounded to the nearest half day. A value exactly between two half days rounds UP: 7.25 -> 7.5, 7.75 -> 8.0.",
+    "- Return a number (int or float); 14 and 14.0 are both fine."
+  ]
+}

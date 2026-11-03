@@ -1,0 +1,11 @@
+# Extra dependencies of final project F2, on top of the repo's requirements.txt.
+# (The container image pins its own set in deploy/requirements.lock.)
+fastapi>=0.162
+uvicorn>=0.53
+python-multipart>=0.0.32
+opentelemetry-sdk>=1.45
+pillow>=12.0
+python-hcl2>=8.1
+# optional, local Hebrew speech (milestone 6 alternative, free, runs on your machine):
+# faster-whisper>=1.2
+# piper-tts>=1.6

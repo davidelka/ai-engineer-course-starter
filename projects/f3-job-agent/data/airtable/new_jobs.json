@@ -1,0 +1,70 @@
+{
+ "records": [
+  {
+   "id": "recJ016xYz12",
+   "createdTime": "2026-10-31T17:30:00.000Z",
+   "fields": {
+    "Title": "Systems Engineer (C++/Linux)",
+    "Company": "Helios Defense",
+    "Location": "Beer Sheva",
+    "Description": "Real-time C++ on Linux for radar processing units. Work with HW teams in the lab. 4+ years C++. Onsite.",
+    "Link": "https://helios-defense.example/jobs/4411"
+   }
+  },
+  {
+   "id": "recJ017xYz12",
+   "createdTime": "2026-10-31T17:45:00.000Z",
+   "fields": {
+    "Title": "Senior Backend Developer",
+    "Company": "CyberDome",
+    "Location": "Beer Sheva",
+    "Description": "Python/FastAPI services for threat analytics. Docker, Kubernetes. 5+ years. Hybrid.",
+    "Link": "hr@cyberdome.example"
+   }
+  },
+  {
+   "id": "recJ018xYz12",
+   "createdTime": "2026-10-31T18:05:00.000Z",
+   "fields": {
+    "Title": "Data Engineer",
+    "Company": "Quantix",
+    "Location": "Tel Aviv",
+    "Description": "Spark, Airflow, Snowflake. 3+ years. Hybrid.",
+    "Link": "https://quantix.example/careers/data-engineer"
+   }
+  },
+  {
+   "id": "recJ019xYz12",
+   "createdTime": "2026-10-31T18:20:00.000Z",
+   "fields": {
+    "Title": "HW Validation Automation Engineer",
+    "Company": "Arbel Chips",
+    "Location": "Kiryat Gat",
+    "Description": "Python test frameworks for post-silicon validation, lab equipment (oscilloscopes, power supplies), PCIe. 5 years. Onsite.",
+    "Link": "https://arbelchips.example/jobs/val-auto"
+   }
+  },
+  {
+   "id": "recJ020xYz12",
+   "createdTime": "2026-10-31T18:40:00.000Z",
+   "fields": {
+    "Title": "Junior Rust Developer",
+    "Company": "Ferrum Labs",
+    "Location": "Tel Aviv",
+    "Description": "Join our storage team. 1+ year with Rust or C++, CS degree. Remote.",
+    "Link": "https://ferrumlabs.example/careers/junior-rust"
+   }
+  },
+  {
+   "id": "recJ021xYz12",
+   "createdTime": "2026-10-31T18:50:00.000Z",
+   "fields": {
+    "Title": "Product Manager",
+    "Company": "BlueWave",
+    "Location": "Ramat Gan",
+    "Description": "B2B SaaS product, 4+ years as PM. Hybrid.",
+    "Link": "https://bluewave.example/pm"
+   }
+  }
+ ]
+}

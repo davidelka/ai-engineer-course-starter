@@ -1,0 +1,79 @@
+# Local stack for lesson 27. Free by default: the API talks to mockllm, no key needed.
+#
+#   cd labs/27-deployment
+#   docker compose up --build -d          # api on http://127.0.0.1:8000, mockllm inside the network
+#   docker compose ps                     # both should be "healthy"
+#   docker compose logs -f api            # JSON logs, one object per line
+#   docker compose down                   # stop and remove containers + network
+#
+# Real model (costs a fraction of a cent per question), key passed as a compose SECRET:
+#   set -a; . ../../.env; set +a          # load your keys into THIS shell only
+#   docker compose --profile real up --build -d api-real    # http://127.0.0.1:8001
+#
+# Later lessons can add services here (a LiteLLM gateway, an OpenTelemetry collector,
+# Langfuse) without touching the API image: that is the point of configuration by env.
+
+name: company-brain-l27
+
+x-hardening: &hardening
+  read_only: true                     # the root filesystem is read-only
+  cap_drop: [ALL]                     # no Linux capabilities: the app needs none
+  security_opt: ["no-new-privileges:true"]
+  restart: unless-stopped
+
+x-api-build: &api-build
+  context: ../..                      # the repo root: the image needs llmkit/
+  dockerfile: labs/27-deployment/app/Dockerfile
+  target: api
+  args:
+    APP_VERSION: compose-dev
+
+services:
+  mockllm:
+    <<: *hardening
+    build:
+      context: ../..
+      dockerfile: labs/27-deployment/app/Dockerfile
+      target: mockllm
+    image: company-brain-mockllm:dev
+    # no "ports:": reachable only from inside the compose network, as http://mockllm:8765
+
+  api:
+    <<: *hardening
+    build: *api-build
+    image: company-brain-api:dev
+    ports:
+      - "127.0.0.1:8000:8000"         # bound to localhost only, not to your whole Wi-Fi network
+    environment:
+      LLM_MODEL: mock:claude-haiku-5-5
+      MOCKLLM_URL: http://mockllm:8765
+      MAX_TOKENS: "300"
+    depends_on:
+      mockllm:
+        condition: service_healthy    # waits for mockllm's HEALTHCHECK, not just for it to start
+    deploy:
+      resources:
+        limits: { cpus: "0.5", memory: 512M }   # roughly the Fargate task size in AWS
+
+  api-real:
+    <<: *hardening
+    profiles: [real]                  # only started with --profile real
+    build: *api-build
+    image: company-brain-api:dev
+    ports:
+      - "127.0.0.1:8001:8000"
+    environment:
+      LLM_MODEL: anthropic:claude-haiku-5-5
+      MAX_TOKENS: "300"
+      # The app reads the key from this file. Compare `docker inspect` of this container
+      # with an `environment: ANTHROPIC_API_KEY=...` version: here the value is not there.
+      ANTHROPIC_API_KEY_FILE: /run/secrets/anthropic_api_key
+    secrets:
+      - anthropic_api_key
+    deploy:
+      resources:
+        limits: { cpus: "0.5", memory: 512M }
+
+secrets:
+  anthropic_api_key:
+    environment: ANTHROPIC_API_KEY     # taken from the shell that runs `docker compose`

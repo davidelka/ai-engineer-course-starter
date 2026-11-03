@@ -1,0 +1,22 @@
+# The dependencies of the job agent's container image, pinned exactly by uv.lock.
+# Change a dependency here, then run `uv lock` in this folder and commit both files.
+[project]
+name = "job-agent"
+version = "1.0.0"
+description = "The owner's job-alert agent, production edition (AI Engineer course, final project F3)"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi>=0.162",
+    "uvicorn>=0.53",
+    "httpx>=0.28",
+    "pydantic>=2.13",
+    "pyyaml>=6.0",
+    "opentelemetry-sdk>=1.45",
+    "apscheduler>=3.11,<4",   # 4.x is a rewrite with a different API; stay on 3.x
+    "tzdata>=2026.1",         # IANA zones for zoneinfo, independent of the OS image
+    "boto3>=1.40",            # only for S3StateSync in AWS; small enough to always include
+]
+
+[tool.uv]
+# The code (jobagent/ and the course packages) is copied into the image, not installed.
+package = false

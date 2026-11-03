@@ -1,0 +1,11 @@
+# Extra dependencies of final project F3, on top of the repo's requirements.txt.
+# (The container image pins its own set in deploy/pyproject.toml + deploy/uv.lock.)
+fastapi>=0.162
+uvicorn>=0.53
+pyyaml>=6.0
+opentelemetry-sdk>=1.45
+apscheduler>=3.11,<4
+tzdata>=2026.1
+python-hcl2>=8.1
+# optional, only for the AWS deployment (S3 state, inbox, outbox):
+# boto3>=1.40

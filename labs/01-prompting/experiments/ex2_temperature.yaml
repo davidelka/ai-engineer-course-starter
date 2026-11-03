@@ -1,0 +1,44 @@
+# Exercise 2 — temperature in practice.
+# Most frontier models now reject sampling parameters, so the main variants run on a
+# LOCAL model through Ollama (any model you pulled, e.g. `ollama pull llama3.2`).
+# Metric to watch: "distinct" = how many different answers per case across the repeats.
+name: ex2-temperature
+cases: ../prompts/creative_cases.jsonl
+user_template: "{prompt}"
+system: "Answer with the requested item only, no explanation."
+repeats: 10
+max_workers: 2
+scorer: none
+
+defaults:
+  provider: ollama
+  model: llama3.2
+  max_tokens: 40
+
+variants:
+  - name: ollama-t0.0
+    temperature: 0.0
+  - name: ollama-t0.7
+    temperature: 0.7
+  - name: ollama-t1.5
+    temperature: 1.5
+  - name: ollama-t0.7-topp0.5      # second knob: cut the long tail
+    temperature: 0.7
+    top_p: 0.5
+
+  # Claude model that still accepts temperature (released before Opus 4.6). Range 0..1.
+  - name: haiku45-t0.0
+    provider: anthropic
+    model: claude-haiku-4-5
+    temperature: 0.0
+  - name: haiku45-t1.0
+    provider: anthropic
+    model: claude-haiku-4-5
+    temperature: 1.0
+
+  # Bonus: a current model with a non-default temperature. Expect every call to fail with
+  # HTTP 400. Read the error message in the summary and write down what it says.
+  - name: haiku55-t0.2-expect-400
+    provider: anthropic
+    model: claude-haiku-5-5
+    temperature: 0.2

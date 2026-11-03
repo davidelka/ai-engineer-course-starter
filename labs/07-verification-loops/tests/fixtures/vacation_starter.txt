@@ -1,0 +1,34 @@
+.FFF.F.F                                                                 [100%]
+=================================== FAILURES ===================================
+________________________ test_second_year_adds_one_day _________________________
+tests/test_visible.py:11: in test_second_year_adds_one_day
+    assert vacation_days(1.0) == 15
+E   assert 14 == 15
+E    +  where 14 = vacation_days(1.0)
+_______________________ test_counts_completed_years_only _______________________
+tests/test_visible.py:15: in test_counts_completed_years_only
+    assert vacation_days(3.9) == 17
+E   assert 16 == 17
+E    +  where 16 = vacation_days(3.9)
+______________________________ test_capped_at_24 _______________________________
+tests/test_visible.py:19: in test_capped_at_24
+    assert vacation_days(10) == 24
+E   assert 23 == 24
+E    +  where 23 = vacation_days(10)
+______________________ test_part_time_rounds_to_half_days ______________________
+tests/test_visible.py:28: in test_part_time_rounds_to_half_days
+    assert vacation_days(0, scope=0.75) == 10.5
+E   assert 10 == 10.5
+E    +  where 10 = vacation_days(0, scope=0.75)
+_________________________ test_negative_years_rejected _________________________
+tests/test_visible.py:36: in test_negative_years_rejected
+    with pytest.raises(ValueError):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE ValueError
+=========================== short test summary info ============================
+FAILED tests/test_visible.py::test_second_year_adds_one_day - assert 14 == 15
+FAILED tests/test_visible.py::test_counts_completed_years_only - assert 16 == 17
+FAILED tests/test_visible.py::test_capped_at_24 - assert 23 == 24
+FAILED tests/test_visible.py::test_part_time_rounds_to_half_days - assert 10 ...
+FAILED tests/test_visible.py::test_negative_years_rejected - Failed: DID NOT ...
+5 failed, 3 passed in 0.03s

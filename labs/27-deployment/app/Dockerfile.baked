@@ -1,0 +1,25 @@
+# DO NOT COPY THIS PATTERN. Exercise 4: three ways to bake a secret into an image,
+# so you can see with your own eyes that each one leaks. The values are FAKE.
+#
+# Build it on top of the good image (build that first):
+#   docker build -f labs/27-deployment/app/Dockerfile.baked \
+#     --build-arg ANTHROPIC_API_KEY=sk-ant-lab27-FAKE-buildarg-000000 -t company-brain-api:baked .
+FROM company-brain-api:dev
+
+USER root
+
+# Mistake 1: a build arg. It looks temporary, but every RUN that runs while it is set
+# records it in the image history (docker history --no-trunc shows it).
+ARG ANTHROPIC_API_KEY
+RUN test -n "$ANTHROPIC_API_KEY" && echo "key present at build time"
+
+# Mistake 2: ENV with the value. It is in the image config of every container, forever
+# (docker inspect shows it), and in every image built FROM this one.
+ENV ANTHROPIC_API_KEY=sk-ant-lab27-FAKE-env-000000000000
+
+# Mistake 3: copy a key file in, then delete it in a later layer. The file is gone from
+# the final filesystem, but the layer that added it is still inside the image.
+COPY labs/27-deployment/fixtures/fake.env /app/.env
+RUN rm /app/.env
+
+USER app

@@ -1,0 +1,18 @@
+# Build context = the repo root. Send only what the image copies.
+**
+!llmkit/
+!voicekit/
+!ragkit/
+!guardkit/
+!obskit/
+!evalkit/
+!servekit/
+!projects/f2-hebrew-tutor/hebtutor/
+!projects/f2-hebrew-tutor/mine.py
+!projects/f2-hebrew-tutor/data/
+!projects/f2-hebrew-tutor/deploy/requirements.lock
+**/__pycache__
+**/*.pyc
+**/.env
+**/.env.*
+projects/f2-hebrew-tutor/data/recorded/

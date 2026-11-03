@@ -1,0 +1,3 @@
+# Lesson 24 extras (the rest is in the root requirements.txt)
+nh3>=0.3.7             # HTML sanitizer (Rust ammonia), render_demo.py
+markdown-it-py>=4.0    # Markdown renderer, render_demo.py

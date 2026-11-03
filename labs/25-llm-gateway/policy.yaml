@@ -1,0 +1,42 @@
+# Acme's AI governance policy, as the gateway enforces it (lesson 25, exercise 5).
+#
+# Derived from two Acme documents (data/acme/corpus/docs/):
+#   sec-data-classification.md  four levels; unlabeled data is treated as Internal;
+#                               Restricted is never copied to any AI tool.
+#   it-ai-usage-he.md           Public and Internal: any approved tool.
+#                               Confidential: only Claude through the company environment.
+#                               Restricted: forbidden in every AI tool, approved ones included.
+#
+# How the gateway uses it, per request:
+#   1. classification = the higher of the request's label (header x-data-classification
+#      or metadata.data_classification) and the key's classification_floor.
+#   2. every deployment of the requested model is checked with decide(); only the allowed
+#      ones are tried, so a FALLBACK can never send data somewhere the policy forbids.
+#   3. the `redact` list says which PII types are removed before forwarding.
+#
+# Owned by Security. A change here is a governance change: review it like code, and
+# run labs/25-llm-gateway/policy_check.py to see the full decision matrix before merging.
+
+version: 1
+classifications: [public, internal, confidential, restricted]   # low -> high
+default_classification: internal
+
+rules:
+  public:
+    providers: [anthropic, openai]
+    redact: [email, phone_il, il_id]
+
+  internal:
+    providers: [anthropic, openai]
+    # Employee emails are internal directory data, and the access-request workflow
+    # (lesson 3) needs the requester's email, so emails pass at this level.
+    redact: [phone_il, il_id]
+
+  confidential:
+    providers: [anthropic]
+    regions: [us, eu]          # not "global": no routing to unknown regions
+    redact: [phone_il, il_id]
+
+  restricted:
+    deny: true
+    reason: "Restricted data (customer personal data, secrets, payroll, health) may not be sent to any AI tool. See it-ai-usage-he and sec-data-classification."

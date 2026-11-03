@@ -1,0 +1,21 @@
+id,name,department,lead_id,parent_lead_id,main_location,headcount,_source_system,_extracted_at
+exec,Executive Team,company,E001,,Tel Aviv,8,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+core-api,Core API,engineering,E009,E005,Haifa,7,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+engine,Engine,engineering,E016,E005,Haifa,8,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+integrations,Integrations,engineering,E024,E005,Tel Aviv,7,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+billing,Billing,engineering,E031,E005,Tel Aviv,6,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+identity,Identity,engineering,E037,E005,Haifa,5,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+frontend,Frontend,engineering,E042,E005,Tel Aviv,7,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+data,Data,engineering,E049,E005,Haifa,6,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+platform,Platform,engineering,E055,E005,Haifa,7,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+security,Security,it_security,E062,E002,Tel Aviv,4,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+it,IT,it_security,E066,E002,Tel Aviv,3,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+product,Product Management,product,E069,E006,Tel Aviv,5,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+design,Product Design,product,E074,E006,Tel Aviv,4,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+sales-il,Sales Israel & Americas,sales_support,E078,E004,Tel Aviv,8,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+sales-emea,Sales EMEA,sales_support,E086,E004,Berlin,7,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+support-il,Customer Support Israel & Americas,sales_support,E093,E008,Tel Aviv,8,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+support-emea,Customer Support EMEA,sales_support,E101,E008,Berlin,5,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+finance,Finance,finance,E106,E003,Tel Aviv,5,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+people,People,hr,E111,E007,Tel Aviv,5,HiBob (Pulse HR portal),2026-10-31T23:00:00Z
+marketing,Marketing,company,E116,E001,Tel Aviv,5,HiBob (Pulse HR portal),2026-10-31T23:00:00Z

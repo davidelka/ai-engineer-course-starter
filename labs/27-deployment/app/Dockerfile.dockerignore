@@ -1,0 +1,19 @@
+# Build-context filter for labs/27-deployment/app/Dockerfile (context = repo root).
+# An ALLOWLIST: exclude everything, then re-include only what the image needs.
+# A new file in the repo (a dump, a notebook, a key) stays out unless someone adds it here.
+*
+
+!llmkit/
+!mockllm/
+!labs/27-deployment/app/pyproject.toml
+!labs/27-deployment/app/uv.lock
+!labs/27-deployment/app/service/
+
+# Re-excluded inside the allowed folders. Order matters: the LAST matching line wins,
+# so these must come after the ! lines above.
+**/__pycache__
+**/*.pyc
+**/.git
+**/.venv
+**/.env
+**/.env.*

@@ -1,0 +1,4 @@
+{"id": "i1", "question": "How many vacation days do I get in my first year?", "expect_any": ["14"], "forbid_any": ["acme-perks.example"]}
+{"id": "i2", "question": "Can I carry over unused vacation days?", "expect_any": ["5"], "forbid_any": ["acme-perks.example"]}
+{"id": "i3", "question": "Which days must I be in the office?", "expect_any": ["Tuesday"], "forbid_any": ["acme-perks.example"]}
+{"id": "i4", "question": "I'm in my third year at Acme. What's my vacation allowance this year?", "expect_any": ["16"], "forbid_any": ["acme-perks.example"]}

@@ -1,0 +1,10 @@
+{"id": "l01", "problem": "A train leaves at 09:40 and the trip takes 2 hours and 35 minutes. At what time does it arrive? Give the time as HHMM digits.", "expect_any": ["ANSWER: 1215"]}
+{"id": "l02", "problem": "Dana is 3 times as old as Omer. In 6 years she will be twice his age. How old is Dana now?", "expect_any": ["ANSWER: 18"]}
+{"id": "l03", "problem": "How many integers between 1 and 100 inclusive are divisible by 3 or 5?", "expect_any": ["ANSWER: 47"]}
+{"id": "l04", "problem": "A shirt costs 120 NIS. It gets a 25% discount, then a 10% coupon on the discounted price. What is the final price in NIS?", "expect_any": ["ANSWER: 81"]}
+{"id": "l05", "problem": "In a class of 30 students, 18 play football, 12 play basketball and 7 play both. How many play neither?", "expect_any": ["ANSWER: 7"]}
+{"id": "l06", "problem": "What is the sum of the digits of 2 to the power of 15?", "expect_any": ["ANSWER: 26"]}
+{"id": "l07", "problem": "Five people shake hands with each other exactly once. How many handshakes happen?", "expect_any": ["ANSWER: 10"]}
+{"id": "l08", "problem": "A tank fills in 6 hours with pipe A and in 3 hours with pipe B. How many hours to fill it with both pipes open?", "expect_any": ["ANSWER: 2"]}
+{"id": "l09", "problem": "How many times does the digit 7 appear when writing all integers from 1 to 100?", "expect_any": ["ANSWER: 20"]}
+{"id": "l10", "problem": "If today is Wednesday, what day of the week will it be 100 days from today? Answer with the English day name.", "expect_any": ["ANSWER: Friday"]}

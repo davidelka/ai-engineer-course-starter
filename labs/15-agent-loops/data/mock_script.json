@@ -1,0 +1,15 @@
+[
+  {"match": "Dana Levi asks for admin access on AWS production",
+   "calls": [{"name": "lookup_employee", "arguments": {"employee": "dana.levi@acme.example"}}],
+   "then": [
+     [{"name": "check_policy", "arguments": {"system": "aws-production", "access_level": "admin", "external_sharing": false, "holds_customer_or_financial_data": null}}],
+     [{"name": "create_access_request", "arguments": {"employee": "dana.levi@acme.example", "system": "aws-production", "access_level": "admin", "justification": "Debug the billing outage", "duration_days": 3, "idempotency_key": "dana.levi@acme.example:aws-production:admin"}}]
+   ],
+   "final": "Done. {results}"},
+  {"match": "Compare github and aws-production",
+   "calls": [{"name": "get_system_info", "arguments": {"system": "github"}}, {"name": "get_system_info", "arguments": {"system": "aws-production"}}],
+   "final": "Comparison: {results}"},
+  {"match": "What access does E016 have",
+   "calls": [{"name": "list_access_grants", "arguments": {"employee": "E016", "system": null, "include_expired": false}}],
+   "final": "Current grants: {results}"}
+]

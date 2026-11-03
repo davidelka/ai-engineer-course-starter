@@ -1,0 +1,23 @@
+{
+  "session_id": "lab05-replay",
+  "transcript_path": "/tmp/aie-lab05/transcript.jsonl",
+  "cwd": "__PROJECT__",
+  "permission_mode": "acceptEdits",
+  "hook_event_name": "PostToolUse",
+  "tool_name": "Write",
+  "tool_input": {
+    "file_path": "__PROJECT__/app/policy.py",
+    "content": "(see _setup)"
+  },
+  "tool_response": {
+    "filePath": "__PROJECT__/app/policy.py",
+    "success": true
+  },
+  "tool_use_id": "toolu_lab05_15_post_edit_ruff_fail",
+  "duration_ms": 9,
+  "_expect": "block",
+  "_note": "The edit left an unused import: ruff fails and the hook sends its output back to Claude.",
+  "_setup": {
+    "app/policy.py": "REPLACE:from __future__ import annotations\n=>from __future__ import annotations\n\nimport os\n"
+  }
+}

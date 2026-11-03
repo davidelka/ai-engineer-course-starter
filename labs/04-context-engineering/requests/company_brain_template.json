@@ -1,0 +1,35 @@
+{
+ "_comment": "Exercise 7: replace every TODO with realistic content for one Company Brain turn, put cache_control where it belongs, then run context_budget.py --file on it.",
+ "model": "claude-haiku-5-5",
+ "max_tokens": 800,
+ "tools": [
+  {
+   "name": "TODO_tool",
+   "description": "TODO",
+   "input_schema": {
+    "type": "object",
+    "properties": {}
+   }
+  }
+ ],
+ "system": [
+  {
+   "type": "text",
+   "text": "TODO: stable instructions"
+  }
+ ],
+ "messages": [
+  {
+   "role": "user",
+   "content": "TODO: an earlier turn"
+  },
+  {
+   "role": "assistant",
+   "content": "TODO"
+  },
+  {
+   "role": "user",
+   "content": "<documents>TODO: retrieved passages</documents>\n\nTODO: the question"
+  }
+ ]
+}

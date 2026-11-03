@@ -1,0 +1,59 @@
+# Local deployment of the tutor: FREE by default (rule tutor, fake STT/TTS, SQLite on a volume).
+#
+#   cd projects/f2-hebrew-tutor
+#   ADMIN_TOKEN=dev docker compose up --build -d     # API + demo page on http://127.0.0.1:8080
+#   docker compose logs api | grep "demo class code"  # the class code students type on the page
+#   docker compose exec api python -m hebtutor purge  # retention (run daily in production)
+#   docker compose down                               # stop (the data volume stays)
+#
+# With Claude Haiku 5.5 and OpenAI speech (a few cents per class session), keys as compose SECRETS:
+#   set -a; . ../../.env; set +a
+#   TUTOR=llm STT=openai TTS=openai docker compose up --build -d
+#
+# Phones in the same Wi-Fi need HTTPS for the microphone (MediaRecorder works only in a
+# secure context: https or localhost). For a classroom test use a tunnel with TLS, or the AWS
+# option behind HTTPS (README, milestone 10).
+
+name: hebrew-tutor
+
+services:
+  api:
+    build:
+      context: ../..                       # repo root: the image needs llmkit/, voicekit/, ...
+      dockerfile: projects/f2-hebrew-tutor/deploy/Dockerfile
+      args:
+        APP_VERSION: compose-dev
+    image: hebrew-tutor:dev
+    command: ["serve", "--demo-class"]
+    environment:
+      TUTOR: ${TUTOR:-rule}
+      LLM_MODEL: ${LLM_MODEL:-anthropic:claude-haiku-5-5}
+      STT: ${STT:-fake}
+      TTS: ${TTS:-fake}
+      ADMIN_TOKEN: ${ADMIN_TOKEN:-}        # empty = admin writes refused
+      RETENTION_DAYS: "30"
+      ANTHROPIC_API_KEY_FILE: /run/secrets/anthropic_api_key
+      OPENAI_API_KEY_FILE: /run/secrets/openai_api_key
+    entrypoint: ["sh", "-c", "export ANTHROPIC_API_KEY=$$(cat /run/secrets/anthropic_api_key 2>/dev/null) OPENAI_API_KEY=$$(cat /run/secrets/openai_api_key 2>/dev/null); exec python -m hebtutor \"$$@\"", "--"]
+    volumes:
+      - data:/data
+    secrets: [anthropic_api_key, openai_api_key]
+    ports:
+      - "127.0.0.1:8080:8080"              # localhost only; put TLS in front before students use it
+    read_only: true
+    tmpfs: ["/tmp"]
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits: { cpus: "1.0", memory: 512M }
+
+volumes:
+  data: {}
+
+secrets:
+  anthropic_api_key:
+    environment: ANTHROPIC_API_KEY         # from the shell that runs compose; may be empty offline
+  openai_api_key:
+    environment: OPENAI_API_KEY

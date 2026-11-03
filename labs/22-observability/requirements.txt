@@ -1,0 +1,6 @@
+# Lesson 22. Versions checked on PyPI on 2026-11-01.
+opentelemetry-api>=1.45
+opentelemetry-sdk>=1.45
+opentelemetry-exporter-otlp-proto-http>=1.45
+# Optional, only if you want Phoenix without Docker (it is a large install):
+#   pip install "arize-phoenix>=21.0" && phoenix serve       # UI on http://localhost:6006

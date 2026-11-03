@@ -1,0 +1,16 @@
+{
+  "id": "route_request",
+  "title": "Route a SaaS access request (Acme policy v2.1)",
+  "module": "solution.py",
+  "smoke": "route_request('Jira', 'read')",
+  "spec": [
+    "Implement route_request(tool: str, access: str, *, customer_data=False, financial_data=False, production=False, external_sharing=False) -> str.",
+    "Return exactly one of 'auto_approve', 'needs_manager', 'needs_security', following Acme's SaaS Access Policy v2.1 (data/acme/saas_access_policy.md), simplified:",
+    "- Approved tools: Jira, Confluence, Slack, Google Workspace, Zoom, Miro, Figma, GitHub. Tool names are compared case-insensitively, ignoring spaces around them.",
+    "- access is one of read, standard, write, paid_seat, admin (case-insensitive, spaces around ignored). Any other value -> raise ValueError.",
+    "- needs_security if ANY of: access is admin, production, customer_data, financial_data, external_sharing.",
+    "- otherwise needs_manager if ANY of: the tool is not approved, access is write or paid_seat.",
+    "- otherwise auto_approve.",
+    "The strictest track always wins: needs_security > needs_manager > auto_approve."
+  ]
+}

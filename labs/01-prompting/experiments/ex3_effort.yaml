@@ -1,0 +1,28 @@
+# Exercise 3 — effort vs quality, tokens and latency on a current model.
+# One variable changes (effort). Compare pass rate against out_tok and p50 latency.
+name: ex3-effort
+cases: ../prompts/logic_cases.jsonl
+system: |
+  Solve the problem. End your reply with a final line in exactly this form:
+  ANSWER: <answer>
+user_template: "{problem}"
+repeats: 3
+max_workers: 4
+scorer: contains_any
+# Consistency is measured on the final answer only, not on the wording of the explanation.
+normalize_regex: "ANSWER:\\s*(.+)"
+
+defaults:
+  provider: anthropic
+  model: claude-haiku-5-5
+  max_tokens: 8000   # thinking tokens count toward this limit
+
+variants:
+  - name: effort-low
+    effort: low
+  - name: effort-high
+    effort: high
+
+# Optional: fill in from the provider's pricing page (USD per 1M tokens) to get $/1k calls.
+prices:
+  claude-haiku-5-5: {input: 0.10, output: 0.50}   # prompts under 100K tokens (above: 0.50 / 2.50)

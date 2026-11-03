@@ -1,0 +1,40 @@
+sequenceDiagram
+    autonumber
+    actor Emp as Employee
+    participant API as AccessAPI
+    participant Svc as AccessService
+    participant Store as RequestStore
+    participant LLM as Classifier
+    participant Pol as PolicyEngine
+    participant Appr as Approver
+    participant IdP as IdentityProvider
+
+    Emp->>API: POST /access-requests {text, request_id}
+    API->>Svc: submit(request_id, text, user)
+    Svc->>Store: get(request_id)
+    Store-->>Svc: none (new request)
+    Svc->>LLM: classify(text) -> AccessRequest (structured output)
+    alt model timeout or unavailable
+        LLM-->>Svc: ModelUnavailable
+        Svc->>Svc: route = needs_manager (fail safe to a human)
+    else ok
+        LLM-->>Svc: AccessRequest {tool, level, proposed route}
+    end
+    Svc->>Pol: decide(access_request)
+    Pol-->>Svc: final route (strictest rule wins)
+    Svc->>Store: save(request_id, request, route) for audit
+    alt auto_approve
+        Svc->>IdP: grant(user, tool, level) with request_id
+        IdP-->>Svc: granted
+        Svc-->>API: approved
+    else needs_manager or needs_security
+        Svc->>Appr: ask for approval (Slack card)
+        Appr-->>Svc: approve / reject
+        opt approved
+            Svc->>IdP: grant(user, tool, level) with request_id
+            IdP-->>Svc: granted
+        end
+        Svc->>Store: record decision and approver
+        Svc-->>API: decision
+    end
+    API-->>Emp: 202 status + link

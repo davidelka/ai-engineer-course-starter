@@ -1,0 +1,15 @@
+{
+  "id": "business_days",
+  "title": "Acme business days (Sunday to Thursday)",
+  "module": "solution.py",
+  "smoke": "business_days(date(2026, 11, 1), date(2026, 11, 5))",
+  "smoke_imports": "from datetime import date",
+  "spec": [
+    "Implement business_days(start: date, end: date, holidays: Iterable[date] = ()) -> int.",
+    "Return the number of Acme working days in the INCLUSIVE range [start, end].",
+    "- Acme works Sunday to Thursday (Israel). Friday and Saturday are the weekend.",
+    "- A date in holidays is not a working day. A holiday that falls on a weekend changes nothing. The same holiday listed twice counts once. Holidays outside the range are ignored.",
+    "- If end is before start, return 0.",
+    "Example: Sunday 2026-11-01 to Saturday 2026-11-07 is 5 working days."
+  ]
+}

@@ -1,0 +1,30 @@
+# gatewaykit config with REAL providers (exercise 8). Costs a few cents at most.
+#   python labs/25-llm-gateway/live_compare.py
+# Needs ANTHROPIC_API_KEY (and OPENAI_API_KEY for the fallback) in .env.
+
+model_list:
+  - model_name: haiku
+    deployments:
+      - id: anthropic-haiku
+        model: anthropic:claude-haiku-5-5
+        api_key_env: ANTHROPIC_API_KEY
+        region: us
+      - id: openai-mini
+        model: openai:gpt-5.4-mini
+        api_key_env: OPENAI_API_KEY
+        region: global
+
+router:
+  retries_per_deployment: 1
+  failure_threshold: 3
+  cooldown_s: 30
+
+audit:
+  path: state/audit_live.jsonl
+  log_content: none
+  retention_days: 365
+
+restore_pii_in_response: true
+policy: policy.yaml
+keys: state/keys.yaml
+master_key_env: GATEWAY_MASTER_KEY

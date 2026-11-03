@@ -1,0 +1,10 @@
+{"id": "h01", "question": "How many vacation days do I get in my first year?", "expect_any": ["14"]}
+{"id": "h02", "question": "I'm now in my fourth year at Acme. How many vacation days do I get this year?", "expect_any": ["17"]}
+{"id": "h03", "question": "Can I carry unused vacation days into next year?", "expect_any": ["5"]}
+{"id": "h04", "question": "Until when can I use the days I carried over?", "expect_any": ["March 31", "31 March", "end of March"]}
+{"id": "h05", "question": "Which days do I have to be in the office?", "expect_any": ["Tuesday"]}
+{"id": "h06", "question": "How much money do I get for a home office setup?", "expect_any": ["1,500", "1500"]}
+{"id": "h07", "question": "Can I work from Lisbon for two weeks?", "expect_any": ["VP", "10 working days", "10 days"]}
+{"id": "h08", "question": "How many sick days do I get per year?", "expect_any": ["hr@acme.example"], "unanswerable": true}
+{"id": "h09", "question": "Does Acme pay for a gym membership?", "expect_any": ["hr@acme.example"], "unanswerable": true}
+{"id": "h10", "question": "What is the parental leave policy for fathers?", "expect_any": ["hr@acme.example"], "unanswerable": true}

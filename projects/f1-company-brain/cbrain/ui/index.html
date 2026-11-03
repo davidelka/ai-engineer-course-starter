@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Company Brain</title>
+<style>
+  :root { --bg:#f6f7f9; --card:#fff; --ink:#1d2330; --muted:#5d6676; --line:#dde1e8; --accent:#2f5bd3;
+          --good:#1e8a4c; --bad:#c23b3b; --warn:#b7791f; --soft:#eef2fc; --code:#f1f3f6; }
+  @media (prefers-color-scheme: dark) { :root { --bg:#14171d; --card:#1c2029; --ink:#e7eaf0; --muted:#9aa3b2;
+          --line:#2c323d; --accent:#7ea2ff; --good:#4cc283; --bad:#ff7b7b; --warn:#f0b75a; --soft:#232a3a; --code:#232833; } }
+  * { box-sizing: border-box; }
+  body { margin:0; font: 16px/1.6 system-ui, "Segoe UI", Arial, sans-serif; background:var(--bg); color:var(--ink); }
+  header { display:flex; flex-wrap:wrap; gap:12px; align-items:center; justify-content:space-between;
+           padding:12px 16px; background:var(--card); border-bottom:1px solid var(--line); }
+  header h1 { font-size:18px; margin:0; }
+  header .who { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+  select, input, textarea, button { font:inherit; color:inherit; }
+  select, input, textarea { background:var(--card); border:1px solid var(--line); border-radius:8px; padding:6px 10px; }
+  textarea { width:100%; min-height:80px; resize:vertical; }
+  button { background:var(--accent); color:#fff; border:0; border-radius:8px; padding:7px 14px; cursor:pointer; }
+  button.secondary { background:transparent; color:var(--accent); border:1px solid var(--accent); }
+  button.bad { background:var(--bad); }
+  button:disabled { opacity:.5; cursor:default; }
+  nav { display:flex; gap:4px; padding:0 16px; background:var(--card); border-bottom:1px solid var(--line); overflow-x:auto; }
+  nav button { background:transparent; color:var(--muted); border-radius:0; border-bottom:3px solid transparent; padding:10px 14px; }
+  nav button[aria-selected="true"] { color:var(--ink); border-bottom-color:var(--accent); }
+  main { max-width:900px; margin:0 auto; padding:16px; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:16px; margin-bottom:14px; }
+  .row { display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
+  .muted { color:var(--muted); font-size:14px; }
+  .chip { display:inline-block; font-size:13px; padding:2px 8px; border-radius:999px; background:var(--soft); margin:2px; }
+  .chip.good { color:var(--good); } .chip.bad { color:var(--bad); } .chip.warn { color:var(--warn); }
+  .answer { white-space:pre-wrap; }
+  .cite { color:var(--accent); cursor:help; font-weight:600; }
+  ul.events { list-style:none; padding:0; margin:8px 0 0; font-size:14px; }
+  ul.events li { padding:3px 0; border-bottom:1px dashed var(--line); direction:ltr; text-align:left; }
+  .ltr { direction:ltr; text-align:left; }
+  pre { background:var(--code); padding:8px; border-radius:8px; overflow-x:auto; font-size:13px; direction:ltr; text-align:left; }
+  .hidden { display:none; }
+  .status { font-weight:700; }
+  .status.approved { color:var(--good);} .status.rejected,.status.failed { color:var(--bad);} .status.pending_manager,.status.pending_security { color:var(--warn);}
+</style>
+</head>
+<body>
+<header>
+  <h1>Company Brain · Acme</h1>
+  <div class="who">
+    <span class="muted">משתמש:</span>
+    <select id="userPick" class="hidden" aria-label="בחירת משתמש לדמו"></select>
+    <input id="keyInput" class="hidden ltr" placeholder="API key" size="24" type="password" aria-label="API key">
+    <button id="keySave" class="secondary hidden">שמירה</button>
+    <span id="meLine" class="muted"></span>
+  </div>
+</header>
+<nav role="tablist">
+  <button role="tab" data-tab="ask" aria-selected="true">שאלה</button>
+  <button role="tab" data-tab="req" aria-selected="false">בקשת גישה</button>
+  <button role="tab" data-tab="appr" aria-selected="false">אישורים <span id="apprCount"></span></button>
+</nav>
+<main>
+  <section id="tab-ask">
+    <div class="card">
+      <p class="muted">שאלו על נהלים, מערכות ותקריות של Acme, או בקשו נתונים ("כמה קריאות P1 פתוחות יש?"). אם ההודעה היא בקשת גישה, Company Brain לא מגיש אותה בעצמו: הוא מציג תצוגה מקדימה ומחכה לאישור שלכם.</p>
+      <textarea id="q" class="ltr" dir="auto" placeholder="How many vacation days carry over?"></textarea>
+      <div class="row" style="margin-top:8px"><button id="askBtn">שליחה</button><span id="askMeta" class="muted"></span></div>
+    </div>
+    <div id="askOut" class="card hidden">
+      <div id="askChips"></div>
+      <div id="askAnswer" class="answer" dir="auto" style="margin-top:8px"></div>
+      <div id="askConfirm" class="hidden" style="margin-top:12px"></div>
+      <details style="margin-top:10px"><summary class="muted">מקורות ואירועים</summary>
+        <div id="askSources" class="muted"></div><ul id="askEvents" class="events"></ul></details>
+    </div>
+  </section>
+
+  <section id="tab-req" class="hidden">
+    <div class="card">
+      <p class="muted">כתבו בקשה בשפה חופשית. קודם רואים מה בדיוק יוגש ולפי איזה מסלול של המדיניות, ורק אישור שלכם מתחיל את תהליך האישור.</p>
+      <textarea id="reqText" class="ltr" dir="auto" placeholder="I need a Figma editor seat for the new dashboard designs."></textarea>
+      <div class="row" style="margin-top:8px"><button id="previewBtn">תצוגה מקדימה</button></div>
+      <div id="reqPreview" style="margin-top:10px"></div>
+    </div>
+    <div class="card"><div class="row" style="justify-content:space-between"><b>הבקשות שלי</b><button class="secondary" id="reqRefresh">רענון</button></div>
+      <div id="reqList"></div></div>
+    <div id="reqDetail" class="card hidden"></div>
+  </section>
+
+  <section id="tab-appr" class="hidden">
+    <div class="card"><p class="muted">בקשות שמחכות להחלטה שלכם בלבד: בקשות של עובדים שאתם המנהלים הישירים שלהם, או כל בקשה אם אתם בצוות האבטחה. הרשימה מתעדכנת כל 5 שניות. ההחלטה נבדקת שוב מול המדריך הארגוני כשהיא מגיעה.</p></div>
+    <div id="apprList"></div>
+  </section>
+</main>
+<script>
+"use strict";
+const $ = (s) => document.querySelector(s);
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+let KEY = ""; try { KEY = localStorage.getItem("cb-key") || ""; } catch (e) {}
+let ME = null;
+const STATUS_HE = { approved:"אושרה", rejected:"נדחתה", expired:"פגה", needs_info:"חסר מידע", already_granted:"כבר קיימת",
+  failed:"נכשלה", pending_manager:"ממתינה למנהל", pending_security:"ממתינה לאבטחה" };
+const INTENT_HE = { knowledge:"שאלה על מסמכים", data:"שאלת נתונים", access_request:"בקשת גישה" };
+
+function hdr(json) { const h = { "Authorization": "Bearer " + KEY }; if (json) h["content-type"] = "application/json"; return h; }
+async function api(path, opts = {}) {
+  const r = await fetch(path, { ...opts, headers: hdr(!!opts.body) });
+  const body = await r.json().catch(() => ({}));
+  if (!r.ok) throw new Error(body.detail || body.title || r.status);
+  return body;
+}
+async function* sseEvents(resp) {
+  const reader = resp.body.getReader(); const dec = new TextDecoder(); let buf = "";
+  while (true) {
+    const { value, done } = await reader.read(); if (done) break;
+    buf += dec.decode(value, { stream: true });
+    let i; while ((i = buf.indexOf("\n\n")) >= 0) {
+      const block = buf.slice(0, i); buf = buf.slice(i + 2);
+      const ev = (block.match(/^event: (.*)$/m) || [])[1]; const data = (block.match(/^data: (.*)$/m) || [])[1];
+      if (ev) yield { event: ev, data: JSON.parse(data || "{}") };
+    }
+  }
+}
+
+// ---------------------------------------------------------------- identity
+async function loadMe() {
+  const r = await fetch("/api/me", { headers: hdr(false) });
+  const body = await r.json().catch(() => ({}));
+  if (body.demo_keys) {
+    const sel = $("#userPick"); sel.classList.remove("hidden");
+    sel.innerHTML = '<option value="">בחרו משתמש…</option>' + (body.users || []).map(u =>
+      `<option value="${esc(u.id)}">${esc(u.name)} · ${esc(u.roles.join(", "))}</option>`).join("");
+    if (body.me) sel.value = body.me.id;
+    sel.onchange = () => { KEY = sel.value ? "demo-" + sel.value : ""; try { localStorage.setItem("cb-key", KEY); } catch (e) {} loadMe(); };
+  } else {
+    $("#keyInput").classList.remove("hidden"); $("#keySave").classList.remove("hidden");
+    $("#keySave").onclick = () => { KEY = $("#keyInput").value.trim(); try { localStorage.setItem("cb-key", KEY); } catch (e) {} loadMe(); };
+  }
+  ME = r.ok ? body.me : null;
+  $("#meLine").textContent = ME ? `${ME.name} (${ME.roles.join(", ")}; מסמכים: ${ME.acl_role})` : "לא מחובר";
+  if (ME) { refreshRequests(); refreshApprovals(); }
+}
+
+// ---------------------------------------------------------------- tabs
+document.querySelectorAll("nav button").forEach(b => b.onclick = () => {
+  document.querySelectorAll("nav button").forEach(x => x.setAttribute("aria-selected", x === b));
+  ["ask", "req", "appr"].forEach(t => $("#tab-" + t).classList.toggle("hidden", t !== b.dataset.tab));
+});
+
+// ---------------------------------------------------------------- ask
+function chip(text, cls = "") { return `<span class="chip ${cls}">${esc(text)}</span>`; }
+$("#askBtn").onclick = async () => {
+  const q = $("#q").value.trim(); if (!q) return;
+  $("#askOut").classList.remove("hidden"); $("#askChips").innerHTML = ""; $("#askAnswer").textContent = "";
+  $("#askSources").innerHTML = ""; $("#askEvents").innerHTML = ""; $("#askConfirm").classList.add("hidden");
+  $("#askBtn").disabled = true; const t0 = performance.now();
+  try {
+    const resp = await fetch("/ask", { method: "POST", headers: hdr(true), body: JSON.stringify({ question: q, stream: true }) });
+    if (!resp.ok) { const b = await resp.json(); throw new Error(b.detail || b.title); }
+    for await (const { event, data } of sseEvents(resp)) {
+      const li = document.createElement("li"); li.textContent = event + (event === "token" ? "" : " " + JSON.stringify(data).slice(0, 160));
+      if (event !== "token") $("#askEvents").appendChild(li);
+      if (event === "intent") $("#askChips").innerHTML += chip(INTENT_HE[data.intent] + " · " + data.source + " " + data.confidence.toFixed(2));
+      if (event === "route") $("#askChips").innerHTML += chip("מסלול: " + data.final);
+      if (event === "guard") $("#askChips").innerHTML += data.blocked ? chip("נחסם בשכבת " + data.layer, "bad")
+          : chip("סיווג: " + data.classification + (data.dropped.length ? ` · הוסרו ${data.dropped.length} קטעים חשודים` : ""), data.dropped.length ? "warn" : "");
+      if (event === "sources") $("#askSources").innerHTML = data.context.map(s => `[${s.n}] ${esc(s.title)} · ${esc(s.section || "")}`).join("<br>");
+      if (event === "token") $("#askAnswer").textContent += data.text;
+      if (event === "answer") {
+        $("#askAnswer").innerHTML = esc(data.text).replace(/\[(\d+)\]/g, (m, n) => {
+          const c = (data.citations || []).find(x => String(x.n) === n);
+          return c ? `<span class="cite" title="${esc(c.title + " · " + (c.snippet || ""))}">[${n}]</span>` : m; });
+        if (data.replaced) $("#askChips").innerHTML += chip("התשובה הוחלפה ע\"י בודק הפלט", "bad");
+      }
+      if (event === "confirm") showConfirm($("#askConfirm"), data);
+      if (event === "suggest") $("#askChips").innerHTML += chip("נראה שמדובר בגישה למערכת: אפשר להגיש בלשונית בקשת גישה", "warn");
+      if (event === "done") $("#askMeta").textContent = `${Math.round(performance.now() - t0)} ms · $${(data.cost_usd || 0).toFixed(5)}`;
+      if (event === "error") $("#askAnswer").textContent = "שגיאה: " + data.detail;
+    }
+  } catch (e) { $("#askAnswer").textContent = "שגיאה: " + e.message; }
+  $("#askBtn").disabled = false;
+};
+
+function showConfirm(el, pv) {
+  el.classList.remove("hidden");
+  if (pv.error) { el.innerHTML = `<p class="muted">לא הצלחתי להכין תצוגה מקדימה: ${esc(pv.error)}</p>`; return; }
+  el.innerHTML = `<div class="card" style="background:var(--soft)">
+    <b>מה יוגש:</b> ${esc(pv.access_level)} ב-${esc(pv.system)} עבור ${esc(pv.employee)}${pv.duration_days ? `, ל-${pv.duration_days} ימים` : ""}<br>
+    <b>מסלול:</b> ${esc(pv.route)} · ${esc(pv.approver)}${pv.hardened ? ' <span class="chip bad">הוחמר: טקסט חשוד</span>' : ""}<br>
+    <span class="muted">${(pv.reasons || []).map(esc).join(" · ")}</span>
+    <div class="row" style="margin-top:8px"><button class="go">אישור והגשה</button><button class="secondary no">ביטול</button></div>
+    <ul class="events"></ul></div>`;
+  el.querySelector(".no").onclick = () => el.classList.add("hidden");
+  el.querySelector(".go").onclick = async (ev) => {
+    ev.target.disabled = true; const ul = el.querySelector("ul");
+    const resp = await fetch("/requests", { method: "POST", headers: hdr(true), body: JSON.stringify({ text: pv.text, confirm_token: pv.confirm_token, stream: true }) });
+    if (!resp.ok) { const b = await resp.json(); ul.innerHTML = `<li>${esc(b.detail)}</li>`; return; }
+    for await (const { event, data } of sseEvents(resp)) {
+      const li = document.createElement("li");
+      li.textContent = event === "progress" ? `· ${data.node}: ${data.msg}` : event === "step" ? `> ${data.node} → ${data.status || "-"}`
+        : event === "paused" ? `⏸ ממתין ל-${(data.allowed_approvers || []).join(" או ")}` : event === "summary" ? `סטטוס: ${data.status} (${data.thread_id})` : event;
+      ul.appendChild(li);
+    }
+    refreshRequests();
+  };
+}
+
+// ---------------------------------------------------------------- requests
+$("#previewBtn").onclick = async () => {
+  const text = $("#reqText").value.trim(); if (!text) return;
+  try { showConfirm($("#reqPreview"), await api("/requests/preview", { method: "POST", body: JSON.stringify({ text }) })); }
+  catch (e) { $("#reqPreview").textContent = "שגיאה: " + e.message; }
+};
+$("#reqRefresh").onclick = () => refreshRequests();
+async function refreshRequests() {
+  if (!ME) return;
+  try {
+    const r = await api("/requests");
+    $("#reqList").innerHTML = r.requests.length ? r.requests.map(x => `<div class="row" style="padding:6px 0;border-bottom:1px solid var(--line)">
+      <a href="#" data-id="${esc(x.thread_id)}">${esc(x.request_id || x.thread_id)}</a>
+      <span class="status ${esc(x.status)}">${esc(STATUS_HE[x.status] || x.status)}</span>
+      <span class="muted ltr" dir="auto">${esc(x.text_preview)}</span></div>`).join("") : '<p class="muted">אין עדיין בקשות.</p>';
+    $("#reqList").querySelectorAll("a").forEach(a => a.onclick = (e) => { e.preventDefault(); showRequest(a.dataset.id); });
+  } catch (e) { $("#reqList").textContent = e.message; }
+}
+async function showRequest(id) {
+  const d = await api("/requests/" + id); const el = $("#reqDetail"); el.classList.remove("hidden");
+  el.innerHTML = `<b>${esc(d.request_id || d.thread_id)}</b> · <span class="status ${esc(d.status)}">${esc(STATUS_HE[d.status] || d.status)}</span>
+    <p>${d.request ? esc(`${d.request.access_level} on ${d.request.system} for ${d.employee ? d.employee.name : "?"}`) : ""}</p>
+    <p class="muted">${(d.reasons || []).map(esc).join(" · ")}</p>
+    ${d.decision ? `<p>החלטה: ${esc(d.decision.decision)} ע"י ${esc(d.decision.actor_name)}: ${esc(d.decision.comment)}</p>` : ""}
+    <b>Audit</b><ul class="events">${d.audit.map(a => `<li>${esc(a.at)} ${esc(a.actor)}: ${esc(a.from_status || "new")} → ${esc(a.to_status)} ${esc(a.note || "")}</li>`).join("")}</ul>`;
+}
+
+// ---------------------------------------------------------------- approvals
+async function refreshApprovals() {
+  if (!ME || !ME.roles.some(r => r === "manager" || r === "security")) { $("#apprList").innerHTML = '<p class="muted card">ללשונית הזו צריך תפקיד manager או security.</p>'; $("#apprCount").textContent = ""; return; }
+  try {
+    const r = await api("/approvals"); $("#apprCount").textContent = r.pending.length ? `(${r.pending.length})` : "";
+    $("#apprList").innerHTML = r.pending.length ? r.pending.map(x => `<div class="card" data-id="${esc(x.thread_id)}">
+      <b>${esc(x.employee)}</b>: ${esc(x.access_level)} ב-${esc(x.system)} ${x.duration_days ? `ל-${x.duration_days} ימים` : ""} ${chip(x.gate === "security" ? "שער אבטחה" : "שער מנהל", "warn")}
+      ${x.flags && x.flags.length ? chip("טקסט חשוד: " + x.flags.join(", "), "bad") : ""}
+      <p class="muted">${(x.reasons || []).map(esc).join(" · ")}</p>
+      ${x.justification ? `<p dir="auto">הצדקה (טקסט של העובד): <i>${esc(x.justification)}</i></p>` : ""}
+      ${x.risk_summary ? `<pre>${esc(x.risk_summary)}</pre>` : ""}
+      ${x.previous_error ? `<p class="chip bad">${esc(x.previous_error)}</p>` : ""}
+      <input class="cm" placeholder="הערה (חובה בדחייה)" style="width:100%;margin:6px 0">
+      <div class="row"><button class="ok">אישור</button><button class="bad no">דחייה</button><span class="res muted"></span></div></div>`).join("")
+      : '<p class="muted card">אין בקשות שמחכות לכם.</p>';
+    $("#apprList").querySelectorAll(".card[data-id]").forEach(c => {
+      const go = async (decision) => {
+        try { const s = await api("/approvals/" + c.dataset.id, { method: "POST", body: JSON.stringify({ decision, comment: c.querySelector(".cm").value }) });
+          c.querySelector(".res").textContent = "סטטוס: " + (STATUS_HE[s.status] || s.status); setTimeout(refreshApprovals, 800); }
+        catch (e) { c.querySelector(".res").textContent = e.message; }
+      };
+      c.querySelector(".ok").onclick = () => go("approve"); c.querySelector(".no").onclick = () => go("reject");
+    });
+  } catch (e) { $("#apprList").textContent = e.message; }
+}
+setInterval(() => { if (ME && !document.hidden) { refreshApprovals(); } }, 5000);
+loadMe();
+</script>
+</body>
+</html>

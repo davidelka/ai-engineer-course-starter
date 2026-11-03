@@ -1,0 +1,15 @@
+# A typical FIRST Dockerfile. It works, and that is the problem: everything below is
+# a habit worth breaking. Exercise 1 compares it with ./Dockerfile; exercise 5 lints it.
+#   docker build -f labs/27-deployment/app/Dockerfile.single -t company-brain-api:single .
+FROM python:3.12
+
+WORKDIR /app
+COPY llmkit/ ./llmkit/
+COPY labs/27-deployment/app/service/ ./service/
+
+# Unpinned dependencies, resolved at build time: two builds a week apart can differ.
+RUN pip install fastapi uvicorn httpx pydantic
+
+ENV PYTHONPATH=/app
+EXPOSE 8000
+CMD uvicorn service.main:app --host 0.0.0.0 --port 8000

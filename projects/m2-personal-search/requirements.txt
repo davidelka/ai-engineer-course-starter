@@ -1,0 +1,19 @@
+# Extra dependencies of midterm project M2, on top of the repo's requirements.txt.
+numpy>=2.0
+pypdf>=6.0
+pdfminer.six>=20250506          # PDF text per page; RTL lines come out in visual order, pss.extract fixes them
+python-docx>=1.2
+beautifulsoup4>=4.12
+fastapi>=0.162
+uvicorn>=0.53
+watchdog>=6.0                   # inotify on Linux (7.0 is on PyPI too)
+# OCR of scanned PDF pages (images are passed to the tesseract CLI directly):
+pypdfium2>=4.30
+pillow>=11.0
+# real local embeddings (milestone 4): install the CPU wheel of torch FIRST, then sentence-transformers
+#   uv pip install torch --index-url https://download.pytorch.org/whl/cpu
+#   uv pip install "sentence-transformers>=5.1"
+# optional ANN index for very large folders:
+# faiss-cpu>=1.12
+# only to regenerate the sample folder (data/make_sample.py):
+# playwright>=1.50              # then: playwright install chromium

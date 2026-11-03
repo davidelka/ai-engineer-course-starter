@@ -1,0 +1,16 @@
+.F.F                                                                     [100%]
+=================================== FAILURES ===================================
+_______________________________ test_param[6-12] _______________________________
+tests/test_visible.py:9: in test_param
+    assert f(x) == want
+E   assert 0 == 12
+E    +  where 0 = f(6)
+_________________________________ TestK.test_k _________________________________
+tests/test_visible.py:14: in test_k
+    assert got == 20, "f doubles"
+E   AssertionError: f doubles
+E   assert 0 == 20
+=========================== short test summary info ============================
+FAILED tests/test_visible.py::test_param[6-12] - assert 0 == 12
+FAILED tests/test_visible.py::TestK::test_k - AssertionError: f doubles
+2 failed, 2 passed in 0.02s

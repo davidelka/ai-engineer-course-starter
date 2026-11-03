@@ -1,0 +1,4 @@
+state/
+results/*
+!results/.gitkeep
+*.db

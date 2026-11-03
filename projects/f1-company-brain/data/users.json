@@ -1,0 +1,14 @@
+{
+  "_comment": "Company Brain demo users. Each one is a real person in Acme's directory (data/acme/corpus/structured/acme.db). roles decide which API endpoints and UI tabs a user gets; acl_role decides which documents the knowledge path may retrieve (acmeqa / ragkit acl_where). Authority to DECIDE a request is never taken from here: flowkit checks the directory (manager of the employee, or a member of the security team) at the approval gate.",
+  "users": [
+    {"id": "dana",   "employee_id": "E016", "email": "dana.levi@acme.example",        "name": "Dana Levi",        "roles": ["employee", "manager"], "acl_role": "engineering"},
+    {"id": "avital", "employee_id": "E017", "email": "avital.tal@acme.example",       "name": "Avital Tal",       "roles": ["employee"],            "acl_role": "engineering"},
+    {"id": "michal", "employee_id": "E005", "email": "michal.ben-david@acme.example", "name": "Michal Ben-David", "roles": ["employee", "manager"], "acl_role": "engineering"},
+    {"id": "noa",    "employee_id": "E076", "email": "noa.cohen@acme.example",        "name": "Noa Cohen",        "roles": ["employee"],            "acl_role": "employee"},
+    {"id": "hila",   "employee_id": "E074", "email": "hila.tzur@acme.example",        "name": "Hila Tzur",        "roles": ["employee", "manager"], "acl_role": "employee"},
+    {"id": "barak",  "employee_id": "E079", "email": "barak.mizrahi@acme.example",    "name": "Barak Mizrahi",    "roles": ["employee"],            "acl_role": "support"},
+    {"id": "tamar",  "employee_id": "E062", "email": "tamar.golan@acme.example",      "name": "Tamar Golan",      "roles": ["employee", "security"], "acl_role": "security"},
+    {"id": "lior",   "employee_id": "E063", "email": "lior.ashkenazi@acme.example",   "name": "Lior Ashkenazi",   "roles": ["employee", "security"], "acl_role": "security"},
+    {"id": "ops",    "employee_id": null,   "email": "ops@acme.example",              "name": "Platform Ops",     "roles": ["admin"],               "acl_role": "employee"}
+  ]
+}

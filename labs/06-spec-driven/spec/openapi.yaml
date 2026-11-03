@@ -1,0 +1,306 @@
+# Interface contract for the Company Brain access-request API (lesson 6).
+# This file is the source of truth for the HTTP interface. The spec
+# (access-requests.spec.md) says WHAT must happen; this file says exactly
+# which paths, fields, types and status codes exist.
+#
+# Checked by:
+#   - acceptance/conftest.py   every response in the example tests is validated with openapi-core
+#   - acceptance/test_contract.py   Schemathesis generates requests from this file
+#   - drift_demo.py / grade.py      the implementation's own OpenAPI is diffed against this file
+openapi: 3.1.0
+info:
+  title: Company Brain access-request API
+  version: 1.0.0
+  description: |
+    Employees ask for access to a SaaS tool. Every request is routed to one of
+    three tracks from Acme's SaaS access policy v2.1 (data/acme/saas_access_policy.md):
+    auto_approve, needs_manager, needs_security. Identity comes from two headers
+    set by the gateway: X-Actor (email) and X-Role (employee, manager, security).
+
+paths:
+  /access-requests:
+    post:
+      operationId: createAccessRequest
+      summary: Create an access request (REQ-1, REQ-2, REQ-4, REQ-5)
+      parameters:
+        - $ref: "#/components/parameters/XActor"
+        - $ref: "#/components/parameters/XRole"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/NewAccessRequest"
+      responses:
+        "201":
+          description: Stored. Route and status are already set.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AccessRequest"
+        "401":
+          $ref: "#/components/responses/Unauthenticated"
+        "422":
+          $ref: "#/components/responses/ValidationFailed"
+    get:
+      operationId: listAccessRequests
+      summary: List access requests, newest first (REQ-6)
+      parameters:
+        - $ref: "#/components/parameters/XActor"
+        - $ref: "#/components/parameters/XRole"
+        - name: status
+          in: query
+          required: false
+          schema:
+            $ref: "#/components/schemas/Status"
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+      responses:
+        "200":
+          description: One page of requests.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AccessRequestList"
+        "401":
+          $ref: "#/components/responses/Unauthenticated"
+        "422":
+          $ref: "#/components/responses/ValidationFailed"
+
+  /access-requests/{request_id}:
+    get:
+      operationId: getAccessRequest
+      summary: Get one access request (REQ-7)
+      parameters:
+        - $ref: "#/components/parameters/XActor"
+        - $ref: "#/components/parameters/XRole"
+        - $ref: "#/components/parameters/RequestId"
+      responses:
+        "200":
+          description: The request.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AccessRequest"
+        "401":
+          $ref: "#/components/responses/Unauthenticated"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "422":
+          $ref: "#/components/responses/ValidationFailed"
+
+  /access-requests/{request_id}/approve:
+    post:
+      operationId: approveAccessRequest
+      summary: Approve a pending request (REQ-8, REQ-9, REQ-10)
+      parameters:
+        - $ref: "#/components/parameters/XActor"
+        - $ref: "#/components/parameters/XRole"
+        - $ref: "#/components/parameters/RequestId"
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Decision"
+      responses:
+        "200":
+          description: Approved. decided_by and decided_at are set.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AccessRequest"
+        "401":
+          $ref: "#/components/responses/Unauthenticated"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "409":
+          $ref: "#/components/responses/Conflict"
+        "422":
+          $ref: "#/components/responses/ValidationFailed"
+
+components:
+  parameters:
+    XActor:
+      name: X-Actor
+      in: header
+      required: true
+      description: Email of the caller, set by the gateway. Must contain "@".
+      schema:
+        type: string
+        minLength: 3
+        maxLength: 254
+    XRole:
+      name: X-Role
+      in: header
+      required: true
+      description: Role of the caller, set by the gateway.
+      schema:
+        $ref: "#/components/schemas/Role"
+    RequestId:
+      name: request_id
+      in: path
+      required: true
+      schema:
+        type: string
+
+  schemas:
+    Role:
+      type: string
+      enum: [employee, manager, security]
+    AccessLevel:
+      type: string
+      enum: [read, standard, write, admin]
+    Route:
+      type: string
+      enum: [auto_approve, needs_manager, needs_security]
+    Status:
+      type: string
+      enum: [pending, approved]
+
+    NewAccessRequest:
+      type: object
+      additionalProperties: false
+      required: [tool, access_level, justification]
+      properties:
+        tool:
+          type: string
+          minLength: 1
+          maxLength: 100
+          description: Name of the SaaS tool or system, e.g. "Jira", "AWS".
+        access_level:
+          $ref: "#/components/schemas/AccessLevel"
+        justification:
+          type: string
+          minLength: 10
+          maxLength: 500
+        production:
+          type: boolean
+          default: false
+        customer_data:
+          type: boolean
+          default: false
+        financial_data:
+          type: boolean
+          default: false
+        external_sharing:
+          type: boolean
+          default: false
+
+    AccessRequest:
+      type: object
+      additionalProperties: false
+      required: [id, requester, tool, access_level, justification, production, customer_data,
+                 financial_data, external_sharing, route, status, created_at, decided_by, decided_at]
+      properties:
+        id:
+          type: string
+          pattern: "^ar_[0-9a-z]+$"
+        requester:
+          type: string
+          description: Copied from X-Actor at creation. Never taken from the body.
+        tool:
+          type: string
+        access_level:
+          $ref: "#/components/schemas/AccessLevel"
+        justification:
+          type: string
+        production:
+          type: boolean
+        customer_data:
+          type: boolean
+        financial_data:
+          type: boolean
+        external_sharing:
+          type: boolean
+        route:
+          $ref: "#/components/schemas/Route"
+        status:
+          $ref: "#/components/schemas/Status"
+        created_at:
+          type: string
+          format: date-time
+        decided_by:
+          type: [string, "null"]
+          description: '"system" for auto_approve, the approver''s email after approval, otherwise null.'
+        decided_at:
+          type: [string, "null"]
+          format: date-time
+
+    AccessRequestList:
+      type: object
+      additionalProperties: false
+      required: [items, total]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/AccessRequest"
+        total:
+          type: integer
+          minimum: 0
+          description: Number of requests that match the filter, before the limit.
+
+    Decision:
+      type: object
+      additionalProperties: false
+      properties:
+        note:
+          type: [string, "null"]
+          maxLength: 500
+
+    Error:
+      type: object
+      additionalProperties: false
+      required: [error]
+      properties:
+        error:
+          type: object
+          additionalProperties: false
+          required: [code, message]
+          properties:
+            code:
+              type: string
+              enum: [validation_error, unauthenticated, forbidden, not_found, conflict]
+            message:
+              type: string
+
+  responses:
+    ValidationFailed:
+      description: The body, a query parameter or a path parameter is invalid. Nothing was stored.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+    Unauthenticated:
+      description: X-Actor or X-Role is missing or invalid.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+    Forbidden:
+      description: The caller may not approve this request.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+    NotFound:
+      description: No request with this id.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+    Conflict:
+      description: The request is not pending.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"

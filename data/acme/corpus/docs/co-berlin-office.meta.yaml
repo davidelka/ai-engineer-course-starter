@@ -1,0 +1,11 @@
+id: co-berlin-office
+title: Berlin Office (intranet page)
+department: company
+doc_type: intranet_page
+version: "2026.04.3"
+effective_date: 2026-09-10
+owner: Katrin Vogel
+classification: internal
+language: en
+format: html
+file: co-berlin-office.html

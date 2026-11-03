@@ -1,0 +1,4 @@
+# Lesson 8: the only new package. sqlglot parses SQL into a syntax tree (guard, row policy, lineage).
+# Verified on PyPI: 30.27.0 is the current release (November 2026); pure Python, no compiled parts.
+sqlglot>=30.27.0
+# Already in the root requirements.txt: pyyaml, pydantic, httpx, tiktoken (token counts).
