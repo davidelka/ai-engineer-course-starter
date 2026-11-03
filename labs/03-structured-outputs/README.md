@@ -34,11 +34,14 @@ python -m pytest -q labs/03-structured-outputs/tests  # התרגילים שלך:
 
 **1. סכמה מקורית בלי SDK.** שלח בקשה עם סכמה ל-Claude, וראה איפה הסכמה יושבת בבקשה ומה חוזר. אחר כך:
 - הרץ עם `--twice` והשווה זמנים. הקריאה הראשונה עם סכמה חדשה כוללת קומפילציה של הדקדוק.
-- הרץ עם `--bad-schema` וקרא את שגיאת ה-400.
+- הרץ עם `--bad-schema`. הדגל מוסיף לסכמה בכוונה מילת מפתח שהתיעוד של Anthropic מסמן כלא נתמכת (`minLength`). יש שלוש תוצאות אפשריות: 400 (הספק דוחה), 200 עם אכיפה, או 200 בלי אכיפה (הספק מקבל ומתעלם). בבדיקה החיה בנובמבר 2026 Claude החזיר 200 על `minLength`. כדי לדעת אם הוא אוכף או מתעלם, הרץ גם `--bad-schema minlength40`: אם `tool` חוזר קצר מ-40 תווים, המילה התקבלה ולא נאכפה. נסה גם `pattern` ו-`addprops`, וכתוב מה כל אחד מחזיר.
 
 ```bash
 python labs/03-structured-outputs/raw_structured.py --twice
 python labs/03-structured-outputs/raw_structured.py --bad-schema
+python labs/03-structured-outputs/raw_structured.py --bad-schema minlength40
+python labs/03-structured-outputs/raw_structured.py --bad-schema pattern
+python labs/03-structured-outputs/raw_structured.py --bad-schema addprops
 python labs/03-structured-outputs/raw_structured.py --provider openai --show-body
 ```
 

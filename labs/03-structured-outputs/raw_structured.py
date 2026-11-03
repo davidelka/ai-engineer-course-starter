@@ -2,7 +2,10 @@
 
     python labs/03-structured-outputs/raw_structured.py                       # Claude, native schema
     python labs/03-structured-outputs/raw_structured.py --twice               # 2nd call: grammar is cached
-    python labs/03-structured-outputs/raw_structured.py --bad-schema          # a keyword Claude rejects -> 400
+    python labs/03-structured-outputs/raw_structured.py --bad-schema          # minLength=2 on `tool`: rejected, ignored or enforced?
+    python labs/03-structured-outputs/raw_structured.py --bad-schema minlength40   # minLength=40: tells "ignored" from "enforced"
+    python labs/03-structured-outputs/raw_structured.py --bad-schema pattern       # the email pattern, sent raw (400 in our Oct 2026 test)
+    python labs/03-structured-outputs/raw_structured.py --bad-schema addprops      # additionalProperties: true on the root
     python labs/03-structured-outputs/raw_structured.py --provider openai --show-body
     python labs/03-structured-outputs/raw_structured.py --mock                # free
 
@@ -70,15 +73,28 @@ def main() -> None:
     ap.add_argument("--provider", choices=list(MODELS), default="anthropic")
     ap.add_argument("--mock", action="store_true")
     ap.add_argument("--twice", action="store_true", help="send the same request twice and compare latency")
-    ap.add_argument("--bad-schema", action="store_true", help="add minLength to a field (unsupported by Claude)")
+    ap.add_argument("--bad-schema", nargs="?", const="minlength", choices=["minlength", "minlength40", "pattern", "addprops"],
+                    help="send a keyword the docs list as unsupported, and see what the provider really does")
     ap.add_argument("--show-body", action="store_true")
     a = ap.parse_args()
     load_dotenv(str(ROOT / ".env"))
 
     schema, notes = provider_schema(AccessRequest, a.provider)
-    if a.bad_schema:
+    if a.bad_schema == "minlength":
         schema["properties"]["tool"]["minLength"] = 2
-        print("added minLength=2 to `tool` on purpose\n")
+        print("added minLength=2 to `tool` on purpose")
+    elif a.bad_schema == "minlength40":
+        schema["properties"]["tool"]["minLength"] = 40
+        print("added minLength=40 to `tool` on purpose (real tool names are much shorter)")
+    elif a.bad_schema == "pattern":
+        schema["properties"]["requester_email"]["anyOf"][0]["pattern"] = r"^[^@\s]+@[^@\s]+\.[^@\s]+$"
+        print("put the email pattern back into the schema on purpose")
+    elif a.bad_schema == "addprops":
+        schema["additionalProperties"] = True
+        print("set additionalProperties: true on the root on purpose")
+    if a.bad_schema:
+        print("possible outcomes: HTTP 400 = the provider rejects the keyword; HTTP 200 = it accepted it,\n"
+              "and then the reply shows whether it was enforced or silently ignored\n")
     env = {"anthropic": "ANTHROPIC_API_KEY", "openai": "OPENAI_API_KEY", "gemini": "GEMINI_API_KEY"}[a.provider]
     key = "mock-key" if a.mock else os.environ.get(env, "")
     if not key:
@@ -107,6 +123,10 @@ def main() -> None:
             try:
                 obj = AccessRequest.model_validate_json(text)
                 print("\nPydantic: VALID")
+                if a.bad_schema in ("minlength", "minlength40"):
+                    need = 2 if a.bad_schema == "minlength" else 40
+                    print(f"len(tool) = {len(obj.tool)}, the schema asked for at least {need}: "
+                          + ("met" if len(obj.tool) >= need else "NOT met, so the keyword was accepted but not enforced"))
                 print(json.dumps(obj.model_dump(), indent=2, ensure_ascii=False))
             except Exception as exc:  # noqa: BLE001
                 print(f"\nPydantic: INVALID\n{exc}")
