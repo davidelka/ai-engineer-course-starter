@@ -501,7 +501,7 @@ verdict: SHIP</pre></div>`,
     repoPath: "labs/13-rag-diagnostics",
     intro: "המעבדה נמצאת בתיקייה labs/13-rag-diagnostics, ועובדת על הקורפוס של Acme (<code>data/acme/corpus</code>): 55 מסמכים (9 בעברית, 2 PDF, 3 HTML, DOCX אחד), שמחולקים ל-210 chunks (<code>heading:400:40:150</code>, כמו בשיעורים 9 עד 12). יש 79 שאלות זהב. 69 מהן עם <code>source_ids</code>, ציטוט מדויק לכל מקור (<code>source_quotes</code>) ועובדות אטומיות (<code>answer_facts</code>), ו-10 בלי תשובה בקורפוס. ל-ragkit נוסף מודול אחד, <b>ragkit/diagnose.py</b>: הטקסונומיה, המסווג, המדדים לפי שלב, groundedness ברמת טענה, NLI והרצה מלאה. אף קובץ קיים לא השתנה. לכל סקריפט יש מסלול חינמי: <code>--llm extractive --judge heuristic</code>, כלומר answerer חילוצי ושופט לקסיקלי שעונה דרך llmkit אמיתי עם transport מקומי. המספרים שבתרגילים נמדדו במסלול הזה. מספרי האחזור בהם אמיתיים, ומספרי היצירה מתארים את ה-answerer החילוצי. ההרצות החיות עם Haiku עולות יחד כ-20 סנט.",
     setup: [
-      'cd ~/projects/"ai engineer"/ai-engineer-course && source .venv/bin/activate',
+      'cd ~/ai-engineer-course-starter && source .venv/bin/activate',
       "uv pip install -r requirements.txt -r labs/13-rag-diagnostics/requirements.txt   # transformers only for exercise 8",
       "python -m pytest -q                                      # environment tests, incl. tests/test_ragkit_diagnose.py",
       "python -m pytest -q labs/13-rag-diagnostics/tests        # your exercises: all fail at first",

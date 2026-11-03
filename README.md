@@ -8,9 +8,13 @@
 
 ## התחלה מהירה
 
+כל הפקודות בקורס מניחות שהריפו נמצא ב-`~/ai-engineer-course-starter`. אם שמת אותו במקום אחר, החלף את הנתיב בפקודות `cd`.
+
 ```bash
+git clone https://github.com/davidelka/ai-engineer-course-starter.git ~/ai-engineer-course-starter
+cd ~/ai-engineer-course-starter
 uv venv .venv --python 3.12 && source .venv/bin/activate
-uv pip install -r requirements.txt
+uv pip install -r requirements.txt -c constraints.txt
 cp .env.example .env            # ומלא את המפתחות שיש לך
 python -m pytest -q             # כל בדיקות הסביבה, offline, בלי עלות
 ```
@@ -21,6 +25,8 @@ python -m pytest -q             # כל בדיקות הסביבה, offline, בל�
 uv pip install torch --index-url https://download.pytorch.org/whl/cpu
 uv pip install -r requirements-local-models.txt
 ```
+
+**התקנה משוחזרת מול עדכון.** `constraints.txt` נועל את הגרסאות המדויקות שבהן כל בדיקות הסביבה עברו (Linux, Python 3.12, נובמבר 2026). עם `-c constraints.txt` מקבלים בדיוק את הסביבה הזו. בלי הדגל מקבלים את הגרסאות האחרונות שעומדות בגבולות של `requirements.txt`, ואז צריך להריץ `python -m pytest -q` ולוודא שהכול עדיין עובר.
 
 ## מבנה
 

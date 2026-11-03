@@ -391,7 +391,7 @@ messages: ...earlier turns...                                    [automatic cach
     repoPath: "labs/04-context-engineering",
     intro: "המעבדה בתיקייה labs/04-context-engineering. llmkit למד prompt caching: <b>Block(text, cache=\"5m\")</b> הופך ל-cache_control אצל Anthropic, ו-usage מחזיר מה נקרא מהמטמון ומה נכתב אליו, מכל שלושת הספקים. <b>mockllm</b> מדמה caching, כולל אורך חיים, מינימום וזמן עיבוד לכל טוקן שלא במטמון, כך שאפשר לתרגל בחינם. חבילה חדשה, <b>ctxkit</b>, נותנת ספירת טוקנים, מודל עלות, haystack ו-compaction. במרכז המעבדה: עוזר ה-HR של Acme, עם קידומת של כ-13,000 טוקנים (מדריך עובד סינתטי ומסמכי המדיניות), ושיחה ארוכה עם 12 עובדות שצריכות לשרוד.",
     setup: [
-      'cd ~/projects/"ai engineer"/ai-engineer-course && source .venv/bin/activate',
+      'cd ~/ai-engineer-course-starter && source .venv/bin/activate',
       "uv pip install -r requirements.txt                    # no new dependencies",
       "python -m pytest -q                                   # environment tests, incl. tests/test_context.py",
       "python -m pytest -q labs/04-context-engineering/tests # your exercises: all fail at first",

@@ -405,7 +405,7 @@ rewrite: Add AC-4.8: GIVEN each of GCP, Kubernetes, NetSuite and Payroll ...</pr
     repoPath: "labs/06-spec-driven",
     intro: "המעבדה בתיקייה labs/06-spec-driven. הפיצ'ר: <b>API של בקשות גישה ל-Company Brain</b> (יצירה, רשימה, שליפה ואישור), לפי מדיניות הגישה של Acme עם שלושת המסלולים. יש מפרט מלא (SPEC-006), חוזה OpenAPI, מימוש לדוגמה ב-FastAPI ובדיקות קבלה מסומנות. אתה בונה את הכלים שהופכים מפרט לבדיק (linter, מטריצת traceability, בדיקת drift), נותן ל-Claude Code לממש מהמפרט בלבד ומדרג אותו אוטומטית, ומשתמש במודל כסוקר מפרט. חבילה חדשה, <b>spectools</b>, מחזיקה את גרסאות הייחוס.",
     setup: [
-      'cd ~/projects/"ai engineer"/ai-engineer-course && source .venv/bin/activate',
+      'cd ~/ai-engineer-course-starter && source .venv/bin/activate',
       "uv pip install -r requirements.txt -r labs/06-spec-driven/requirements.txt",
       "python -m pytest -q                                  # environment tests (tests/test_spectools.py)",
       "python -m pytest -q labs/06-spec-driven/acceptance   # acceptance tests vs the reference app: all pass",

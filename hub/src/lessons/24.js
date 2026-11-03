@@ -404,7 +404,7 @@ after:  ask user=[EMAIL] q="update address for employee [IL_ID],
     repoPath: "labs/24-ai-security",
     intro: "המעבדה בתיקייה labs/24-ai-security. נוספה חבילה חדשה, <b>guardkit</b>: עוזר RAG קטן של Acme מעל 11 מסמכים מהקורפוס (כולל המסמך המורעל של Northwind ושני postmortems מסווגים), שמונה שכבות הגנה שאפשר להרכיב, חבילה של <b>33 התקפות</b> בשמונה קטגוריות (כולל עברית וערבית) ו-<b>23 שאלות תמימות</b> מבלבלות, ו-evaluator שמחשב ASR, FPR, harmed ו-utility. הכול רץ offline מול <b>ObedientModel</b>, מודל צייתן מדומה שמבצע הוראות מוזרקות בהסתברות שבחרנו (מסומן בבירור כסימולציה), ובאותה פקודה מול Haiku 5.5 אמיתי. ריצה חיה מלאה עולה פחות מ-20 סנט.",
     setup: [
-      'cd ~/projects/"ai engineer"/ai-engineer-course && source .venv/bin/activate',
+      'cd ~/ai-engineer-course-starter && source .venv/bin/activate',
       "uv pip install -r requirements.txt -r labs/24-ai-security/requirements.txt",
       "python -m pytest -q tests/test_guardkit.py            # environment tests",
       "python -m pytest -q labs/24-ai-security/tests         # your exercises: all fail at first",

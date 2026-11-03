@@ -498,7 +498,7 @@ RateLimit: "per-key";r=0;t=3
     repoPath: "labs/26-llm-serving",
     intro: "המעבדה בתיקייה labs/26-llm-serving, והשירות עצמו הוא חבילה חדשה, <b>servekit</b>: Company Brain API v0, עם <code>POST /v1/answer</code> ו-<code>POST /v1/answer/stream</code>, שער מקביליות, rate limit לפי מפתח, idempotency, שגיאות problem+json, ולוגים מובנים. כמעט הכל רץ מול <b>servekit.mock</b>, שזה mockllm עם מונה שמראה אם כל זרם הגיע לסוף או נקטע כי הלקוח התנתק. רק תרגיל 8 קורא ל-Haiku 5.5, בבקשה אחת. ברוב התרגילים צריך שני טרמינלים: אחד לשרת המדומה ואחד לשירות.",
     setup: [
-      'cd ~/projects/"ai engineer"/ai-engineer-course && source .venv/bin/activate',
+      'cd ~/ai-engineer-course-starter && source .venv/bin/activate',
       "uv pip install -r labs/26-llm-serving/requirements.txt   # fastapi, uvicorn, locust, matplotlib",
       "python -m pytest -q tests/test_servekit.py                # environment tests",
       "python -m pytest -q labs/26-llm-serving/tests             # your exercises: all fail at first",

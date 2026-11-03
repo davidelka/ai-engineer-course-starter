@@ -14,7 +14,7 @@
 ## הכנה
 
 ```bash
-cd ~/projects/"ai engineer"/ai-engineer-course && source .venv/bin/activate
+cd ~/ai-engineer-course-starter && source .venv/bin/activate
 uv pip install -r projects/f1-company-brain/requirements.txt
 python -m pytest -q tests/test_f1_company_brain.py      # בדיקות הסביבה של הפרויקט, כולל שער ה-eval
 cd projects/f1-company-brain

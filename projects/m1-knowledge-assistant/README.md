@@ -13,7 +13,7 @@
 ## הכנה
 
 ```bash
-cd ~/projects/"ai engineer"/ai-engineer-course && source .venv/bin/activate
+cd ~/ai-engineer-course-starter && source .venv/bin/activate
 uv pip install -r projects/m1-knowledge-assistant/requirements.txt
 python -m pytest -q                              # בדיקות הסביבה, כולל tests/test_m1_knowledge_assistant.py
 cd projects/m1-knowledge-assistant

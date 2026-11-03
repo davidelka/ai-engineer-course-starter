@@ -408,7 +408,7 @@ tr.shutdown()    # flush: spans still in a batch are lost without it</pre></div>
     repoPath: "labs/22-observability",
     intro: "המעבדה בתיקייה labs/22-observability. חבילה חדשה בריפו, <b>obskit</b>, מוסיפה spans של OpenTelemetry לפי ה-GenAI conventions ל-llmkit ול-ragkit מבחוץ, עם JSONL exporter, redaction, אגרגציות, SLOs, replay ו-viewer של HTML. במרכז המעבדה: <b>שירות התשובות של Acme</b>, מערכת RAG קטנה עם מטמון, שליפה, כלי ומודל גיבוי, ו-12 traces מוקלטים מבוקר אחד שבו ארבעה משתמשים נתנו משוב שלילי. הכול רץ offline מול mockllm.",
     setup: [
-      'cd ~/projects/"ai engineer"/ai-engineer-course && source .venv/bin/activate',
+      'cd ~/ai-engineer-course-starter && source .venv/bin/activate',
       "uv pip install -r labs/22-observability/requirements.txt   # opentelemetry-sdk 1.45 + OTLP exporter",
       "python -m pytest -q                                        # environment tests (tests/test_obskit.py)",
       "python -m pytest -q labs/22-observability/tests            # your exercises: they fail at first",

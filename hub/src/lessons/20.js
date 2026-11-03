@@ -499,7 +499,7 @@ If a test fails, fix the adapter, not the test.</pre></div>
     repoPath: "labs/20-design-driven",
     intro: "המעבדה בתיקייה labs/20-design-driven, וחבילה חדשה בשורש הריפו, <b>designkit</b>, מחזיקה את טיפוסי הדומיין, ה-adapters האמיתיים ופתרונות הייחוס. במרכז: <b>legacy/tangled.py</b>, שירות התשובות של Company Brain כפונקציה אחת סבוכה. תמדוד אותו, תפרק אותו ל-ports ו-adapters, תכתוב בדיקות חוזה שגם סוכן קוד יכול לעבוד מולן, ותתרגל גרסאות, דיאגרמת רצף ו-design review. כמעט הכל רץ בלי רשת ובחינם.",
     setup: [
-      'cd ~/projects/"ai engineer"/ai-engineer-course && source .venv/bin/activate',
+      'cd ~/ai-engineer-course-starter && source .venv/bin/activate',
       "uv pip install -r requirements.txt -r labs/20-design-driven/requirements.txt",
       "python -m pytest -q                                  # environment tests (tests/test_design.py)",
       "python -m pytest -q labs/20-design-driven/tests      # your exercises: most fail at first",

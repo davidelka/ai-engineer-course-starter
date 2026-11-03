@@ -432,7 +432,7 @@ function setSync(t) { $("#sync").textContent = t; }
 function toast(t) { $("#toast-text").textContent = t; $("#toast").hidden = false; clearTimeout(toast.t); toast.t = setTimeout(() => ($("#toast").hidden = true), 1800); }
 function lessonDone(id) { const s = Progress.get(["stations", id]) || {}; return STATIONS.filter((x) => s[x.key]).length; }
 const pad = (n) => String(n).padStart(2, "0");
-const REPO_URL = "https://github.com/davidelka/ai-engineer-course";
+const REPO_URL = "https://github.com/davidelka/ai-engineer-course-starter";
 
 /* ---------------- router ---------------- */
 let cleanup = [];

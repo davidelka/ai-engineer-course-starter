@@ -430,7 +430,7 @@ A agent with tools   $0.0276       $99         14,300 ms  ~10,300 ms
     repoPath: "labs/19-ai-architecture",
     intro: "המעבדה בתיקייה labs/19-ai-architecture. הרעיון המרכזי: <b>ארכיטקטורה כנתונים</b>. המערכת מתוארת בקובץ YAML אחד (רכיבים, זרימות נתונים, גבולות אמון ותקציב), ומאותו קובץ יוצאים בדיקת כללים אוטומטית, מודל עלות ו-latency, ודיאגרמת Mermaid. נוספה לריפו חבילה חדשה, <b>archkit</b>, עם קוד הייחוס. אין קריאות בתשלום בתרגילים 1 עד 7. תרגיל 8 (רשות) הוא קריאה אחת ל-Haiku 5.5, הרבה פחות מסנט.",
     setup: [
-      'cd ~/projects/"ai engineer"/ai-engineer-course && source .venv/bin/activate',
+      'cd ~/ai-engineer-course-starter && source .venv/bin/activate',
       "uv pip install -r requirements.txt                    # no new packages in this lesson",
       "python -m pytest -q                                   # environment tests, incl. tests/test_archkit.py",
       "python -m pytest -q labs/19-ai-architecture/tests     # your exercises: all fail at first",

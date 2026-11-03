@@ -407,7 +407,7 @@ whole corpus, cache hit     42,368 prompt tokens   $0.000484   (2.2x RAG)
     repoPath: "labs/09-rag-ingestion",
     intro: "המעבדה נמצאת בתיקייה labs/09-rag-ingestion, ועובדת על הקורפוס של Acme (<code>data/acme/corpus</code>): 55 מסמכים, מהם 49 ב-Markdown, 3 דפי HTML, 2 קובצי PDF וקובץ DOCX אחד, ו-9 מהם בעברית. יש בקורפוס גם 79 שאלות זהב, ולכל אחת מסמכי מקור וציטוט מדויק. בשורש הריפו נוספה חבילה חדשה, <b>ragkit</b>: loaders, ניקוי, ארבע אסטרטגיות chunking, ingestion אינקרמנטלי, BM25, ולולאת תשובה עם ציטוטים. כל המעבדה רצה בחינם. ההרצות החיות עם Haiku עולות יחד פחות מ-5 סנט.",
     setup: [
-      'cd ~/projects/"ai engineer"/ai-engineer-course && source .venv/bin/activate',
+      'cd ~/ai-engineer-course-starter && source .venv/bin/activate',
       "uv pip install -r requirements.txt -r labs/09-rag-ingestion/requirements.txt",
       "python -m pytest -q                                  # environment tests, incl. tests/test_ragkit_ingest.py",
       "python -m pytest -q labs/09-rag-ingestion/tests      # your exercises: most fail at first",

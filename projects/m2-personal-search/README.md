@@ -14,7 +14,7 @@
 ## הכנה
 
 ```bash
-cd ~/projects/"ai engineer"/ai-engineer-course && source .venv/bin/activate
+cd ~/ai-engineer-course-starter && source .venv/bin/activate
 uv pip install -r projects/m2-personal-search/requirements.txt
 python -m pytest -q                      # בדיקות הסביבה, כולל tests/test_m2_personal_search.py
 cd projects/m2-personal-search

@@ -1054,7 +1054,7 @@ class ChatResult:
     repoPath: "labs/02-llm-apis",
     intro: "המעבדה נמצאת בתיקייה labs/02-llm-apis בריפו הקורס, ולצידה שתי חבילות חדשות בשורש הריפו: <b>llmkit</b>, ה-adapter האחיד שתשתמש בו מכאן ועד סוף הקורס, ו-<b>mockllm</b>, שרת מקומי שמחקה את שלושת הספקים ונכשל בדיוק איך שתבקש. כך מתרגלים טיפול בשגיאות בלי לשלם ובלי לחכות לתקלה אמיתית. הקוד שלך נכתב בקובץ אחד, mine.py, וכל תרגיל קוד נבדק בבדיקות אוטומטיות.",
     setup: [
-      'cd ~/projects/"ai engineer"/ai-engineer-course && git pull',
+      'cd ~/ai-engineer-course-starter && git pull',
       "source .venv/bin/activate && uv pip install -r requirements.txt",
       "python -m pytest -q                        # environment tests: llmkit vs the mock server",
       "python -m pytest -q labs/02-llm-apis/tests  # your exercises: all fail at first, that's expected",
@@ -1749,7 +1749,7 @@ user: Your previous reply did not pass validation. Fix exactly these
     repoPath: "labs/03-structured-outputs",
     intro: "המעבדה בתיקייה labs/03-structured-outputs. ב-llmkit נוסף מודול חדש, <b>structured</b>, שמחזיר אובייקט Pydantic תקין משלושת הספקים. ה-<b>mockllm</b> למד להחזיר JSON שבור בשמונה דרכים שונות, כך שאפשר לתרגל ולידציה ותיקון בלי לשלם. במרכז המעבדה: <b>חילוץ בקשות גישה של Acme</b> מהודעות חופשיות, עם golden set של 24 בקשות ותשובה נכונה לכל שדה.",
     setup: [
-      'cd ~/projects/"ai engineer"/ai-engineer-course && source .venv/bin/activate',
+      'cd ~/ai-engineer-course-starter && source .venv/bin/activate',
       "uv pip install -r requirements.txt",
       "python -m pytest -q                                  # environment tests",
       "python -m pytest -q labs/03-structured-outputs/tests # your exercises: most fail at first",
@@ -2562,7 +2562,7 @@ messages: ...earlier turns...                                    [automatic cach
     repoPath: "labs/04-context-engineering",
     intro: "המעבדה בתיקייה labs/04-context-engineering. llmkit למד prompt caching: <b>Block(text, cache=\"5m\")</b> הופך ל-cache_control אצל Anthropic, ו-usage מחזיר מה נקרא מהמטמון ומה נכתב אליו, מכל שלושת הספקים. <b>mockllm</b> מדמה caching, כולל אורך חיים, מינימום וזמן עיבוד לכל טוקן שלא במטמון, כך שאפשר לתרגל בחינם. חבילה חדשה, <b>ctxkit</b>, נותנת ספירת טוקנים, מודל עלות, haystack ו-compaction. במרכז המעבדה: עוזר ה-HR של Acme, עם קידומת של כ-13,000 טוקנים (מדריך עובד סינתטי ומסמכי המדיניות), ושיחה ארוכה עם 12 עובדות שצריכות לשרוד.",
     setup: [
-      'cd ~/projects/"ai engineer"/ai-engineer-course && source .venv/bin/activate',
+      'cd ~/ai-engineer-course-starter && source .venv/bin/activate',
       "uv pip install -r requirements.txt                    # no new dependencies",
       "python -m pytest -q                                   # environment tests, incl. tests/test_context.py",
       "python -m pytest -q labs/04-context-engineering/tests # your exercises: all fail at first",
@@ -3557,7 +3557,7 @@ specific, actionable feedback on quality, security, and best practices.</pre></d
     repoPath: "labs/05-coding-agents",
     intro: "המעבדה בתיקייה labs/05-coding-agents. במרכזה <b>sample-service</b>: שירות FastAPI קטן של Acme שמנתב בקשות גישה, עם 14 בדיקות שרצות בפחות משנייה, <b>באג מכוון</b> בניתוב, endpoint חסר, ושני ניסיונות <b>prompt injection</b> שהוטמנו בו. אתה כותב לו קובץ הוראות, הרשאות, skill ושני hooks (הפונקציות שלך ב-mine.py רצות כ-hooks אמיתיים של Claude Code), ובסוף מריץ את Claude Code על שתי משימות, עם הקונפיגורציה ובלעדיה, ומודד. ספרייה חדשה, <b>repoguard</b>, מכילה את מימושי הייחוס ואת הכלים.",
     setup: [
-      'cd ~/projects/"ai engineer"/ai-engineer-course && source .venv/bin/activate',
+      'cd ~/ai-engineer-course-starter && source .venv/bin/activate',
       "uv pip install -r labs/05-coding-agents/requirements.txt",
       "python -m pytest -q                                  # environment tests (incl. tests/test_repoguard.py)",
       "python -m pytest -q labs/05-coding-agents/tests      # your exercises: all fail at first",
@@ -4703,7 +4703,7 @@ rewrite: Add AC-4.8: GIVEN each of GCP, Kubernetes, NetSuite and Payroll ...</pr
     repoPath: "labs/06-spec-driven",
     intro: "המעבדה בתיקייה labs/06-spec-driven. הפיצ'ר: <b>API של בקשות גישה ל-Company Brain</b> (יצירה, רשימה, שליפה ואישור), לפי מדיניות הגישה של Acme עם שלושת המסלולים. יש מפרט מלא (SPEC-006), חוזה OpenAPI, מימוש לדוגמה ב-FastAPI ובדיקות קבלה מסומנות. אתה בונה את הכלים שהופכים מפרט לבדיק (linter, מטריצת traceability, בדיקת drift), נותן ל-Claude Code לממש מהמפרט בלבד ומדרג אותו אוטומטית, ומשתמש במודל כסוקר מפרט. חבילה חדשה, <b>spectools</b>, מחזיקה את גרסאות הייחוס.",
     setup: [
-      'cd ~/projects/"ai engineer"/ai-engineer-course && source .venv/bin/activate',
+      'cd ~/ai-engineer-course-starter && source .venv/bin/activate',
       "uv pip install -r requirements.txt -r labs/06-spec-driven/requirements.txt",
       "python -m pytest -q                                  # environment tests (tests/test_spectools.py)",
       "python -m pytest -q labs/06-spec-driven/acceptance   # acceptance tests vs the reference app: all pass",
@@ -5702,7 +5702,7 @@ if read_only:   # a guard is present: tests always come back pristine
     repoPath: "labs/07-verification-loops",
     intro: "המעבדה בתיקייה labs/07-verification-loops. נוספה חבילה חדשה, <b>loopkit</b>, שמריצה לולאת אימות מלאה: מחולל (Haiku 5.5 דרך llmkit, או מחולל מתוסרט שעובד בלי רשת), מאמתים שהם כלים אמיתיים (pytest עם junit XML, hypothesis, ruff, ו-mypy כאופציה), מדיניות עצירה עם תקציבים, ויומן ראיות JSONL עם audit עצמאי בסוף. המשימות הן שש פונקציות קטנות של Acme עם באגים: ימי חופשה, ימי עבודה מראשון עד חמישי, משך בקשת גישה, ניתוב בקשת SaaS, חילוץ מספרים ממסמך המדיניות, ומשימה אחת שהיא <b>בלתי אפשרית בכוונה</b>. לכל משימה יש בדיקות גלויות, בדיקות נסתרות, ופתרון ייחוס. המפרט המלא של כל אחת נמצא ב-<code>tasks/&lt;id&gt;/task.json</code>.",
     setup: [
-      'cd ~/projects/"ai engineer"/ai-engineer-course && source .venv/bin/activate',
+      'cd ~/ai-engineer-course-starter && source .venv/bin/activate',
       "uv pip install -r requirements.txt -r labs/07-verification-loops/requirements.txt",
       "python -m pytest -q tests/test_loopkit.py                # environment tests (about a minute)",
       "python -m pytest -q labs/07-verification-loops/tests     # your exercises: all fail at first",
@@ -6664,7 +6664,7 @@ sources:
     repoPath: "labs/08-enterprise-data",
     intro: "המעבדה בתיקייה labs/08-enterprise-data. נוספה חבילה חדשה, <b>datakit</b>: שכבת סמנטיקה, SQL guard מבוסס sqlglot, row-level security, הרצה read-only, provenance, טריות ו-execution accuracy. הנתונים הם <b>acme.db</b>, עם שש טבלאות של Acme (עובדים, צוותים, מערכות, הרשאות, לקוחות וקריאות שירות). יש <b>27 שאלות זהב</b> עם תוצאות שחושבו מה-DB, ותשובות מודל סינתטיות שמאפשרות להריץ הכול offline. התלות החדשה היחידה היא sqlglot.",
     setup: [
-      'cd ~/projects/"ai engineer"/ai-engineer-course && source .venv/bin/activate',
+      'cd ~/ai-engineer-course-starter && source .venv/bin/activate',
       "uv pip install -r requirements.txt -r labs/08-enterprise-data/requirements.txt",
       "python -m pytest -q tests/test_datakit.py                 # environment tests",
       "python -m pytest -q labs/08-enterprise-data/tests         # your exercises: most fail at first",
@@ -7674,7 +7674,7 @@ whole corpus, cache hit     42,368 prompt tokens   $0.000484   (2.2x RAG)
     repoPath: "labs/09-rag-ingestion",
     intro: "המעבדה נמצאת בתיקייה labs/09-rag-ingestion, ועובדת על הקורפוס של Acme (<code>data/acme/corpus</code>): 55 מסמכים, מהם 49 ב-Markdown, 3 דפי HTML, 2 קובצי PDF וקובץ DOCX אחד, ו-9 מהם בעברית. יש בקורפוס גם 79 שאלות זהב, ולכל אחת מסמכי מקור וציטוט מדויק. בשורש הריפו נוספה חבילה חדשה, <b>ragkit</b>: loaders, ניקוי, ארבע אסטרטגיות chunking, ingestion אינקרמנטלי, BM25, ולולאת תשובה עם ציטוטים. כל המעבדה רצה בחינם. ההרצות החיות עם Haiku עולות יחד פחות מ-5 סנט.",
     setup: [
-      'cd ~/projects/"ai engineer"/ai-engineer-course && source .venv/bin/activate',
+      'cd ~/ai-engineer-course-starter && source .venv/bin/activate',
       "uv pip install -r requirements.txt -r labs/09-rag-ingestion/requirements.txt",
       "python -m pytest -q                                  # environment tests, incl. tests/test_ragkit_ingest.py",
       "python -m pytest -q labs/09-rag-ingestion/tests      # your exercises: most fail at first",
@@ -8670,7 +8670,7 @@ ans = answer("When is the deadline to finish the new-hire security training?",
     repoPath: "labs/10-embeddings",
     intro: "המעבדה נמצאת בתיקייה labs/10-embeddings, ועובדת על הקורפוס של Acme (<code>data/acme/corpus</code>): 55 מסמכים, מהם 9 בעברית, שמחולקים ל-210 chunks עם ה-chunker של ה-baseline משיעור 9 (<code>heading:400:40:150</code>). שאלות הזהב נמצאות ב-<code>golden/qa.jsonl</code>: 79 שאלות, 69 מהן עם מסמכי מקור, ו-6 מסומנות cross-lingual. ל-ragkit נוספו ארבעה מודולים: <b>embed</b> (מודל מקומי, OpenAI, embedder מזויף ומטמון), <b>vectors</b> (חיפוש מדויק ו-FAISS), <b>dense</b> (DenseRetriever) ו-<b>metrics</b> (recall@k ו-MRR). המודל המקומי, multilingual-e5-small, חינמי ויורד פעם אחת (כ-470MB). ההרצות עם OpenAI עולות יחד פחות משני סנטים. לכל סקריפט יש גם מסלול לא מקוון, <code>--model fake</code>, שהוא לקסיקלי ולא סמנטי.",
     setup: [
-      'cd ~/projects/"ai engineer"/ai-engineer-course && source .venv/bin/activate',
+      'cd ~/ai-engineer-course-starter && source .venv/bin/activate',
       "uv pip install torch --index-url https://download.pytorch.org/whl/cpu   # CPU wheel first (much smaller)",
       "uv pip install -r requirements.txt -r labs/10-embeddings/requirements.txt",
       "python -m pytest -q                                  # environment tests, incl. tests/test_ragkit_dense.py",
@@ -9792,7 +9792,7 @@ metrics.gauge("vector_index.recall_at_10", r)      # alert if r &lt; 0.95 for 3 
     repoPath: "labs/11-managed-vectors",
     intro: "המעבדה נמצאת בתיקייה labs/11-managed-vectors, ומריצה שני מסדי נתונים מקומיים עם docker compose: <b>Qdrant 1.20.0</b> ו-<b>PostgreSQL 18 עם pgvector 0.8.7</b>. ל-ragkit נוספו שלושה stores שמממשים את אותו פרוטוקול <code>VectorStore</code> משיעור 10: ‏<code>QdrantVectorStore</code>, ‏<code>PgVectorStore</code> ו-<code>S3VectorsStore</code>. נוספו גם שפת מסננים עם מתרגמים לשלושתם ו-<code>acl_where</code> לפי המטריצה של שיעור 24, כלי מדידה (sweep, ‏recall, ‏Pareto, ‏filtered recall), ומודל זיכרון ועלות. הנתונים: הקורפוס של Acme (55 מסמכים, 210 chunks, ‏79 שאלות זהב), עם ה-embeddings מהמטמון של שיעור 10, כך ששום דבר לא מוטמע מחדש. לניסויים על אינדקסים יש בנוסף עשרות אלפי וקטורים סינתטיים מקובצים. כל התרגילים רצים בחינם על המחשב שלך. תרגיל 8 (S3 Vectors אמיתי) עולה פחות מסנט, כל עוד מריצים את ה-teardown.",
     setup: [
-      "cd ~/projects/\"ai engineer\"/ai-engineer-course && source .venv/bin/activate",
+      "cd ~/ai-engineer-course-starter && source .venv/bin/activate",
       "uv pip install -r requirements.txt -r labs/10-embeddings/requirements.txt -r labs/11-managed-vectors/requirements.txt",
       "docker compose -f labs/11-managed-vectors/compose.yaml up -d && docker compose -f labs/11-managed-vectors/compose.yaml ps",
       "python -m pytest -q                                      # environment tests, incl. tests/test_ragkit_managed.py",
@@ -10883,7 +10883,7 @@ retriever.search(q, k=5, where={"classification": ["public", "internal"]})  # pe
     repoPath: "labs/12-advanced-retrieval",
     intro: "המעבדה נמצאת בתיקייה labs/12-advanced-retrieval, ועובדת על הקורפוס של Acme (<code>data/acme/corpus</code>): 55 מסמכים, 9 מהם בעברית, שמחולקים ל-210 chunks (<code>heading:400:40:150</code>, כמו בשיעורים 9 ו-10). מתוך 79 שאלות הזהב, 69 עם מסמכי מקור: 11 multi_hop, 11 version_conflict, 11 hebrew, ו-6 מסומנות cross-lingual. ב-9 מדיניויות יש גרסה חדשה שמצביעה על הישנה בשדה <code>supersedes</code>. ל-ragkit נוספו שישה מודולים: <b>fusion</b>, <b>hybrid</b>, <b>query</b>, <b>versions</b>, <b>rerank</b> ו-<b>ablation</b>, ובנוסף <b>replay</b>, LLM לא מקוון. לכל סקריפט יש מסלול חינמי: <code>--dense fake --llm replay --reranker fake</code>. המספרים שכתובים בתרגילים נמדדו במסלול הזה, וחלק מהם הם רק בדיקת צנרת, כפי שמצוין. ההרצות החיות עם Haiku עולות יחד פחות מ-10 סנטים.",
     setup: [
-      'cd ~/projects/"ai engineer"/ai-engineer-course && source .venv/bin/activate',
+      'cd ~/ai-engineer-course-starter && source .venv/bin/activate',
       "uv pip install -r requirements.txt -r labs/12-advanced-retrieval/requirements.txt",
       "python -m pytest -q                                      # environment tests, incl. tests/test_ragkit_hybrid.py",
       "python -m pytest -q labs/12-advanced-retrieval/tests     # your exercises: all fail at first",
@@ -11891,7 +11891,7 @@ verdict: SHIP</pre></div>`,
     repoPath: "labs/13-rag-diagnostics",
     intro: "המעבדה נמצאת בתיקייה labs/13-rag-diagnostics, ועובדת על הקורפוס של Acme (<code>data/acme/corpus</code>): 55 מסמכים (9 בעברית, 2 PDF, 3 HTML, DOCX אחד), שמחולקים ל-210 chunks (<code>heading:400:40:150</code>, כמו בשיעורים 9 עד 12). יש 79 שאלות זהב. 69 מהן עם <code>source_ids</code>, ציטוט מדויק לכל מקור (<code>source_quotes</code>) ועובדות אטומיות (<code>answer_facts</code>), ו-10 בלי תשובה בקורפוס. ל-ragkit נוסף מודול אחד, <b>ragkit/diagnose.py</b>: הטקסונומיה, המסווג, המדדים לפי שלב, groundedness ברמת טענה, NLI והרצה מלאה. אף קובץ קיים לא השתנה. לכל סקריפט יש מסלול חינמי: <code>--llm extractive --judge heuristic</code>, כלומר answerer חילוצי ושופט לקסיקלי שעונה דרך llmkit אמיתי עם transport מקומי. המספרים שבתרגילים נמדדו במסלול הזה. מספרי האחזור בהם אמיתיים, ומספרי היצירה מתארים את ה-answerer החילוצי. ההרצות החיות עם Haiku עולות יחד כ-20 סנט.",
     setup: [
-      'cd ~/projects/"ai engineer"/ai-engineer-course && source .venv/bin/activate',
+      'cd ~/ai-engineer-course-starter && source .venv/bin/activate',
       "uv pip install -r requirements.txt -r labs/13-rag-diagnostics/requirements.txt   # transformers only for exercise 8",
       "python -m pytest -q                                      # environment tests, incl. tests/test_ragkit_diagnose.py",
       "python -m pytest -q labs/13-rag-diagnostics/tests        # your exercises: all fail at first",
@@ -12787,7 +12787,7 @@ requests table: 1 rows</pre></div>
     repoPath: "labs/14-tool-use",
     intro: "המעבדה נמצאת בתיקייה labs/14-tool-use. llmkit למד לעבוד עם כלים בשלושת הספקים, כולל streaming. המסמך <b>llmkit/TOOLS.md</b> מתאר את ה-API. ה-<b>mockllm</b> מחזיר קריאות לכלים בצורה של כל ספק, ויש לו ארבע תקלות: ארגומנטים שגויים, כלי שלא קיים, לולאה ו-JSON שבור. יש לו גם מצב של \"מודל תמים\" שמציית להזרקות. החבילה החדשה <b>toolkit/</b> מכילה את ששת הכלים של Acme מעל acme.db, ואיתם registry, executor, לולאה, שער אישור ושכבות הגנה. היא תשמש גם בשיעורים 15 עד 18. במרכז המעבדה: Company Brain עונה על שאלות גישה עם כלים, ופותח בקשת גישה רק באישור של אדם.",
     setup: [
-      'cd ~/projects/"ai engineer"/ai-engineer-course && source .venv/bin/activate',
+      'cd ~/ai-engineer-course-starter && source .venv/bin/activate',
       "python -m pytest -q                          # environment tests, including tests/test_tools.py",
       "python -m pytest -q labs/14-tool-use/tests   # your exercises: all fail at first",
     ],
@@ -13711,7 +13711,7 @@ STOP final_answer  steps=4 tool_calls=3 errors=0 tokens=9431+255 cost=$0.00107 (
     repoPath: "labs/15-agent-loops",
     intro: "המעבדה נמצאת בתיקייה labs/15-agent-loops. החבילה החדשה <b>agentkit/</b> בנויה מעל toolkit משיעור 14. יש בה <code>Agent</code> (לולאה עם תקציב, מדיניות עצירה, give_up, אישור אנושי, מצב plan, פתקים ומחיקת תוצאות), trajectory ב-JSONL שאפשר להמיר ל-spans של obskit, מדדי הערכה, הזרקת תקלות בצד הכלים, ו-workflow קבוע להשוואה. יש שלושה סוגי מודלים: <b>fake</b> (מודל מבוסס חוקים, דטרמיניסטי וחינמי, עם טוקנים מוערכים), <b>mock</b> (mockllm עם צורות ה-wire האמיתיות), ו-<b>Haiku 5.5</b> בשביל המדידה האמיתית. סט של 15 משימות של Acme עם תוצאות זהב נמצא ב-<code>data/tasks.jsonl</code>.",
     setup: [
-      'cd ~/projects/"ai engineer"/ai-engineer-course && source .venv/bin/activate',
+      'cd ~/ai-engineer-course-starter && source .venv/bin/activate',
       "python -m pytest -q tests/test_agentkit.py         # environment tests for agentkit",
       "python -m pytest -q labs/15-agent-loops/tests      # your exercises: all fail at first",
     ],
@@ -14738,7 +14738,7 @@ app.invoke(None, fork_cfg)
     repoPath: "labs/16-workflows",
     intro: "המעבדה נמצאת ב-labs/16-workflows. החבילה החדשה <b>flowkit/</b> היא ה-workflow של אישור בקשות גישה על <b>LangGraph 1.2</b>. ה-state וה-reducers נמצאים ב-state.py, הצמתים ושער האישור ב-nodes.py, בניית הגרף ב-graph.py, ההרצה, ההמשך וההיסטוריה ב-runner.py, ה-audit וה-outbox ב-store.py, והזרקת התקלות ב-faults.py. ה-workflow משתמש ב-llmkit.structured לחילוץ (שיעור 3) ובכלים של toolkit (שיעור 14), ו-SPEC-006 משיעור 6 הוא החוזה שלו. ברירת המחדל היא <b>FakeLLM</b>, ולכן הכל רץ בלי מפתח ובחינם. עם <code>--model anthropic:claude-haiku-5-5</code> שני צעדי ה-LLM הם אמיתיים. הקבצים שהמעבדה כותבת הם results/checkpoints.db (ה-checkpoints) ו-results/requests.db (הבקשות, ה-audit וה-outbox).",
     setup: [
-      'cd ~/projects/"ai engineer"/ai-engineer-course && source .venv/bin/activate',
+      'cd ~/ai-engineer-course-starter && source .venv/bin/activate',
       "uv pip install -r labs/16-workflows/requirements.txt   # langgraph>=1.2.19, langgraph-checkpoint-sqlite>=3.1.3",
       "python -m pytest -q                                     # environment tests, including tests/test_flowkit.py",
       "python -m pytest -q labs/16-workflows/tests             # your exercises: all fail at first",
@@ -15854,7 +15854,7 @@ claude mcp list          claude mcp get acme          claude mcp remove acme    
     repoPath: "labs/17-mcp",
     intro: "המעבדה נמצאת בתיקייה labs/17-mcp. החבילה החדשה <b>mcpkit/</b> מגישה את Company Brain כשרת MCP אמיתי, עם ה-SDK הרשמי (<code>mcp</code> 2.3). השרת מגיש את ששת הכלים של toolkit משיעור 14, ואיתם <code>search_docs</code> מעל ragkit ו-<code>get_oncall_for_service</code>, את 55 המסמכים כ-resources ושני prompts. הוא רץ ב-stdio וב-Streamable HTTP, ומשרת לקוחות משתי התקופות של הפרוטוקול. <code>create_access_request</code> שואל את המשתמש דרך elicitation. בצד הלקוח, <code>MCPToolbox</code> מחבר כל שרת MCP ללולאה של llmkit. במעבדה תראה את הפרוטוקול בעיניים, תכתוב כלי, תכתוב את הגשר, תחבר ל-Claude Code, תגן על שרת HTTP עם token, ותתקוף ותגן מפני הרעלת כלים.",
     setup: [
-      'cd ~/projects/"ai engineer"/ai-engineer-course && source .venv/bin/activate',
+      'cd ~/ai-engineer-course-starter && source .venv/bin/activate',
       "uv pip install -r labs/17-mcp/requirements.txt    # mcp>=2.3.0",
       "python -m pytest -q tests/test_mcpkit.py           # environment tests for mcpkit",
       "python -m pytest -q labs/17-mcp/tests              # your exercises: all fail at first",
@@ -16713,7 +16713,7 @@ agg    = aggregate_runs(result.records)  # per agent: tokens, cost, share, coord
     repoPath: "labs/18-multi-agent",
     intro: "המעבדה נמצאת בתיקייה labs/18-multi-agent. החבילה החדשה, <b>multikit</b>, בונה את כל הדפוסים מעל ה-Agent של שיעור 15: router עם structured output, supervisor עם delegate tools, handoffs עם חוזה סיכום, fan-out עם ציטוטים, וכותב ומבקר. יש שלושה מומחים של Acme: <b>hr</b>, <b>it_access</b> ו-<b>oncall</b>. כל דפוס רץ גם עם מודלים מזויפים, חינם, וגם מול Haiku. בלב המעבדה יש השוואה בין agent יחיד, router ו-supervisor על <b>23 משימות</b>: 15 משימות הגישה משיעור 15, ועוד 8 משימות חדשות שחוצות תחומים. לכל משימה יש תוצאת זהב, והטקסט המלא והזהב של כל המשימות מופיעים ב-README של המעבדה.",
     setup: [
-      'cd ~/projects/"ai engineer"/ai-engineer-course && source .venv/bin/activate',
+      'cd ~/ai-engineer-course-starter && source .venv/bin/activate',
       "python -m pytest -q tests/test_multikit.py          # environment tests",
       "python -m pytest -q labs/18-multi-agent/tests       # your exercises: they fail at first",
     ],
@@ -17619,7 +17619,7 @@ A agent with tools   $0.0276       $99         14,300 ms  ~10,300 ms
     repoPath: "labs/19-ai-architecture",
     intro: "המעבדה בתיקייה labs/19-ai-architecture. הרעיון המרכזי: <b>ארכיטקטורה כנתונים</b>. המערכת מתוארת בקובץ YAML אחד (רכיבים, זרימות נתונים, גבולות אמון ותקציב), ומאותו קובץ יוצאים בדיקת כללים אוטומטית, מודל עלות ו-latency, ודיאגרמת Mermaid. נוספה לריפו חבילה חדשה, <b>archkit</b>, עם קוד הייחוס. אין קריאות בתשלום בתרגילים 1 עד 7. תרגיל 8 (רשות) הוא קריאה אחת ל-Haiku 5.5, הרבה פחות מסנט.",
     setup: [
-      'cd ~/projects/"ai engineer"/ai-engineer-course && source .venv/bin/activate',
+      'cd ~/ai-engineer-course-starter && source .venv/bin/activate',
       "uv pip install -r requirements.txt                    # no new packages in this lesson",
       "python -m pytest -q                                   # environment tests, incl. tests/test_archkit.py",
       "python -m pytest -q labs/19-ai-architecture/tests     # your exercises: all fail at first",
@@ -18745,7 +18745,7 @@ If a test fails, fix the adapter, not the test.</pre></div>
     repoPath: "labs/20-design-driven",
     intro: "המעבדה בתיקייה labs/20-design-driven, וחבילה חדשה בשורש הריפו, <b>designkit</b>, מחזיקה את טיפוסי הדומיין, ה-adapters האמיתיים ופתרונות הייחוס. במרכז: <b>legacy/tangled.py</b>, שירות התשובות של Company Brain כפונקציה אחת סבוכה. תמדוד אותו, תפרק אותו ל-ports ו-adapters, תכתוב בדיקות חוזה שגם סוכן קוד יכול לעבוד מולן, ותתרגל גרסאות, דיאגרמת רצף ו-design review. כמעט הכל רץ בלי רשת ובחינם.",
     setup: [
-      'cd ~/projects/"ai engineer"/ai-engineer-course && source .venv/bin/activate',
+      'cd ~/ai-engineer-course-starter && source .venv/bin/activate',
       "uv pip install -r requirements.txt -r labs/20-design-driven/requirements.txt",
       "python -m pytest -q                                  # environment tests (tests/test_design.py)",
       "python -m pytest -q labs/20-design-driven/tests      # your exercises: most fail at first",
@@ -19724,7 +19724,7 @@ total_s                2.69s       3.03s</pre></div>
     repoPath: "labs/21-multimodal",
     intro: "המעבדה נמצאת בתיקייה labs/21-multimodal. llmkit מקבל עכשיו תמונות ו-PDF בשלושת הספקים (המסמך המלא: <b>llmkit/MEDIA.md</b>), כולל מחשבון טוקנים ובדיקת מגבלות מקומית. ה-<b>mockllm</b> רואה תמונות: הוא קורא את הגודל מהבייטים, מחייב לפי הנוסחה של הספק, ומחזיר את שגיאות ה-400 של ה-API האמיתי. בתמונות של המעבדה מוסתר \"oracle\" שרק ה-mock קורא, ולכן גם בלי מודל אמיתי הקטנה מוגזמת מורידה דיוק. החבילה החדשה <b>voicekit/</b> מכילה ports ל-STT ול-TTS עם מתאמים ל-OpenAI, למחשב המקומי ולבדיקות, צינור קולי עם מדידת השהיה, ו-WER לעברית. זו התשתית של פרויקט הגמר F2. כל התרגילים רצים בחינם, והרצה חיה של כל המעבדה עולה בערך 5 עד 8 סנטים.",
     setup: [
-      'cd ~/projects/"ai engineer"/ai-engineer-course && source .venv/bin/activate',
+      'cd ~/ai-engineer-course-starter && source .venv/bin/activate',
       "uv pip install -r labs/21-multimodal/requirements.txt   # pillow, pypdf, pypdfium2, jiwer",
       "python -m pytest -q                                      # environment tests, incl. tests/test_multimodal*.py",
       "python -m pytest -q labs/21-multimodal/tests             # your exercises: all fail at first",
@@ -20701,7 +20701,7 @@ tr.shutdown()    # flush: spans still in a batch are lost without it</pre></div>
     repoPath: "labs/22-observability",
     intro: "המעבדה בתיקייה labs/22-observability. חבילה חדשה בריפו, <b>obskit</b>, מוסיפה spans של OpenTelemetry לפי ה-GenAI conventions ל-llmkit ול-ragkit מבחוץ, עם JSONL exporter, redaction, אגרגציות, SLOs, replay ו-viewer של HTML. במרכז המעבדה: <b>שירות התשובות של Acme</b>, מערכת RAG קטנה עם מטמון, שליפה, כלי ומודל גיבוי, ו-12 traces מוקלטים מבוקר אחד שבו ארבעה משתמשים נתנו משוב שלילי. הכול רץ offline מול mockllm.",
     setup: [
-      'cd ~/projects/"ai engineer"/ai-engineer-course && source .venv/bin/activate',
+      'cd ~/ai-engineer-course-starter && source .venv/bin/activate',
       "uv pip install -r labs/22-observability/requirements.txt   # opentelemetry-sdk 1.45 + OTLP exporter",
       "python -m pytest -q                                        # environment tests (tests/test_obskit.py)",
       "python -m pytest -q labs/22-observability/tests            # your exercises: they fail at first",
@@ -21565,7 +21565,7 @@ n = 79, p = 0.48:  unpaired MDD = 0.22   paired (6% flip) MDD = 0.08</pre></div>
     repoPath: "labs/23-evaluation",
     intro: "המעבדה בתיקייה labs/23-evaluation. בשורש הריפו נוספה חבילה חדשה, <b>evalkit</b>: datasets עם גרסה, runner עם מטמון, מדדים, שופטים עם רובריקה ופלט מובנה, כיול, סטטיסטיקה, gates ודוחות. המערכת הנבדקת היא <b>ה-RAG של שיעור 9</b>, על <b>79 שאלות הזהב</b> של Acme (data/acme/corpus/golden/qa.jsonl): לכל שאלה יש עובדות אטומיות (answer_facts), מזהי מקורות, סוג, ותגית stale לגרסה המיושנת שעלולה לבלבל. הכול רץ בחינם עם תחליפים לא-מודליים (ExtractiveAnswerer, rule follower ושופט לקסיקלי). ההרצות החיות עם Haiku 5.5 עולות יחד בערך 0.10 דולר, וכל תוצאה נשמרת במטמון.",
     setup: [
-      'cd ~/projects/"ai engineer"/ai-engineer-course && source .venv/bin/activate',
+      'cd ~/ai-engineer-course-starter && source .venv/bin/activate',
       "uv pip install -r requirements.txt -r labs/23-evaluation/requirements.txt",
       "python -m pytest -q                                  # environment tests (incl. tests/test_evalkit.py)",
       "python -m pytest -q labs/23-evaluation/tests         # your exercises: they fail at first",
@@ -22417,7 +22417,7 @@ after:  ask user=[EMAIL] q="update address for employee [IL_ID],
     repoPath: "labs/24-ai-security",
     intro: "המעבדה בתיקייה labs/24-ai-security. נוספה חבילה חדשה, <b>guardkit</b>: עוזר RAG קטן של Acme מעל 11 מסמכים מהקורפוס (כולל המסמך המורעל של Northwind ושני postmortems מסווגים), שמונה שכבות הגנה שאפשר להרכיב, חבילה של <b>33 התקפות</b> בשמונה קטגוריות (כולל עברית וערבית) ו-<b>23 שאלות תמימות</b> מבלבלות, ו-evaluator שמחשב ASR, FPR, harmed ו-utility. הכול רץ offline מול <b>ObedientModel</b>, מודל צייתן מדומה שמבצע הוראות מוזרקות בהסתברות שבחרנו (מסומן בבירור כסימולציה), ובאותה פקודה מול Haiku 5.5 אמיתי. ריצה חיה מלאה עולה פחות מ-20 סנט.",
     setup: [
-      'cd ~/projects/"ai engineer"/ai-engineer-course && source .venv/bin/activate',
+      'cd ~/ai-engineer-course-starter && source .venv/bin/activate',
       "uv pip install -r requirements.txt -r labs/24-ai-security/requirements.txt",
       "python -m pytest -q tests/test_guardkit.py            # environment tests",
       "python -m pytest -q labs/24-ai-security/tests         # your exercises: all fail at first",
@@ -23260,7 +23260,7 @@ gateway:  LLM("anthropic:claude-haiku-5-5", api_key=$ANTHROPIC_API_KEY)   # one 
     repoPath: "labs/25-llm-gateway",
     intro: "המעבדה בתיקייה labs/25-llm-gateway. בריפו נוספה חבילה חדשה, <b>gatewaykit</b>: gateway קטן שמקבל בקשות בפורמט OpenAI או Anthropic, מעביר אותן לספקים דרך llmkit, ובדרך עובר את כל השלבים מהשיעור. ארבעה מהשלבים תכתוב בעצמך ב-mine.py: תקציבים, fallback עם breaker, השחרת PII ומדיניות. כשהבדיקות עוברות, אפשר להריץ את ה-gateway <b>עם הקוד שלך בפנים</b>. כל התרגילים חוץ מתרגיל 8 רצים מול שרתי mockllm מקומיים ועולים אפס. תרגיל 7 מריץ את LiteLLM עם Docker ו-Postgres, ותרגיל 8 עולה פחות מעשירית סנט.",
     setup: [
-      'cd ~/projects/"ai engineer"/ai-engineer-course && source .venv/bin/activate',
+      'cd ~/ai-engineer-course-starter && source .venv/bin/activate',
       "uv pip install -r requirements.txt -r labs/25-llm-gateway/requirements.txt",
       "python -m pytest -q tests/test_gatewaykit.py           # environment tests (about 30 s)",
       "python -m pytest -q labs/25-llm-gateway/tests          # your exercises: all fail at first",
@@ -24254,7 +24254,7 @@ RateLimit: "per-key";r=0;t=3
     repoPath: "labs/26-llm-serving",
     intro: "המעבדה בתיקייה labs/26-llm-serving, והשירות עצמו הוא חבילה חדשה, <b>servekit</b>: Company Brain API v0, עם <code>POST /v1/answer</code> ו-<code>POST /v1/answer/stream</code>, שער מקביליות, rate limit לפי מפתח, idempotency, שגיאות problem+json, ולוגים מובנים. כמעט הכל רץ מול <b>servekit.mock</b>, שזה mockllm עם מונה שמראה אם כל זרם הגיע לסוף או נקטע כי הלקוח התנתק. רק תרגיל 8 קורא ל-Haiku 5.5, בבקשה אחת. ברוב התרגילים צריך שני טרמינלים: אחד לשרת המדומה ואחד לשירות.",
     setup: [
-      'cd ~/projects/"ai engineer"/ai-engineer-course && source .venv/bin/activate',
+      'cd ~/ai-engineer-course-starter && source .venv/bin/activate',
       "uv pip install -r labs/26-llm-serving/requirements.txt   # fastapi, uvicorn, locust, matplotlib",
       "python -m pytest -q tests/test_servekit.py                # environment tests",
       "python -m pytest -q labs/26-llm-serving/tests             # your exercises: all fail at first",
@@ -25155,7 +25155,7 @@ statement {   # only this secret
     repoPath: "labs/27-deployment",
     intro: "המעבדה בתיקייה labs/27-deployment. במרכזה <b>Company Brain mini API</b>: שירות FastAPI קטן מעל llmkit, באותה צורה של השירות משיעור 26, שנארז ב-image, רץ ב-compose ונפרס ל-<b>ECS Fargate</b> עם Terraform. חבילה חדשה בריפו, <b>deploykit</b>, היא קוד הייחוס: parser ל-Dockerfile, בדיקות Terraform עם python-hcl2, ומודל עלות. <b>תרגילים 1 עד 7 חינמיים.</b> תרגיל 8 עולה כ-5 סנט לשעה ב-AWS ונגמר בפירוק מלא.",
     setup: [
-      'cd ~/projects/"ai engineer"/ai-engineer-course && source .venv/bin/activate',
+      'cd ~/ai-engineer-course-starter && source .venv/bin/activate',
       "uv pip install -r labs/27-deployment/requirements.txt   # python-hcl2, fastapi, uvicorn",
       "python -m pytest -q                                     # environment tests (tests/test_deploy.py)",
       "python -m pytest -q labs/27-deployment/tests            # your exercises: all fail at first",
@@ -26097,7 +26097,7 @@ the hash alone already removed most duplicates."</pre></div>
     repoPath: "labs/28-interview-prep",
     intro: "המעבדה בתיקייה labs/28-interview-prep, והיא שונה מהקודמות: שלושה תרגילים הם קוד ב-mine.py, וארבעה הם <b>אימון</b>, בקול ועם שעון. בשורש הריפו נוספה חבילה חדשה, <b>interviewkit</b>, עם בנק שאלות, ניקוד לפי rubric, חזרה מרווחת ומראיין מדומה מעל llmkit. כל הבדיקות רצות מול השרת המדומה, וראיון מדומה אמיתי מול Haiku 5.5 עולה פחות מסנט.",
     setup: [
-      'cd ~/projects/"ai engineer"/ai-engineer-course && source .venv/bin/activate',
+      'cd ~/ai-engineer-course-starter && source .venv/bin/activate',
       "uv pip install -r requirements.txt -r labs/28-interview-prep/requirements.txt",
       "python -m pytest -q                                   # environment tests",
       "python -m pytest -q labs/28-interview-prep/tests      # your exercises: all fail at first",
@@ -26994,7 +26994,7 @@ by group:  generation 29 · retrieval 9 · ingestion 0</pre></div>
     repoPath: "projects/m1-knowledge-assistant",
     intro: "הפרויקט בתיקייה <b>projects/m1-knowledge-assistant</b>. החבילה <code>acmeqa/</code> היא קוד הייחוס המלא, ו-<code>mine.py</code> מכיל את שלושת חלקי הקוד שלך (אבני דרך 4, 5 ו-6), כל אחד עם docstring שמפרט את כל הכללים ובדיקות ב-<code>tests/</code>. כל פקודה של <code>python -m acmeqa</code>, השירות וה-eval משתמשים בפונקציות שלך ברגע שהן ממומשות, ובגרסת הייחוס עד אז. שאר אבני הדרך מחברות ומודדות חלקים קיימים. <b>הכול חינם חוץ מאבן דרך 9</b> (כ-5 עד 8 סנט של Haiku 5.5, ותקרה של 0.20$). כל נתון שתרגיל צריך מתואר בתרגיל עצמו, ובקצרה גם ב-README של הפרויקט, בפרק \"הנתונים בקצרה\".",
     setup: [
-      'cd ~/projects/"ai engineer"/ai-engineer-course && source .venv/bin/activate',
+      'cd ~/ai-engineer-course-starter && source .venv/bin/activate',
       "uv pip install -r projects/m1-knowledge-assistant/requirements.txt   # numpy, sqlglot, fastapi, uvicorn, opentelemetry-sdk, sentence-transformers",
       "python -m pytest -q                                                   # environment tests, incl. tests/test_m1_knowledge_assistant.py",
       "cd projects/m1-knowledge-assistant",
@@ -27746,7 +27746,7 @@ hybrid  all 0.85 / 0.79   keyword 1.00   semantic 0.79   cross-lingual 0.50   fi
     repoPath: "projects/m2-personal-search",
     intro: "הפרויקט בתיקייה <b>projects/m2-personal-search</b>. החבילה <code>pss/</code> היא קוד הייחוס המלא, ו-<code>mine.py</code> מכיל חמש פונקציות שאתה כותב (אבני דרך 2, 3, 5, 6 ו-8). כל פקודה של <code>python -m pss</code> משתמשת בפונקציות שלך ברגע שהן ממומשות, ובגרסת הייחוס עד אז (ומודיעה על זה). שאר אבני הדרך מחברות את הדבר האמיתי: embeddings מקומיים, Ollama, OCR, ממשק, ובסוף התיקייה שלך. <b>הכול חינם ומקומי</b>, חוץ מאבן דרך 8 שבה אפשר לשלוח כמה שאלות ל-Claude Haiku 5.5 (פחות מסנט). תיקיית הדוגמה <code>data/sample/</code> (45 קבצים) ושאלות הזהב <code>data/golden.jsonl</code> (52) מתוארות ב-README.",
     setup: [
-      'cd ~/projects/"ai engineer"/ai-engineer-course && source .venv/bin/activate',
+      'cd ~/ai-engineer-course-starter && source .venv/bin/activate',
       "uv pip install -r projects/m2-personal-search/requirements.txt   # pdfminer.six, pypdf, python-docx, fastapi, uvicorn, watchdog, pypdfium2",
       "python -m pytest -q                                          # environment tests, incl. tests/test_m2_personal_search.py",
       "cd projects/m2-personal-search && alias pss='python -m pss'",
@@ -28443,7 +28443,7 @@ total   $51.45 per month = $0.26 per employee</pre></div>
     repoPath: "projects/f1-company-brain",
     intro: "הפרויקט בתיקייה <b>projects/f1-company-brain</b>. החבילה <code>cbrain/</code> היא קוד הייחוס המלא, ו-<code>mine.py</code> מכיל את ארבעת חלקי הקוד שלך (אבני דרך 3, 5, 6 ו-7). כל פקודה של <code>python -m cbrain</code>, השירות, שרת ה-MCP וה-eval משתמשים בפונקציות שלך ברגע שהן ממומשות, ובגרסת הייחוס עד אז. שאר אבני הדרך מחברות ומודדות: שירות, workflow, אבטחה, gateway, MCP, ניטור, eval, ארכיטקטורה ופריסה. <b>הכול חינם חוץ מאבן דרך 10</b> (כ-10 עד 15 סנט של Haiku 5.5), ו-AWS באבן דרך 12 הוא אופציונלי (כ-1.70$ ליום). כל ההוראות, כולל ה-runbook של הפריסה, ב-README של הפרויקט.",
     setup: [
-      'cd ~/projects/"ai engineer"/ai-engineer-course && source .venv/bin/activate',
+      'cd ~/ai-engineer-course-starter && source .venv/bin/activate',
       "uv pip install -r projects/f1-company-brain/requirements.txt   # all already in the root requirements.txt",
       "python -m pytest -q tests/test_f1_company_brain.py               # environment tests + the evaluation gate (~10 s)",
       "cd projects/f1-company-brain",
@@ -29195,7 +29195,7 @@ POST /sessions/{id}/turns/stream {"text":"כואב לי הבתן"}
     repoPath: "projects/f2-hebrew-tutor",
     intro: "הפרויקט בתיקייה <b>projects/f2-hebrew-tutor</b>. החבילה <code>hebtutor/</code> היא קוד הייחוס המלא, ו-<code>mine.py</code> מכיל ארבעה חלקי קוד שלך (אבני דרך 4, 5, 6 ו-7). כל פקודה של <code>python -m hebtutor</code> וה-API משתמשים בפונקציות שלך ברגע שהן ממומשות, ובגרסת הייחוס עד אז. אבני הדרך האחרות מחברות חלקים: תוכן, מודל אמיתי, קול, eval, API ופריסה. <b>הכול חינם חוץ מאבני דרך 3, 7 ו-8</b> (יחד כ-5 סנט), ו-AWS באבן דרך 10 אופציונלי.",
     setup: [
-      "cd ~/projects/\"ai engineer\"/ai-engineer-course && source .venv/bin/activate",
+      "cd ~/ai-engineer-course-starter && source .venv/bin/activate",
       "uv pip install -r projects/f2-hebrew-tutor/requirements.txt   # fastapi, uvicorn, python-multipart, opentelemetry-sdk, pillow, python-hcl2",
       "python -m pytest -q                                            # environment tests, incl. tests/test_f2_hebrew_tutor.py",
       "cd projects/f2-hebrew-tutor",
@@ -30106,7 +30106,7 @@ digests: 0 groups delivered twice, re-run skipped</pre></div>
     repoPath: "projects/f3-job-agent",
     intro: "הפרויקט בתיקייה <b>projects/f3-job-agent</b>. החבילה <code>jobagent/</code> היא קוד הייחוס המלא, ו-<code>mine.py</code> מכיל את ארבעת חלקי הקוד שלך (אבני דרך 3, 5, 6 ו-7). כל פקודה של <code>python -m jobagent</code> משתמשת בפונקציות שלך ברגע שהן ממומשות, ובגרסת הייחוס עד אז. אבני הדרך האחרות מחברות חלקים קיימים: מקורות, מודל, ניטור, eval ופריסה. <b>הכול חינם חוץ מאבני דרך 4, 8 ו-9</b> (יחד פחות מ-10 סנט של Haiku 5.5), ו-AWS באבן דרך 10 הוא אופציונלי.",
     setup: [
-      'cd ~/projects/"ai engineer"/ai-engineer-course && source .venv/bin/activate',
+      'cd ~/ai-engineer-course-starter && source .venv/bin/activate',
       "uv pip install -r projects/f3-job-agent/requirements.txt   # fastapi, apscheduler, opentelemetry-sdk, tzdata, python-hcl2",
       "python -m pytest -q                                          # environment tests, incl. tests/test_f3_job_agent.py",
       "cd projects/f3-job-agent",
@@ -30614,7 +30614,7 @@ function setSync(t) { $("#sync").textContent = t; }
 function toast(t) { $("#toast-text").textContent = t; $("#toast").hidden = false; clearTimeout(toast.t); toast.t = setTimeout(() => ($("#toast").hidden = true), 1800); }
 function lessonDone(id) { const s = Progress.get(["stations", id]) || {}; return STATIONS.filter((x) => s[x.key]).length; }
 const pad = (n) => String(n).padStart(2, "0");
-const REPO_URL = "https://github.com/davidelka/ai-engineer-course";
+const REPO_URL = "https://github.com/davidelka/ai-engineer-course-starter";
 
 /* ---------------- router ---------------- */
 let cleanup = [];

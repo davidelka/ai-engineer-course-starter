@@ -416,7 +416,7 @@ retriever.search(q, k=5, where={"classification": ["public", "internal"]})  # pe
     repoPath: "labs/12-advanced-retrieval",
     intro: "המעבדה נמצאת בתיקייה labs/12-advanced-retrieval, ועובדת על הקורפוס של Acme (<code>data/acme/corpus</code>): 55 מסמכים, 9 מהם בעברית, שמחולקים ל-210 chunks (<code>heading:400:40:150</code>, כמו בשיעורים 9 ו-10). מתוך 79 שאלות הזהב, 69 עם מסמכי מקור: 11 multi_hop, 11 version_conflict, 11 hebrew, ו-6 מסומנות cross-lingual. ב-9 מדיניויות יש גרסה חדשה שמצביעה על הישנה בשדה <code>supersedes</code>. ל-ragkit נוספו שישה מודולים: <b>fusion</b>, <b>hybrid</b>, <b>query</b>, <b>versions</b>, <b>rerank</b> ו-<b>ablation</b>, ובנוסף <b>replay</b>, LLM לא מקוון. לכל סקריפט יש מסלול חינמי: <code>--dense fake --llm replay --reranker fake</code>. המספרים שכתובים בתרגילים נמדדו במסלול הזה, וחלק מהם הם רק בדיקת צנרת, כפי שמצוין. ההרצות החיות עם Haiku עולות יחד פחות מ-10 סנטים.",
     setup: [
-      'cd ~/projects/"ai engineer"/ai-engineer-course && source .venv/bin/activate',
+      'cd ~/ai-engineer-course-starter && source .venv/bin/activate',
       "uv pip install -r requirements.txt -r labs/12-advanced-retrieval/requirements.txt",
       "python -m pytest -q                                      # environment tests, incl. tests/test_ragkit_hybrid.py",
       "python -m pytest -q labs/12-advanced-retrieval/tests     # your exercises: all fail at first",

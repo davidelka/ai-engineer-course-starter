@@ -374,7 +374,7 @@ agg    = aggregate_runs(result.records)  # per agent: tokens, cost, share, coord
     repoPath: "labs/18-multi-agent",
     intro: "המעבדה נמצאת בתיקייה labs/18-multi-agent. החבילה החדשה, <b>multikit</b>, בונה את כל הדפוסים מעל ה-Agent של שיעור 15: router עם structured output, supervisor עם delegate tools, handoffs עם חוזה סיכום, fan-out עם ציטוטים, וכותב ומבקר. יש שלושה מומחים של Acme: <b>hr</b>, <b>it_access</b> ו-<b>oncall</b>. כל דפוס רץ גם עם מודלים מזויפים, חינם, וגם מול Haiku. בלב המעבדה יש השוואה בין agent יחיד, router ו-supervisor על <b>23 משימות</b>: 15 משימות הגישה משיעור 15, ועוד 8 משימות חדשות שחוצות תחומים. לכל משימה יש תוצאת זהב, והטקסט המלא והזהב של כל המשימות מופיעים ב-README של המעבדה.",
     setup: [
-      'cd ~/projects/"ai engineer"/ai-engineer-course && source .venv/bin/activate',
+      'cd ~/ai-engineer-course-starter && source .venv/bin/activate',
       "python -m pytest -q tests/test_multikit.py          # environment tests",
       "python -m pytest -q labs/18-multi-agent/tests       # your exercises: they fail at first",
     ],

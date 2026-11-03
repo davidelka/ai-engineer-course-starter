@@ -415,7 +415,7 @@ STOP final_answer  steps=4 tool_calls=3 errors=0 tokens=9431+255 cost=$0.00107 (
     repoPath: "labs/15-agent-loops",
     intro: "המעבדה נמצאת בתיקייה labs/15-agent-loops. החבילה החדשה <b>agentkit/</b> בנויה מעל toolkit משיעור 14. יש בה <code>Agent</code> (לולאה עם תקציב, מדיניות עצירה, give_up, אישור אנושי, מצב plan, פתקים ומחיקת תוצאות), trajectory ב-JSONL שאפשר להמיר ל-spans של obskit, מדדי הערכה, הזרקת תקלות בצד הכלים, ו-workflow קבוע להשוואה. יש שלושה סוגי מודלים: <b>fake</b> (מודל מבוסס חוקים, דטרמיניסטי וחינמי, עם טוקנים מוערכים), <b>mock</b> (mockllm עם צורות ה-wire האמיתיות), ו-<b>Haiku 5.5</b> בשביל המדידה האמיתית. סט של 15 משימות של Acme עם תוצאות זהב נמצא ב-<code>data/tasks.jsonl</code>.",
     setup: [
-      'cd ~/projects/"ai engineer"/ai-engineer-course && source .venv/bin/activate',
+      'cd ~/ai-engineer-course-starter && source .venv/bin/activate',
       "python -m pytest -q tests/test_agentkit.py         # environment tests for agentkit",
       "python -m pytest -q labs/15-agent-loops/tests      # your exercises: all fail at first",
     ],

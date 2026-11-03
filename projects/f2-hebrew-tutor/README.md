@@ -14,7 +14,7 @@
 ## הכנה
 
 ```bash
-cd ~/projects/"ai engineer"/ai-engineer-course && source .venv/bin/activate
+cd ~/ai-engineer-course-starter && source .venv/bin/activate
 uv pip install -r projects/f2-hebrew-tutor/requirements.txt
 python -m pytest -q                              # בדיקות הסביבה, כולל tests/test_f2_hebrew_tutor.py
 cd projects/f2-hebrew-tutor

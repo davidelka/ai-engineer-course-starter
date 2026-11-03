@@ -388,7 +388,7 @@ requests table: 1 rows</pre></div>
     repoPath: "labs/14-tool-use",
     intro: "המעבדה נמצאת בתיקייה labs/14-tool-use. llmkit למד לעבוד עם כלים בשלושת הספקים, כולל streaming. המסמך <b>llmkit/TOOLS.md</b> מתאר את ה-API. ה-<b>mockllm</b> מחזיר קריאות לכלים בצורה של כל ספק, ויש לו ארבע תקלות: ארגומנטים שגויים, כלי שלא קיים, לולאה ו-JSON שבור. יש לו גם מצב של \"מודל תמים\" שמציית להזרקות. החבילה החדשה <b>toolkit/</b> מכילה את ששת הכלים של Acme מעל acme.db, ואיתם registry, executor, לולאה, שער אישור ושכבות הגנה. היא תשמש גם בשיעורים 15 עד 18. במרכז המעבדה: Company Brain עונה על שאלות גישה עם כלים, ופותח בקשת גישה רק באישור של אדם.",
     setup: [
-      'cd ~/projects/"ai engineer"/ai-engineer-course && source .venv/bin/activate',
+      'cd ~/ai-engineer-course-starter && source .venv/bin/activate',
       "python -m pytest -q                          # environment tests, including tests/test_tools.py",
       "python -m pytest -q labs/14-tool-use/tests   # your exercises: all fail at first",
     ],

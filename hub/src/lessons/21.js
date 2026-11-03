@@ -465,7 +465,7 @@ total_s                2.69s       3.03s</pre></div>
     repoPath: "labs/21-multimodal",
     intro: "המעבדה נמצאת בתיקייה labs/21-multimodal. llmkit מקבל עכשיו תמונות ו-PDF בשלושת הספקים (המסמך המלא: <b>llmkit/MEDIA.md</b>), כולל מחשבון טוקנים ובדיקת מגבלות מקומית. ה-<b>mockllm</b> רואה תמונות: הוא קורא את הגודל מהבייטים, מחייב לפי הנוסחה של הספק, ומחזיר את שגיאות ה-400 של ה-API האמיתי. בתמונות של המעבדה מוסתר \"oracle\" שרק ה-mock קורא, ולכן גם בלי מודל אמיתי הקטנה מוגזמת מורידה דיוק. החבילה החדשה <b>voicekit/</b> מכילה ports ל-STT ול-TTS עם מתאמים ל-OpenAI, למחשב המקומי ולבדיקות, צינור קולי עם מדידת השהיה, ו-WER לעברית. זו התשתית של פרויקט הגמר F2. כל התרגילים רצים בחינם, והרצה חיה של כל המעבדה עולה בערך 5 עד 8 סנטים.",
     setup: [
-      'cd ~/projects/"ai engineer"/ai-engineer-course && source .venv/bin/activate',
+      'cd ~/ai-engineer-course-starter && source .venv/bin/activate',
       "uv pip install -r labs/21-multimodal/requirements.txt   # pillow, pypdf, pypdfium2, jiwer",
       "python -m pytest -q                                      # environment tests, incl. tests/test_multimodal*.py",
       "python -m pytest -q labs/21-multimodal/tests             # your exercises: all fail at first",

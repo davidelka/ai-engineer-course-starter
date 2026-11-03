@@ -343,7 +343,7 @@ class ChatResult:
     repoPath: "labs/02-llm-apis",
     intro: "המעבדה נמצאת בתיקייה labs/02-llm-apis בריפו הקורס, ולצידה שתי חבילות חדשות בשורש הריפו: <b>llmkit</b>, ה-adapter האחיד שתשתמש בו מכאן ועד סוף הקורס, ו-<b>mockllm</b>, שרת מקומי שמחקה את שלושת הספקים ונכשל בדיוק איך שתבקש. כך מתרגלים טיפול בשגיאות בלי לשלם ובלי לחכות לתקלה אמיתית. הקוד שלך נכתב בקובץ אחד, mine.py, וכל תרגיל קוד נבדק בבדיקות אוטומטיות.",
     setup: [
-      'cd ~/projects/"ai engineer"/ai-engineer-course && git pull',
+      'cd ~/ai-engineer-course-starter && git pull',
       "source .venv/bin/activate && uv pip install -r requirements.txt",
       "python -m pytest -q                        # environment tests: llmkit vs the mock server",
       "python -m pytest -q labs/02-llm-apis/tests  # your exercises: all fail at first, that's expected",

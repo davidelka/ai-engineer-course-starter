@@ -498,7 +498,7 @@ app.invoke(None, fork_cfg)
     repoPath: "labs/16-workflows",
     intro: "המעבדה נמצאת ב-labs/16-workflows. החבילה החדשה <b>flowkit/</b> היא ה-workflow של אישור בקשות גישה על <b>LangGraph 1.2</b>. ה-state וה-reducers נמצאים ב-state.py, הצמתים ושער האישור ב-nodes.py, בניית הגרף ב-graph.py, ההרצה, ההמשך וההיסטוריה ב-runner.py, ה-audit וה-outbox ב-store.py, והזרקת התקלות ב-faults.py. ה-workflow משתמש ב-llmkit.structured לחילוץ (שיעור 3) ובכלים של toolkit (שיעור 14), ו-SPEC-006 משיעור 6 הוא החוזה שלו. ברירת המחדל היא <b>FakeLLM</b>, ולכן הכל רץ בלי מפתח ובחינם. עם <code>--model anthropic:claude-haiku-5-5</code> שני צעדי ה-LLM הם אמיתיים. הקבצים שהמעבדה כותבת הם results/checkpoints.db (ה-checkpoints) ו-results/requests.db (הבקשות, ה-audit וה-outbox).",
     setup: [
-      'cd ~/projects/"ai engineer"/ai-engineer-course && source .venv/bin/activate',
+      'cd ~/ai-engineer-course-starter && source .venv/bin/activate',
       "uv pip install -r labs/16-workflows/requirements.txt   # langgraph>=1.2.19, langgraph-checkpoint-sqlite>=3.1.3",
       "python -m pytest -q                                     # environment tests, including tests/test_flowkit.py",
       "python -m pytest -q labs/16-workflows/tests             # your exercises: all fail at first",

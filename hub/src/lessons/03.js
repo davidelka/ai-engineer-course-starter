@@ -336,7 +336,7 @@ user: Your previous reply did not pass validation. Fix exactly these
     repoPath: "labs/03-structured-outputs",
     intro: "המעבדה בתיקייה labs/03-structured-outputs. ב-llmkit נוסף מודול חדש, <b>structured</b>, שמחזיר אובייקט Pydantic תקין משלושת הספקים. ה-<b>mockllm</b> למד להחזיר JSON שבור בשמונה דרכים שונות, כך שאפשר לתרגל ולידציה ותיקון בלי לשלם. במרכז המעבדה: <b>חילוץ בקשות גישה של Acme</b> מהודעות חופשיות, עם golden set של 24 בקשות ותשובה נכונה לכל שדה.",
     setup: [
-      'cd ~/projects/"ai engineer"/ai-engineer-course && source .venv/bin/activate',
+      'cd ~/ai-engineer-course-starter && source .venv/bin/activate',
       "uv pip install -r requirements.txt",
       "python -m pytest -q                                  # environment tests",
       "python -m pytest -q labs/03-structured-outputs/tests # your exercises: most fail at first",

@@ -1,6 +1,7 @@
 # One run of the job agent (a user service, no root needed).
 #   cp job-agent.service job-agent.timer ~/.config/systemd/user/
-#   edit WorkingDirectory below, then:
+#   if the repo is not at ~/ai-engineer-course-starter, edit BOTH WorkingDirectory and ExecStart
+#   below (check with: systemctl --user cat job-agent.service), then:
 #   systemctl --user daemon-reload && systemctl --user enable --now job-agent.timer
 #   systemctl --user list-timers job-agent.timer        # next run times
 #   journalctl --user -u job-agent.service -n 50         # logs of the last runs
@@ -9,6 +10,6 @@ Description=Job agent: one run for the slot that is due
 
 [Service]
 Type=oneshot
-WorkingDirectory=%h/projects/ai engineer/ai-engineer-course/projects/f3-job-agent
-ExecStart="%h/projects/ai engineer/ai-engineer-course/.venv/bin/python" -m jobagent run --slot auto
+WorkingDirectory=%h/ai-engineer-course-starter/projects/f3-job-agent
+ExecStart="%h/ai-engineer-course-starter/.venv/bin/python" -m jobagent run --slot auto
 # Secrets come from the repo's .env (read by the app), not from this file.

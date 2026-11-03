@@ -347,7 +347,7 @@ by group:  generation 29 · retrieval 9 · ingestion 0</pre></div>
     repoPath: "projects/m1-knowledge-assistant",
     intro: "הפרויקט בתיקייה <b>projects/m1-knowledge-assistant</b>. החבילה <code>acmeqa/</code> היא קוד הייחוס המלא, ו-<code>mine.py</code> מכיל את שלושת חלקי הקוד שלך (אבני דרך 4, 5 ו-6), כל אחד עם docstring שמפרט את כל הכללים ובדיקות ב-<code>tests/</code>. כל פקודה של <code>python -m acmeqa</code>, השירות וה-eval משתמשים בפונקציות שלך ברגע שהן ממומשות, ובגרסת הייחוס עד אז. שאר אבני הדרך מחברות ומודדות חלקים קיימים. <b>הכול חינם חוץ מאבן דרך 9</b> (כ-5 עד 8 סנט של Haiku 5.5, ותקרה של 0.20$). כל נתון שתרגיל צריך מתואר בתרגיל עצמו, ובקצרה גם ב-README של הפרויקט, בפרק \"הנתונים בקצרה\".",
     setup: [
-      'cd ~/projects/"ai engineer"/ai-engineer-course && source .venv/bin/activate',
+      'cd ~/ai-engineer-course-starter && source .venv/bin/activate',
       "uv pip install -r projects/m1-knowledge-assistant/requirements.txt   # numpy, sqlglot, fastapi, uvicorn, opentelemetry-sdk, sentence-transformers",
       "python -m pytest -q                                                   # environment tests, incl. tests/test_m1_knowledge_assistant.py",
       "cd projects/m1-knowledge-assistant",

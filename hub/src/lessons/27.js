@@ -443,7 +443,7 @@ statement {   # only this secret
     repoPath: "labs/27-deployment",
     intro: "המעבדה בתיקייה labs/27-deployment. במרכזה <b>Company Brain mini API</b>: שירות FastAPI קטן מעל llmkit, באותה צורה של השירות משיעור 26, שנארז ב-image, רץ ב-compose ונפרס ל-<b>ECS Fargate</b> עם Terraform. חבילה חדשה בריפו, <b>deploykit</b>, היא קוד הייחוס: parser ל-Dockerfile, בדיקות Terraform עם python-hcl2, ומודל עלות. <b>תרגילים 1 עד 7 חינמיים.</b> תרגיל 8 עולה כ-5 סנט לשעה ב-AWS ונגמר בפירוק מלא.",
     setup: [
-      'cd ~/projects/"ai engineer"/ai-engineer-course && source .venv/bin/activate',
+      'cd ~/ai-engineer-course-starter && source .venv/bin/activate',
       "uv pip install -r labs/27-deployment/requirements.txt   # python-hcl2, fastapi, uvicorn",
       "python -m pytest -q                                     # environment tests (tests/test_deploy.py)",
       "python -m pytest -q labs/27-deployment/tests            # your exercises: all fail at first",

@@ -402,7 +402,7 @@ n = 79, p = 0.48:  unpaired MDD = 0.22   paired (6% flip) MDD = 0.08</pre></div>
     repoPath: "labs/23-evaluation",
     intro: "המעבדה בתיקייה labs/23-evaluation. בשורש הריפו נוספה חבילה חדשה, <b>evalkit</b>: datasets עם גרסה, runner עם מטמון, מדדים, שופטים עם רובריקה ופלט מובנה, כיול, סטטיסטיקה, gates ודוחות. המערכת הנבדקת היא <b>ה-RAG של שיעור 9</b>, על <b>79 שאלות הזהב</b> של Acme (data/acme/corpus/golden/qa.jsonl): לכל שאלה יש עובדות אטומיות (answer_facts), מזהי מקורות, סוג, ותגית stale לגרסה המיושנת שעלולה לבלבל. הכול רץ בחינם עם תחליפים לא-מודליים (ExtractiveAnswerer, rule follower ושופט לקסיקלי). ההרצות החיות עם Haiku 5.5 עולות יחד בערך 0.10 דולר, וכל תוצאה נשמרת במטמון.",
     setup: [
-      'cd ~/projects/"ai engineer"/ai-engineer-course && source .venv/bin/activate',
+      'cd ~/ai-engineer-course-starter && source .venv/bin/activate',
       "uv pip install -r requirements.txt -r labs/23-evaluation/requirements.txt",
       "python -m pytest -q                                  # environment tests (incl. tests/test_evalkit.py)",
       "python -m pytest -q labs/23-evaluation/tests         # your exercises: they fail at first",

@@ -353,7 +353,7 @@ POST /sessions/{id}/turns/stream {"text":"כואב לי הבתן"}
     repoPath: "projects/f2-hebrew-tutor",
     intro: "הפרויקט בתיקייה <b>projects/f2-hebrew-tutor</b>. החבילה <code>hebtutor/</code> היא קוד הייחוס המלא, ו-<code>mine.py</code> מכיל ארבעה חלקי קוד שלך (אבני דרך 4, 5, 6 ו-7). כל פקודה של <code>python -m hebtutor</code> וה-API משתמשים בפונקציות שלך ברגע שהן ממומשות, ובגרסת הייחוס עד אז. אבני הדרך האחרות מחברות חלקים: תוכן, מודל אמיתי, קול, eval, API ופריסה. <b>הכול חינם חוץ מאבני דרך 3, 7 ו-8</b> (יחד כ-5 סנט), ו-AWS באבן דרך 10 אופציונלי.",
     setup: [
-      "cd ~/projects/\"ai engineer\"/ai-engineer-course && source .venv/bin/activate",
+      "cd ~/ai-engineer-course-starter && source .venv/bin/activate",
       "uv pip install -r projects/f2-hebrew-tutor/requirements.txt   # fastapi, uvicorn, python-multipart, opentelemetry-sdk, pillow, python-hcl2",
       "python -m pytest -q                                            # environment tests, incl. tests/test_f2_hebrew_tutor.py",
       "cd projects/f2-hebrew-tutor",

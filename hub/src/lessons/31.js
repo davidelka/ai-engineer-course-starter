@@ -333,7 +333,7 @@ total   $51.45 per month = $0.26 per employee</pre></div>
     repoPath: "projects/f1-company-brain",
     intro: "הפרויקט בתיקייה <b>projects/f1-company-brain</b>. החבילה <code>cbrain/</code> היא קוד הייחוס המלא, ו-<code>mine.py</code> מכיל את ארבעת חלקי הקוד שלך (אבני דרך 3, 5, 6 ו-7). כל פקודה של <code>python -m cbrain</code>, השירות, שרת ה-MCP וה-eval משתמשים בפונקציות שלך ברגע שהן ממומשות, ובגרסת הייחוס עד אז. שאר אבני הדרך מחברות ומודדות: שירות, workflow, אבטחה, gateway, MCP, ניטור, eval, ארכיטקטורה ופריסה. <b>הכול חינם חוץ מאבן דרך 10</b> (כ-10 עד 15 סנט של Haiku 5.5), ו-AWS באבן דרך 12 הוא אופציונלי (כ-1.70$ ליום). כל ההוראות, כולל ה-runbook של הפריסה, ב-README של הפרויקט.",
     setup: [
-      'cd ~/projects/"ai engineer"/ai-engineer-course && source .venv/bin/activate',
+      'cd ~/ai-engineer-course-starter && source .venv/bin/activate',
       "uv pip install -r projects/f1-company-brain/requirements.txt   # all already in the root requirements.txt",
       "python -m pytest -q tests/test_f1_company_brain.py               # environment tests + the evaluation gate (~10 s)",
       "cd projects/f1-company-brain",

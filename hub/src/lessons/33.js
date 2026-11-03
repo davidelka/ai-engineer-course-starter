@@ -363,7 +363,7 @@ digests: 0 groups delivered twice, re-run skipped</pre></div>
     repoPath: "projects/f3-job-agent",
     intro: "הפרויקט בתיקייה <b>projects/f3-job-agent</b>. החבילה <code>jobagent/</code> היא קוד הייחוס המלא, ו-<code>mine.py</code> מכיל את ארבעת חלקי הקוד שלך (אבני דרך 3, 5, 6 ו-7). כל פקודה של <code>python -m jobagent</code> משתמשת בפונקציות שלך ברגע שהן ממומשות, ובגרסת הייחוס עד אז. אבני הדרך האחרות מחברות חלקים קיימים: מקורות, מודל, ניטור, eval ופריסה. <b>הכול חינם חוץ מאבני דרך 4, 8 ו-9</b> (יחד פחות מ-10 סנט של Haiku 5.5), ו-AWS באבן דרך 10 הוא אופציונלי.",
     setup: [
-      'cd ~/projects/"ai engineer"/ai-engineer-course && source .venv/bin/activate',
+      'cd ~/ai-engineer-course-starter && source .venv/bin/activate',
       "uv pip install -r projects/f3-job-agent/requirements.txt   # fastapi, apscheduler, opentelemetry-sdk, tzdata, python-hcl2",
       "python -m pytest -q                                          # environment tests, incl. tests/test_f3_job_agent.py",
       "cd projects/f3-job-agent",

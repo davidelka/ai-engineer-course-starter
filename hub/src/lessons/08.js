@@ -459,7 +459,7 @@ sources:
     repoPath: "labs/08-enterprise-data",
     intro: "המעבדה בתיקייה labs/08-enterprise-data. נוספה חבילה חדשה, <b>datakit</b>: שכבת סמנטיקה, SQL guard מבוסס sqlglot, row-level security, הרצה read-only, provenance, טריות ו-execution accuracy. הנתונים הם <b>acme.db</b>, עם שש טבלאות של Acme (עובדים, צוותים, מערכות, הרשאות, לקוחות וקריאות שירות). יש <b>27 שאלות זהב</b> עם תוצאות שחושבו מה-DB, ותשובות מודל סינתטיות שמאפשרות להריץ הכול offline. התלות החדשה היחידה היא sqlglot.",
     setup: [
-      'cd ~/projects/"ai engineer"/ai-engineer-course && source .venv/bin/activate',
+      'cd ~/ai-engineer-course-starter && source .venv/bin/activate',
       "uv pip install -r requirements.txt -r labs/08-enterprise-data/requirements.txt",
       "python -m pytest -q tests/test_datakit.py                 # environment tests",
       "python -m pytest -q labs/08-enterprise-data/tests         # your exercises: most fail at first",

@@ -492,7 +492,7 @@ metrics.gauge("vector_index.recall_at_10", r)      # alert if r &lt; 0.95 for 3 
     repoPath: "labs/11-managed-vectors",
     intro: "המעבדה נמצאת בתיקייה labs/11-managed-vectors, ומריצה שני מסדי נתונים מקומיים עם docker compose: <b>Qdrant 1.20.0</b> ו-<b>PostgreSQL 18 עם pgvector 0.8.7</b>. ל-ragkit נוספו שלושה stores שמממשים את אותו פרוטוקול <code>VectorStore</code> משיעור 10: ‏<code>QdrantVectorStore</code>, ‏<code>PgVectorStore</code> ו-<code>S3VectorsStore</code>. נוספו גם שפת מסננים עם מתרגמים לשלושתם ו-<code>acl_where</code> לפי המטריצה של שיעור 24, כלי מדידה (sweep, ‏recall, ‏Pareto, ‏filtered recall), ומודל זיכרון ועלות. הנתונים: הקורפוס של Acme (55 מסמכים, 210 chunks, ‏79 שאלות זהב), עם ה-embeddings מהמטמון של שיעור 10, כך ששום דבר לא מוטמע מחדש. לניסויים על אינדקסים יש בנוסף עשרות אלפי וקטורים סינתטיים מקובצים. כל התרגילים רצים בחינם על המחשב שלך. תרגיל 8 (S3 Vectors אמיתי) עולה פחות מסנט, כל עוד מריצים את ה-teardown.",
     setup: [
-      "cd ~/projects/\"ai engineer\"/ai-engineer-course && source .venv/bin/activate",
+      "cd ~/ai-engineer-course-starter && source .venv/bin/activate",
       "uv pip install -r requirements.txt -r labs/10-embeddings/requirements.txt -r labs/11-managed-vectors/requirements.txt",
       "docker compose -f labs/11-managed-vectors/compose.yaml up -d && docker compose -f labs/11-managed-vectors/compose.yaml ps",
       "python -m pytest -q                                      # environment tests, incl. tests/test_ragkit_managed.py",

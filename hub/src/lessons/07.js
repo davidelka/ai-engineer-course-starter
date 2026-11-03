@@ -423,7 +423,7 @@ if read_only:   # a guard is present: tests always come back pristine
     repoPath: "labs/07-verification-loops",
     intro: "המעבדה בתיקייה labs/07-verification-loops. נוספה חבילה חדשה, <b>loopkit</b>, שמריצה לולאת אימות מלאה: מחולל (Haiku 5.5 דרך llmkit, או מחולל מתוסרט שעובד בלי רשת), מאמתים שהם כלים אמיתיים (pytest עם junit XML, hypothesis, ruff, ו-mypy כאופציה), מדיניות עצירה עם תקציבים, ויומן ראיות JSONL עם audit עצמאי בסוף. המשימות הן שש פונקציות קטנות של Acme עם באגים: ימי חופשה, ימי עבודה מראשון עד חמישי, משך בקשת גישה, ניתוב בקשת SaaS, חילוץ מספרים ממסמך המדיניות, ומשימה אחת שהיא <b>בלתי אפשרית בכוונה</b>. לכל משימה יש בדיקות גלויות, בדיקות נסתרות, ופתרון ייחוס. המפרט המלא של כל אחת נמצא ב-<code>tasks/&lt;id&gt;/task.json</code>.",
     setup: [
-      'cd ~/projects/"ai engineer"/ai-engineer-course && source .venv/bin/activate',
+      'cd ~/ai-engineer-course-starter && source .venv/bin/activate',
       "uv pip install -r requirements.txt -r labs/07-verification-loops/requirements.txt",
       "python -m pytest -q tests/test_loopkit.py                # environment tests (about a minute)",
       "python -m pytest -q labs/07-verification-loops/tests     # your exercises: all fail at first",

@@ -443,7 +443,7 @@ ans = answer("When is the deadline to finish the new-hire security training?",
     repoPath: "labs/10-embeddings",
     intro: "המעבדה נמצאת בתיקייה labs/10-embeddings, ועובדת על הקורפוס של Acme (<code>data/acme/corpus</code>): 55 מסמכים, מהם 9 בעברית, שמחולקים ל-210 chunks עם ה-chunker של ה-baseline משיעור 9 (<code>heading:400:40:150</code>). שאלות הזהב נמצאות ב-<code>golden/qa.jsonl</code>: 79 שאלות, 69 מהן עם מסמכי מקור, ו-6 מסומנות cross-lingual. ל-ragkit נוספו ארבעה מודולים: <b>embed</b> (מודל מקומי, OpenAI, embedder מזויף ומטמון), <b>vectors</b> (חיפוש מדויק ו-FAISS), <b>dense</b> (DenseRetriever) ו-<b>metrics</b> (recall@k ו-MRR). המודל המקומי, multilingual-e5-small, חינמי ויורד פעם אחת (כ-470MB). ההרצות עם OpenAI עולות יחד פחות משני סנטים. לכל סקריפט יש גם מסלול לא מקוון, <code>--model fake</code>, שהוא לקסיקלי ולא סמנטי.",
     setup: [
-      'cd ~/projects/"ai engineer"/ai-engineer-course && source .venv/bin/activate',
+      'cd ~/ai-engineer-course-starter && source .venv/bin/activate',
       "uv pip install torch --index-url https://download.pytorch.org/whl/cpu   # CPU wheel first (much smaller)",
       "uv pip install -r requirements.txt -r labs/10-embeddings/requirements.txt",
       "python -m pytest -q                                  # environment tests, incl. tests/test_ragkit_dense.py",

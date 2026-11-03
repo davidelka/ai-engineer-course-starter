@@ -393,7 +393,7 @@ the hash alone already removed most duplicates."</pre></div>
     repoPath: "labs/28-interview-prep",
     intro: "המעבדה בתיקייה labs/28-interview-prep, והיא שונה מהקודמות: שלושה תרגילים הם קוד ב-mine.py, וארבעה הם <b>אימון</b>, בקול ועם שעון. בשורש הריפו נוספה חבילה חדשה, <b>interviewkit</b>, עם בנק שאלות, ניקוד לפי rubric, חזרה מרווחת ומראיין מדומה מעל llmkit. כל הבדיקות רצות מול השרת המדומה, וראיון מדומה אמיתי מול Haiku 5.5 עולה פחות מסנט.",
     setup: [
-      'cd ~/projects/"ai engineer"/ai-engineer-course && source .venv/bin/activate',
+      'cd ~/ai-engineer-course-starter && source .venv/bin/activate',
       "uv pip install -r requirements.txt -r labs/28-interview-prep/requirements.txt",
       "python -m pytest -q                                   # environment tests",
       "python -m pytest -q labs/28-interview-prep/tests      # your exercises: all fail at first",

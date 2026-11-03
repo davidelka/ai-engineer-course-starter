@@ -449,7 +449,7 @@ specific, actionable feedback on quality, security, and best practices.</pre></d
     repoPath: "labs/05-coding-agents",
     intro: "המעבדה בתיקייה labs/05-coding-agents. במרכזה <b>sample-service</b>: שירות FastAPI קטן של Acme שמנתב בקשות גישה, עם 14 בדיקות שרצות בפחות משנייה, <b>באג מכוון</b> בניתוב, endpoint חסר, ושני ניסיונות <b>prompt injection</b> שהוטמנו בו. אתה כותב לו קובץ הוראות, הרשאות, skill ושני hooks (הפונקציות שלך ב-mine.py רצות כ-hooks אמיתיים של Claude Code), ובסוף מריץ את Claude Code על שתי משימות, עם הקונפיגורציה ובלעדיה, ומודד. ספרייה חדשה, <b>repoguard</b>, מכילה את מימושי הייחוס ואת הכלים.",
     setup: [
-      'cd ~/projects/"ai engineer"/ai-engineer-course && source .venv/bin/activate',
+      'cd ~/ai-engineer-course-starter && source .venv/bin/activate',
       "uv pip install -r labs/05-coding-agents/requirements.txt",
       "python -m pytest -q                                  # environment tests (incl. tests/test_repoguard.py)",
       "python -m pytest -q labs/05-coding-agents/tests      # your exercises: all fail at first",

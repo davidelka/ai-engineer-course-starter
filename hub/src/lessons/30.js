@@ -349,7 +349,7 @@ hybrid  all 0.85 / 0.79   keyword 1.00   semantic 0.79   cross-lingual 0.50   fi
     repoPath: "projects/m2-personal-search",
     intro: "הפרויקט בתיקייה <b>projects/m2-personal-search</b>. החבילה <code>pss/</code> היא קוד הייחוס המלא, ו-<code>mine.py</code> מכיל חמש פונקציות שאתה כותב (אבני דרך 2, 3, 5, 6 ו-8). כל פקודה של <code>python -m pss</code> משתמשת בפונקציות שלך ברגע שהן ממומשות, ובגרסת הייחוס עד אז (ומודיעה על זה). שאר אבני הדרך מחברות את הדבר האמיתי: embeddings מקומיים, Ollama, OCR, ממשק, ובסוף התיקייה שלך. <b>הכול חינם ומקומי</b>, חוץ מאבן דרך 8 שבה אפשר לשלוח כמה שאלות ל-Claude Haiku 5.5 (פחות מסנט). תיקיית הדוגמה <code>data/sample/</code> (45 קבצים) ושאלות הזהב <code>data/golden.jsonl</code> (52) מתוארות ב-README.",
     setup: [
-      'cd ~/projects/"ai engineer"/ai-engineer-course && source .venv/bin/activate',
+      'cd ~/ai-engineer-course-starter && source .venv/bin/activate',
       "uv pip install -r projects/m2-personal-search/requirements.txt   # pdfminer.six, pypdf, python-docx, fastapi, uvicorn, watchdog, pypdfium2",
       "python -m pytest -q                                          # environment tests, incl. tests/test_m2_personal_search.py",
       "cd projects/m2-personal-search && alias pss='python -m pss'",

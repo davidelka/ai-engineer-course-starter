@@ -15,6 +15,8 @@ Read this file at the start of every session. Then read `PROGRESS.md` (create it
   - `tests/` that check `mine.py`;
   - scripts for each exercise.
 
+  The exception is **lab 1** (`labs/01-prompting`): it is built from experiments (YAML configs run through `promptlab`), prompts the learner writes in `prompts/*_mine.md`, and a written interpretation. There is no `mine.py` and no `tests/`; you review the results and the interpretation by hand.
+
   Lab tests do NOT run with the root `pytest`, only explicitly: `python -m pytest -q labs/14-tool-use/tests`. As shipped, they fail with `NotImplementedError`. That is expected: the learner makes them pass.
 - **`projects/`**:
   - Midterms (phase 2): `m1-knowledge-assistant` (M1) and `m2-personal-search` (M2).
@@ -86,7 +88,9 @@ Projects run the same way, by milestones, and end with the demo script in the pr
 
 ## Working on the repo
 
-- **Python:** 3.12. `uv venv .venv --python 3.12 && source .venv/bin/activate && uv pip install -r requirements.txt`. Local models (from lesson 10) need CPU PyTorch plus `requirements-local-models.txt`; see the README.
+- **Location:** every `cd` in the hub and the READMEs assumes the repo is at `~/ai-engineer-course-starter`. If the learner cloned it elsewhere, tell them to substitute the path.
+- **Python:** 3.12. `uv venv .venv --python 3.12 && source .venv/bin/activate && uv pip install -r requirements.txt -c constraints.txt`. `constraints.txt` pins the exact versions the environment suite passed with; installing without it gets newer versions, so run the root suite after.
+- **Other CLAUDE.md files:** Claude Code also loads `CLAUDE.md` files from parent folders. If `/context` shows instructions from a parent folder that conflict with this file, tell the learner and suggest moving the repo or adding that file to `claudeMdExcludes`. Local models (from lesson 10) need CPU PyTorch plus `requirements-local-models.txt`; see the README.
 - **Before you change a shared library**, run the root suite. Change it only when a lab asks for it or the learner wants it, and keep backward compatibility, because later labs depend on earlier ones.
 - **Commits:** when the learner finishes an exercise, commit with a clear message, for example `Lab 7: my solutions for exercises 2-4`. Ask before pushing if they have not told you how they like it.
 - **Hub changes:** edit `hub/src/lessons/NN.js` or `hub/src/aids/lNN.js`, run `python hub/build_hub.py`, and ask the learner to reload `hub/course-hub.html`. Keep the existing structure: right-to-left Hebrew, lists and not tables, and the guide text for each aid.

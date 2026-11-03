@@ -470,7 +470,7 @@ claude mcp list          claude mcp get acme          claude mcp remove acme    
     repoPath: "labs/17-mcp",
     intro: "המעבדה נמצאת בתיקייה labs/17-mcp. החבילה החדשה <b>mcpkit/</b> מגישה את Company Brain כשרת MCP אמיתי, עם ה-SDK הרשמי (<code>mcp</code> 2.3). השרת מגיש את ששת הכלים של toolkit משיעור 14, ואיתם <code>search_docs</code> מעל ragkit ו-<code>get_oncall_for_service</code>, את 55 המסמכים כ-resources ושני prompts. הוא רץ ב-stdio וב-Streamable HTTP, ומשרת לקוחות משתי התקופות של הפרוטוקול. <code>create_access_request</code> שואל את המשתמש דרך elicitation. בצד הלקוח, <code>MCPToolbox</code> מחבר כל שרת MCP ללולאה של llmkit. במעבדה תראה את הפרוטוקול בעיניים, תכתוב כלי, תכתוב את הגשר, תחבר ל-Claude Code, תגן על שרת HTTP עם token, ותתקוף ותגן מפני הרעלת כלים.",
     setup: [
-      'cd ~/projects/"ai engineer"/ai-engineer-course && source .venv/bin/activate',
+      'cd ~/ai-engineer-course-starter && source .venv/bin/activate',
       "uv pip install -r labs/17-mcp/requirements.txt    # mcp>=2.3.0",
       "python -m pytest -q tests/test_mcpkit.py           # environment tests for mcpkit",
       "python -m pytest -q labs/17-mcp/tests              # your exercises: all fail at first",

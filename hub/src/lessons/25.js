@@ -466,7 +466,7 @@ gateway:  LLM("anthropic:claude-haiku-5-5", api_key=$ANTHROPIC_API_KEY)   # one 
     repoPath: "labs/25-llm-gateway",
     intro: "המעבדה בתיקייה labs/25-llm-gateway. בריפו נוספה חבילה חדשה, <b>gatewaykit</b>: gateway קטן שמקבל בקשות בפורמט OpenAI או Anthropic, מעביר אותן לספקים דרך llmkit, ובדרך עובר את כל השלבים מהשיעור. ארבעה מהשלבים תכתוב בעצמך ב-mine.py: תקציבים, fallback עם breaker, השחרת PII ומדיניות. כשהבדיקות עוברות, אפשר להריץ את ה-gateway <b>עם הקוד שלך בפנים</b>. כל התרגילים חוץ מתרגיל 8 רצים מול שרתי mockllm מקומיים ועולים אפס. תרגיל 7 מריץ את LiteLLM עם Docker ו-Postgres, ותרגיל 8 עולה פחות מעשירית סנט.",
     setup: [
-      'cd ~/projects/"ai engineer"/ai-engineer-course && source .venv/bin/activate',
+      'cd ~/ai-engineer-course-starter && source .venv/bin/activate',
       "uv pip install -r requirements.txt -r labs/25-llm-gateway/requirements.txt",
       "python -m pytest -q tests/test_gatewaykit.py           # environment tests (about 30 s)",
       "python -m pytest -q labs/25-llm-gateway/tests          # your exercises: all fail at first",
