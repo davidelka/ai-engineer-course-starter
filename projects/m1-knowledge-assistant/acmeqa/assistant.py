@@ -16,7 +16,7 @@ Events, in order:
 
 Tracing (obskit, lesson 22, used here as infrastructure): one trace per question. The root span
 is "invoke_workflow acme_assistant" with the role and the route; children: route, data_query,
-retrieval (ids and scores of the candidates), pack_context, and the LLM call as a GenAI span
+retrieval (ids and scores of the candidates; pack_context runs inside this span), and the LLM call as a GenAI span
 with tokens, cache reads and cost. Span attributes go through obskit's PII redaction.
 """
 

@@ -44,7 +44,7 @@ from llmkit.sse import SSEEvent
 
 @dataclass
 class UpstreamStats:
-    """What the server knows about its upstream LLM streams (shown at /v1/admin/stats)."""
+    """What the server knows about its upstream LLM streams (shown at /admin/stats)."""
 
     opened: int = 0
     finished: int = 0  # reached the provider's end event

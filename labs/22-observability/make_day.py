@@ -2,7 +2,7 @@
 
     python labs/22-observability/make_day.py            # -> results/day.jsonl (deterministic, seed 22)
 
-One day, 2026-10-28 (UTC), about 3,700 requests. Each request is a trace of three spans:
+One day, 2026-10-28 (UTC), about 3,500 requests. Each request is a trace of three spans:
 invoke_workflow acme_answer (root) -> retrieval acme-kb, chat claude-haiku-5-5.
 Traffic follows the working day in Israel (busy 06:00-16:00 UTC, quiet at night).
 

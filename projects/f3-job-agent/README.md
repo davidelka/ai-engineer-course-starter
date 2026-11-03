@@ -78,7 +78,7 @@ python -c "from jobagent.config import Settings; s=Settings.from_env(); print([l
 
 ```bash
 python -m pytest -q tests/test_m3_dedup.py
-python -m jobagent eval --no-digest                    # still the same numbers: your functions are in use
+python -m jobagent eval                                # still the same numbers: your dedup functions run in the digest part
 ```
 
 **4. חילוץ מובנה עם מודל אמיתי (בתשלום: פחות מסנט).** קרא את `SYSTEM_PROMPT` ב-`extract.py` ואת `PostExtraction` ב-`models.py`. הרץ את Haiku 5.5 על 10 הפוסטים הראשונים, ואז השווה את השגיאות שלו לשגיאות של ה-heuristic על אותם פוסטים.

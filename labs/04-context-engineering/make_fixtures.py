@@ -3,11 +3,11 @@
     python labs/04-context-engineering/make_fixtures.py
 
 Writes:
-  data/acme_handbook.md        ~15K tokens of Acme handbook sections: offices, teams,
+  data/acme_handbook.md        ~10.5K o200k tokens of Acme handbook sections: offices, teams,
                                per-diem rates, internal systems, procedures. It is the
                                big stable prefix for the caching experiments and the
                                haystack for the position test.
-  data/long_conversation.json  a 40-message HR chat in which the employee mentions
+  data/long_conversation.json  a 56-message HR chat in which the employee mentions
                                12 personal facts early on, plus probe questions about them
                                (exercise 6: does compaction keep them?).
 All names, codes and numbers are invented.

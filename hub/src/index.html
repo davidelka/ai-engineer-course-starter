@@ -265,6 +265,25 @@ dl.gl dd { margin: 0; color: var(--muted); font-size: .92rem; }
 .guide summary { cursor: pointer; font-weight: 700; }
 .guide p { margin: 0; line-height: 1.75; }
 .guide ol { margin: 0; padding-inline-start: 1.2em; display: grid; gap: 6px; line-height: 1.7; }
+.labguide p { margin: 0 0 8px; line-height: 1.8; }
+.labguide ul.clean li { line-height: 1.75; }
+.filemap { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.filemap li { display: grid; gap: 2px; padding: 8px 10px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); }
+.filemap li > code { direction: ltr; unicode-bidi: isolate; font-weight: 600; word-break: break-all; }
+.filemap span { line-height: 1.7; }
+.tooldet { display: grid; gap: 6px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); }
+.tooldet h4 { margin: 0; font-size: 1rem; }
+.tooldet .tpath { direction: ltr; unicode-bidi: isolate; font-family: "IBM Plex Mono", monospace; font-size: .8rem; color: var(--muted); word-break: break-all; }
+.tooldet p { margin: 0; line-height: 1.75; }
+.tooldet b.lbl { color: var(--accent); }
+details.codeinfo { margin-top: 8px; border: 1px dashed var(--line); border-radius: 8px; padding: 6px 10px; background: var(--accent-soft); }
+details.codeinfo summary { cursor: pointer; font-weight: 700; font-size: .92rem; }
+details.codeinfo[open] summary { margin-bottom: 6px; }
+details.codeinfo p, details.codeinfo li { line-height: 1.75; }
+details.codeinfo ul.clean { display: grid; gap: 6px; grid-template-columns: minmax(0, 1fr); }
+details.codeinfo, .labguide, .tooldet, .filemap li { min-width: 0; }
+details.codeinfo code, .labguide code, .tooldet code, .filemap code { overflow-wrap: anywhere; word-break: break-word; }
+.labguide ul.clean { grid-template-columns: minmax(0, 1fr); }
 .code-area { width: 100%; font-family: var(--mono); font-size: .8rem; color: var(--ink); background: var(--code-bg); border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; text-align: left; }
 .stackbar { height: 22px; display: flex; direction: ltr; border-radius: 6px; overflow: hidden; background: var(--code-bg); }
 .stackbar i { display: block; height: 100%; transition: width .3s; }
@@ -296,72 +315,107 @@ dl.gl dd { margin: 0; color: var(--muted); font-size: .92rem; }
   <div class="toast" id="toast" hidden><span id="toast-text"></span></div>
 </div>
 
-<script src="course.js?v=13"></script>
-<script src="lessons/01.js?v=13"></script>
-<script src="lessons/02.js?v=13"></script>
-<script src="aids/l02.js?v=13"></script>
-<script src="lessons/03.js?v=13"></script>
-<script src="aids/l03.js?v=13"></script>
-<script src="lessons/04.js?v=13"></script>
-<script src="aids/l04.js?v=13"></script>
-<script src="lessons/05.js?v=13"></script>
-<script src="aids/l05.js?v=13"></script>
-<script src="lessons/06.js?v=13"></script>
-<script src="aids/l06.js?v=13"></script>
-<script src="lessons/07.js?v=13"></script>
-<script src="aids/l07.js?v=13"></script>
-<script src="lessons/08.js?v=13"></script>
-<script src="aids/l08.js?v=13"></script>
-<script src="lessons/09.js?v=13"></script>
-<script src="aids/l09.js?v=13"></script>
-<script src="lessons/10.js?v=13"></script>
-<script src="aids/l10.js?v=13"></script>
-<script src="lessons/11.js?v=13"></script>
-<script src="aids/l11.js?v=13"></script>
-<script src="lessons/12.js?v=13"></script>
-<script src="aids/l12.js?v=13"></script>
-<script src="lessons/13.js?v=13"></script>
-<script src="aids/l13.js?v=13"></script>
-<script src="lessons/14.js?v=13"></script>
-<script src="aids/l14.js?v=13"></script>
-<script src="lessons/15.js?v=13"></script>
-<script src="aids/l15.js?v=13"></script>
-<script src="lessons/16.js?v=13"></script>
-<script src="aids/l16.js?v=13"></script>
-<script src="lessons/17.js?v=13"></script>
-<script src="aids/l17.js?v=13"></script>
-<script src="lessons/18.js?v=13"></script>
-<script src="aids/l18.js?v=13"></script>
-<script src="lessons/19.js?v=13"></script>
-<script src="aids/l19.js?v=13"></script>
-<script src="lessons/20.js?v=13"></script>
-<script src="aids/l20.js?v=13"></script>
-<script src="lessons/21.js?v=13"></script>
-<script src="aids/l21.js?v=13"></script>
-<script src="lessons/22.js?v=13"></script>
-<script src="aids/l22.js?v=13"></script>
-<script src="lessons/23.js?v=13"></script>
-<script src="aids/l23.js?v=13"></script>
-<script src="lessons/24.js?v=13"></script>
-<script src="aids/l24.js?v=13"></script>
-<script src="lessons/25.js?v=13"></script>
-<script src="aids/l25.js?v=13"></script>
-<script src="lessons/26.js?v=13"></script>
-<script src="aids/l26.js?v=13"></script>
-<script src="lessons/27.js?v=13"></script>
-<script src="aids/l27.js?v=13"></script>
-<script src="lessons/28.js?v=13"></script>
-<script src="aids/l28.js?v=13"></script>
-<script src="lessons/29.js?v=13"></script>
-<script src="aids/l29.js?v=13"></script>
-<script src="lessons/30.js?v=13"></script>
-<script src="aids/l30.js?v=13"></script>
-<script src="lessons/31.js?v=13"></script>
-<script src="aids/l31.js?v=13"></script>
-<script src="lessons/32.js?v=13"></script>
-<script src="aids/l32.js?v=13"></script>
-<script src="lessons/33.js?v=13"></script>
-<script src="aids/l33.js?v=13"></script>
+<script src="course.js?v=15"></script>
+<script src="lessons/01.js?v=15"></script>
+<script src="lessons/02.js?v=15"></script>
+<script src="aids/l02.js?v=15"></script>
+<script src="lessons/03.js?v=15"></script>
+<script src="aids/l03.js?v=15"></script>
+<script src="lessons/04.js?v=15"></script>
+<script src="aids/l04.js?v=15"></script>
+<script src="lessons/05.js?v=15"></script>
+<script src="aids/l05.js?v=15"></script>
+<script src="lessons/06.js?v=15"></script>
+<script src="aids/l06.js?v=15"></script>
+<script src="lessons/07.js?v=15"></script>
+<script src="aids/l07.js?v=15"></script>
+<script src="lessons/08.js?v=15"></script>
+<script src="aids/l08.js?v=15"></script>
+<script src="lessons/09.js?v=15"></script>
+<script src="aids/l09.js?v=15"></script>
+<script src="lessons/10.js?v=15"></script>
+<script src="aids/l10.js?v=15"></script>
+<script src="lessons/11.js?v=15"></script>
+<script src="aids/l11.js?v=15"></script>
+<script src="lessons/12.js?v=15"></script>
+<script src="aids/l12.js?v=15"></script>
+<script src="lessons/13.js?v=15"></script>
+<script src="aids/l13.js?v=15"></script>
+<script src="lessons/14.js?v=15"></script>
+<script src="aids/l14.js?v=15"></script>
+<script src="lessons/15.js?v=15"></script>
+<script src="aids/l15.js?v=15"></script>
+<script src="lessons/16.js?v=15"></script>
+<script src="aids/l16.js?v=15"></script>
+<script src="lessons/17.js?v=15"></script>
+<script src="aids/l17.js?v=15"></script>
+<script src="lessons/18.js?v=15"></script>
+<script src="aids/l18.js?v=15"></script>
+<script src="lessons/19.js?v=15"></script>
+<script src="aids/l19.js?v=15"></script>
+<script src="lessons/20.js?v=15"></script>
+<script src="aids/l20.js?v=15"></script>
+<script src="lessons/21.js?v=15"></script>
+<script src="aids/l21.js?v=15"></script>
+<script src="lessons/22.js?v=15"></script>
+<script src="aids/l22.js?v=15"></script>
+<script src="lessons/23.js?v=15"></script>
+<script src="aids/l23.js?v=15"></script>
+<script src="lessons/24.js?v=15"></script>
+<script src="aids/l24.js?v=15"></script>
+<script src="lessons/25.js?v=15"></script>
+<script src="aids/l25.js?v=15"></script>
+<script src="lessons/26.js?v=15"></script>
+<script src="aids/l26.js?v=15"></script>
+<script src="lessons/27.js?v=15"></script>
+<script src="aids/l27.js?v=15"></script>
+<script src="lessons/28.js?v=15"></script>
+<script src="aids/l28.js?v=15"></script>
+<script src="lessons/29.js?v=15"></script>
+<script src="aids/l29.js?v=15"></script>
+<script src="lessons/30.js?v=15"></script>
+<script src="aids/l30.js?v=15"></script>
+<script src="lessons/31.js?v=15"></script>
+<script src="aids/l31.js?v=15"></script>
+<script src="lessons/32.js?v=15"></script>
+<script src="aids/l32.js?v=15"></script>
+<script src="lessons/33.js?v=15"></script>
+<script src="aids/l33.js?v=15"></script>
+<!-- labguides -->
+<script src="labguides/01.js?v=15"></script>
+<script src="labguides/02.js?v=15"></script>
+<script src="labguides/03.js?v=15"></script>
+<script src="labguides/04.js?v=15"></script>
+<script src="labguides/05.js?v=15"></script>
+<script src="labguides/06.js?v=15"></script>
+<script src="labguides/07.js?v=15"></script>
+<script src="labguides/08.js?v=15"></script>
+<script src="labguides/09.js?v=15"></script>
+<script src="labguides/10.js?v=15"></script>
+<script src="labguides/11.js?v=15"></script>
+<script src="labguides/12.js?v=15"></script>
+<script src="labguides/13.js?v=15"></script>
+<script src="labguides/14.js?v=15"></script>
+<script src="labguides/15.js?v=15"></script>
+<script src="labguides/16.js?v=15"></script>
+<script src="labguides/17.js?v=15"></script>
+<script src="labguides/18.js?v=15"></script>
+<script src="labguides/19.js?v=15"></script>
+<script src="labguides/20.js?v=15"></script>
+<script src="labguides/21.js?v=15"></script>
+<script src="labguides/22.js?v=15"></script>
+<script src="labguides/23.js?v=15"></script>
+<script src="labguides/24.js?v=15"></script>
+<script src="labguides/25.js?v=15"></script>
+<script src="labguides/26.js?v=15"></script>
+<script src="labguides/27.js?v=15"></script>
+<script src="labguides/28.js?v=15"></script>
+<script src="labguides/29.js?v=15"></script>
+<script src="labguides/30.js?v=15"></script>
+<script src="labguides/31.js?v=15"></script>
+<script src="labguides/32.js?v=15"></script>
+<script src="labguides/33.js?v=15"></script>
+<!-- /labguides -->
 <script>
 "use strict";
 const $ = (s, el = document) => el.querySelector(s);
@@ -614,6 +668,12 @@ function cmdBlock(text) { const d = h(`<div class="cmd"><pre></pre></div>`); $("
 
 function stLab(L, c, id) {
   c.append(h(`<p style="margin:0">${L.lab.intro}</p>`));
+  const GG = (window.LABGUIDE || {})[id];
+  if (GG && GG.guide) {
+    const g = GG.guide;
+    c.append(h(`<div class="card labguide"><div class="eyebrow">About this lab</div><h3>מה באים לעשות במעבדה</h3>${g.goal || ""}${g.flow ? `<h3 style="margin-top:6px">איך המעבדה בנויה</h3>${g.flow}` : ""}</div>`));
+    if (g.map && g.map.length) c.append(h(`<details class="card guide"><summary>מפת הקבצים: מה נמצא איפה (${g.map.length})</summary><ul class="filemap">${g.map.map((m) => `<li><code>${esc(m.path)}</code><span>${m.role}</span></li>`).join("")}</ul></details>`));
+  }
   if (L.lab.repoPath) {
     c.append(h(`<div class="card"><div class="eyebrow">Course repo</div><h3>ריפו הקורס</h3>
       <p class="muted" style="margin:0">הקוד כבר אצלך בריפו הפרטי. מושכים את העדכון, וכל ההוראות נמצאות גם ב-README של המעבדה.</p>
@@ -628,12 +688,21 @@ function stLab(L, c, id) {
   const setup = h(`<div class="card"><h3>הכנה, פעם אחת</h3></div>`);
   setup.append(cmdBlock(L.lab.setup.join("\n")));
   c.append(setup);
-  c.append(h(`<div class="card"><h3>הכלים</h3><ul class="clean">${L.lab.tools.map((t) => `<li>${t}</li>`).join("")}</ul></div>`));
+  const G = (window.LABGUIDE || {})[id];
+  if (G && G.toolsDetail) {
+    const tc = h(`<div class="card"><h3>הכלים: מה, איפה, ולמה הם במעבדה</h3></div>`);
+    for (const t of G.toolsDetail) tc.append(h(`<div class="tooldet"><h4>${esc(t.name)}</h4><div class="tpath">${esc(t.path)}</div><p><b class="lbl">מה זה:</b> ${t.what}</p><p><b class="lbl">איך משתמשים:</b> ${t.how}</p><p><b class="lbl">הקשר למעבדה:</b> ${t.why}</p></div>`));
+    c.append(tc);
+  } else {
+    c.append(h(`<div class="card"><h3>הכלים</h3><ul class="clean">${L.lab.tools.map((t) => `<li>${t}</li>`).join("")}</ul></div>`));
+  }
   c.append(h(`<h3 style="margin-top:4px">התרגילים</h3>`));
   for (const ex of L.lab.exercises) {
     const done = !!Progress.get(["ex", id, ex.id]);
     const el = h(`<div class="ex${done ? " done" : ""}"><input type="checkbox" id="ex-${id}-${ex.id}" ${done ? "checked" : ""}><div><label for="ex-${id}-${ex.id}"><h3>${ex.id.replace("ex", "")}. ${esc(ex.title)}</h3></label><p>${esc(ex.text)}</p></div></div>`);
     if (ex.cmd) $("div", el).append(cmdBlock(ex.cmd));
+    const exCode = GG && GG.code && GG.code[ex.id];
+    if (exCode) $("div", el).append(h(`<details class="codeinfo"><summary>מה קורה בקוד</summary>${exCode}</details>`));
     $("input", el).addEventListener("change", (e) => { Progress.set(["ex", id, ex.id], e.target.checked ? 1 : 0); el.classList.toggle("done", e.target.checked); });
     c.append(el);
   }
@@ -831,4 +900,4 @@ function mountTokenLoop(host) {
 route();
 Progress.init();
 </script>
-<script src="repo.js?v=13" defer></script>
+<script src="repo.js?v=15" defer></script>

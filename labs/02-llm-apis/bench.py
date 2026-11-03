@@ -23,7 +23,7 @@ from llmkit import LLM, ChatRequest, LLMError, load_dotenv  # noqa: E402
 TASK_SYSTEM = "You are Acme's HR assistant. Answer in at most 60 words."
 TASK = ("An employee in their third year asks how many vacation days they get, "
         "and whether unused days carry over. The policy: 14 days in year 1, +1 per year "
-        "up to 20; up to 5 unused days carry over until March 31.")
+        "up to 24; up to 5 unused days carry over until March 31.")
 
 
 def pct(xs: list[float], q: float):

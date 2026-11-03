@@ -385,6 +385,11 @@ def main(argv=None) -> None:
     p.add_argument("--recorded", help="score a recording instead of calling a model")
     p.add_argument("--json")
     p.set_defaults(fn=cmd_eval)
+    # --embedder works both before and after the subcommand ("pss --embedder e5-small eval"
+    # and "pss eval --embedder e5-small"). SUPPRESS keeps the main parser's value when omitted.
+    for name in ("eval", "index", "search", "ask", "stats"):
+        sub.choices[name].add_argument("--embedder", default=argparse.SUPPRESS,
+                                       help="ragkit embedder spec: fake | e5-small | e5-base | bge-m3 ...")
     args = ap.parse_args(argv)
     if not hasattr(args, "folders"):
         args.folders = None

@@ -105,7 +105,7 @@ def main() -> None:
             for h in s.search(qv[i], k=5, where=where):
                 print(f"    {h.rank}. {h.score:.3f}  {h.chunk.id}")
 
-    print("\nincremental update: remove hr-vacation-2026, re-add it with an edited first chunk")
+    print("\nincremental update: remove hr-vacation-2026, re-add it with " (edited)" appended to all 3 of its chunks")
     doc = "hr-vacation-2026"
     old = [c for c in ch if c.doc_id == doc]
     idx = [k for k, c in enumerate(ch) if c.doc_id == doc]

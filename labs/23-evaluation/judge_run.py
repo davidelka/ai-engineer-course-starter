@@ -2,7 +2,7 @@
 
     python labs/23-evaluation/judge_run.py --show-rubric                      # read the rubric first
     python labs/23-evaluation/judge_run.py                                    # heuristic judge on extractive answers
-    python labs/23-evaluation/judge_run.py --model anthropic:claude-haiku-5-5 --judge anthropic:claude-haiku-5-5   # live, ~$0.04
+    python labs/23-evaluation/judge_run.py --model anthropic:claude-haiku-5-5 --judge anthropic:claude-haiku-5-5   # live, ~$0.03
     python labs/23-evaluation/judge_run.py --kinds groundedness,correctness,refusal --types version_conflict,unanswerable
     python labs/23-evaluation/judge_run.py --pairwise --judge heuristic-biased     # position bias, and the swap that exposes it
     python labs/23-evaluation/judge_run.py --show q003,q038                    # full verdicts (claims, evidence)

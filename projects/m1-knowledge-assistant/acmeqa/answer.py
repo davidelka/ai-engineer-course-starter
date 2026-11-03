@@ -11,7 +11,7 @@ Prompt caching (lesson 4): a cache breakpoint after the system block lets the 2n
 within 5 minutes read it at the cached rate (Haiku 5.5: $0.01 instead of $0.10 per million).
 It only works if the prefix is at least the model's minimum (512 tokens for Haiku 5.5 per the
 course notes; mockllm simulates the same rule): a shorter prefix is silently not cached, no
-error. SYSTEM is written to be ~900 tokens on purpose, and test_m1_knowledge_assistant checks
+error. SYSTEM is written to be ~950 tokens on purpose, and test_m1_knowledge_assistant checks
 both its size and the cache read on the second call against mockllm. Verify live: the
 usage.cached_input_tokens of the second question in `python -m acmeqa ask` must be > 0.
 

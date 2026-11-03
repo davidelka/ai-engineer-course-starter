@@ -1,7 +1,7 @@
 """Exercise 8: fewer dimensions (Matryoshka truncation): how much recall do we lose, how much
 memory do we save?
 
-    python labs/10-embeddings/dims.py                                         # e5-small: 384 -> 32
+    python labs/10-embeddings/dims.py                                         # e5-small: 384 -> 48
     python labs/10-embeddings/dims.py --model openai:text-embedding-3-small   # 1536 -> 64 (Matryoshka-trained)
     python labs/10-embeddings/dims.py --model qwen3-0.6b                      # optional, 1.2 GB download
     python labs/10-embeddings/dims.py --model openai:text-embedding-3-small --api-check   # 2 paid calls
@@ -63,7 +63,7 @@ def api_check(model: str) -> None:
 def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--model", default=DEFAULT_MODEL, help=MODEL_HELP)
-    ap.add_argument("--dims", default="", help="comma-separated sizes (default: halve down to 32)")
+    ap.add_argument("--dims", default="", help="comma-separated sizes (default: halve while the size is at least 32, so 384 ends at 48)")
     ap.add_argument("--api-check", action="store_true", help="OpenAI only: compare API dims vs truncation")
     args = ap.parse_args()
 
