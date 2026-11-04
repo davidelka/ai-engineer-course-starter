@@ -20,13 +20,11 @@ ollama pull llama3.2
 
 ## הכלים
 
-| כלי | מה הוא עושה | איך מריצים |
-| --- | --- | --- |
-| Prompt Lab | ניסוי מבוקר: variants × cases × repeats, לוג מלא וטבלת סיכום | `python -m promptlab run <yaml>` |
-| `count_tokens.py` | ספירת טוקנים לאותו טקסט באנגלית, עברית וערבית | `python labs/01-prompting/count_tokens.py` |
-| Arena | נחש מה המודל יעשה, ואז תריץ ותבדוק | `python labs/01-prompting/arena.py` |
-| promptfoo | אותו ניסוי few-shot בכלי קוד פתוח מוכן, עם תצוגה בדפדפן | ראה למטה |
-| `TUTORIAL_GUIDE.md` | אילו פרקים מהמדריך הרשמי של Anthropic שווה לעשות | קריאה |
+- **Prompt Lab:** ניסוי מבוקר, variants × cases × repeats, עם לוג מלא וטבלת סיכום. מריצים: `python -m promptlab run <yaml>`.
+- **`count_tokens.py`:** ספירת טוקנים לאותו טקסט באנגלית, עברית וערבית. מריצים: `python labs/01-prompting/count_tokens.py`.
+- **Arena:** נחש מה המודל יעשה, ואז תריץ ותבדוק. מריצים: `python labs/01-prompting/arena.py`.
+- **promptfoo:** אותו ניסוי few-shot בכלי קוד פתוח מוכן, עם תצוגה בדפדפן. ההוראות למטה.
+- **`TUTORIAL_GUIDE.md`:** אילו פרקים מהמדריך הרשמי של Anthropic שווה לעשות. קריאה בלבד.
 
 ## Prompt Lab בקצרה
 
@@ -60,15 +58,15 @@ python -m promptlab report labs/01-prompting/results/<file>.jsonl
 
 ## התרגילים
 
-| # | קובץ | הערה |
-| --- | --- | --- |
-| 1 | `count_tokens.py` | בלי מפתחות רץ רק tiktoken; עם מפתח Anthropic נוסף Claude |
-| 2 | `experiments/ex2_temperature.yaml` | ה-variant האחרון אמור להיכשל ב-400. זה חלק מהתרגיל |
-| 3 | `experiments/ex3_effort.yaml` | השווה pass מול out_tok ו-p50 |
-| 4 | `experiments/ex4_hr_system.yaml` | כתוב את הפרומפט שלך ב-`prompts/hr_system_mine.md` |
-| 5 | `experiments/ex5_injection.yaml` | מסמך "מורעל" ב-`prompts/hr_policies_poisoned.md` |
-| 6 | `experiments/ex6_fewshot.yaml` + `promptfoo/` | שים לב לשורת `outputs` מתחת לטבלה |
-| 7 | מזכר החלטה | חצי עמוד, עם המספרים מתרגיל 6 |
+1. **תרגיל 1, `count_tokens.py`:** בלי מפתחות רץ רק tiktoken; עם מפתח Anthropic נוספת שורת Claude. מהספירה של Claude מופחתים טוקני המעטפת של ההודעה, כדי שהשורה תראה את הטקסט לבד.
+2. **תרגיל 2, `experiments/ex2_temperature.yaml`:** ה-variant האחרון אמור להיכשל ב-400. זה חלק מהתרגיל. כאן 10 חזרות, כי המדד הוא distinct (כמה תשובות שונות), וצריך הרבה דגימות כדי לראות פיזור.
+3. **תרגיל 3, `experiments/ex3_effort.yaml`:** השווה pass מול out_tok ו-p50. יש בו 15 בעיות: 10 קלות (l01–l10) ו-5 קשות (h01–h05). על הקלות שתי רמות ה-effort צפויות להצליח כמעט תמיד, ולכן רק הקשות יכולות להראות מה effort גבוה קונה. 15 × 3 חזרות × 2 variants = 90 קריאות.
+4. **תרגיל 4, `experiments/ex4_hr_system.yaml`:** כתוב את הפרומפט שלך ב-`prompts/hr_system_mine.md`. הקובץ מגיע עם שורת פתיחה ו-TODO שמפרט מה לכסות.
+5. **תרגיל 5, `experiments/ex5_injection.yaml`:** מסמך "מורעל" ב-`prompts/hr_policies_poisoned.md`. שלושה variants, וכל אחד מוסיף דבר אחד על הקודם: בלי מבנה, אחר כך רק תגיות `<documents>`, ואחר כך תגיות וגם כלל מפורש ב-system. כאן 5 חזרות ולא 3, כי דליפה היא אירוע נדיר, ועם יותר חזרות יש יותר סיכוי לראות אותה.
+6. **תרגיל 6, `experiments/ex6_fewshot.yaml` + `promptfoo/`:** שים לב לשורת `outputs` מתחת לטבלה.
+7. **תרגיל 7, מזכר החלטה:** חצי עמוד, עם המספרים מתרגיל 6.
+
+**כמה חזרות:** ברוב התרגילים 3 חזרות לכל מקרה. זה המינימום שבו אפשר לראות שהמודל לא עקבי, והוא שומר על עלות של סנטים. בפרודקשן, כשההחלטה חשובה, כדאי 5 ומעלה. תרגילים 2 ו-5 משתמשים ביותר חזרות מהסיבות שכתובות לידם.
 
 **הגשה:** שלח לי את קובץ ה-YAML ששינית, את טבלת הסיכום, ושתיים-שלוש שורות פרשנות לכל תרגיל.
 

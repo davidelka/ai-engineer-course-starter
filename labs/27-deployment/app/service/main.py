@@ -4,7 +4,8 @@ Shaped like the lesson 26 service (servekit), so either can be deployed with the
 Dockerfile, compose file and Terraform:
 
   GET  /healthz            liveness: the process is up (no dependencies checked)
-  GET  /readyz             readiness: config is valid and the model backend is reachable
+  GET  /readyz             readiness: config is valid; mock mode: mockllm answers; live mode: a key is
+                           loaded (the provider itself is NOT probed, on purpose)
   POST /v1/answer          {"question": "..."} -> {"answer": "...", "model": ..., "cost_usd": ...}
   POST /v1/answer/stream   the same, as Server-Sent Events: event text ... event done
 
@@ -112,8 +113,10 @@ def create_app(settings: Optional[Settings] = None, llm: Optional[LLM] = None) -
                                     status_code=503)
         elif not settings.api_key:
             return JSONResponse({"status": "not_ready", "reason": "no API key"}, status_code=503)
-        # On purpose, readiness does NOT call the paid API: a health check every 10 seconds
-        # from 2 load-balancer nodes would be ~500k paid calls a month.
+        # On purpose, readiness does NOT call the paid API. Cost: the ALB checks /readyz every 15 seconds
+        # from at least 2 nodes, ~345k paid calls a month per task (~520k with ECS's /healthz too, if
+        # that called the model). And in ECS a failed ALB check replaces the task, so a provider outage
+        # would make ECS replace every task in a loop.
         return {"status": "ready", "model": settings.llm_model, "key_source": settings.key_source}
 
     @app.post("/v1/answer", response_model=AnswerResponse)

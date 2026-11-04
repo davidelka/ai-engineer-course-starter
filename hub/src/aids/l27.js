@@ -184,7 +184,7 @@ window.AIDS = window.AIDS || {};
       { box: "ecr", role: "exec", t: "המשימה עולה: הסוכן של ECS מושך את ה-image מ-ECR", b: "ecr:GetAuthorizationToken (על *, אין דרך אחרת) ואז ecr:BatchGetImage ו-GetDownloadUrlForLayer, רק על ה-repository של השירות. הקוד שלך עוד לא רץ.", fail: "noecr" },
       { box: "sm", role: "exec", t: "הסוכן קורא את הסוד מ-Secrets Manager", b: "secretsmanager:GetSecretValue רק על ה-ARN של הסוד. הערך הופך למשתנה הסביבה ANTHROPIC_API_KEY בתוך ה-container. ה-task definition מכיל רק את ה-ARN.", fail: "nosecret" },
       { box: "cw", role: "exec", t: "נפתח log stream ב-CloudWatch Logs", b: "logs:CreateLogStream ו-PutLogEvents רק על ה-log group. מכאן כל שורה ש-uvicorn כותב ל-stdout מגיעה ל-CloudWatch.", fail: null },
-      { box: "task", role: null, t: "ה-container עלה. ECS בודק /healthz, ה-ALB בודק /readyz", b: "ECS: האם התהליך חי (אם לא, מחליף). ה-ALB: האם מוכן לתנועה (אם לא, לא שולח אליו). רק כשה-target group מסמן healthy, המשימה בסבב.", fail: "health" },
+      { box: "task", role: null, t: "ה-container עלה. ECS בודק /healthz, ה-ALB בודק /readyz", b: "ECS: האם התהליך חי (אם לא, מחליף). ה-ALB: האם מוכן לתנועה (אם לא, לא שולח אליו, ו-ECS גם מחליף את המשימה: בניגוד ל-Kubernetes, כשלון ב-target group אינו רק הוצאה מהסבב). רק כשה-target group מסמן healthy, המשימה בסבב.", fail: "health" },
       { box: "alb", role: null, t: "בקשה מגיעה: משתמש ← ALB על פורט 80", b: "ה-security group של ה-ALB מקבל רק את allowed_cidr. ה-ALB בוחר משימה בריאה מה-target group.", fail: null },
       { box: "task", role: null, t: "ALB ← משימה על פורט 8000", b: "ה-security group של המשימה מקבל תנועה רק מה-security group של ה-ALB. גם עם IP ציבורי, אי אפשר לפנות אליה ישירות.", fail: null },
       { box: "llm", role: null, t: "משימה ← api.anthropic.com על 443", b: "עם המפתח שהוזרק בעלייה. זו קריאה ל-API חיצוני, לא ל-AWS, ולכן אין כאן IAM: ההגנה היא שהמפתח לא דולף. אם הקוד היה קורא ל-S3, הוא היה משתמש ב-task role.", fail: "llm" },
@@ -221,8 +221,8 @@ window.AIDS = window.AIDS || {};
     function msg(k) {
       if (fault === "noecr" && k === failAt()) return ["המשימה לא עולה", "ECS מנסה ונכשל: CannotPullContainerError ... AccessDenied. ב-ECS תראה את המשימה ב-STOPPED עם הסיבה, וה-circuit breaker יחזיר את ה-deployment הקודם. אף בקשה לא מגיעה לקוד שלך."];
       if (fault === "nosecret" && k === failAt()) return ["המשימה לא עולה", "ResourceInitializationError: unable to pull secrets ... AccessDeniedException. אותה תקלה מופיעה גם כשלסוד עדיין אין ערך: לכן בתרגיל 8 שמים ערך לפני שהשירות נוצר. הקוד שלך לא רץ בכלל."];
-      if (fault === "health" && k === failAt()) return ["נראה תקין, וזו הבעיה", "/healthz מחזיר 200 כל עוד התהליך חי. כש-Anthropic או mockllm יפלו, ה-ALB ימשיך לשלוח למשימה הזו בקשות, כי מבחינתו היא בריאה. בחר גם את התקלה הבאה כדי לראות את התוצאה."];
-      if (fault === "llm" && k === failAt()) return ["502 למשתמש", "llmkit מנסה שוב לפי ה-retry policy ונכשל, והשירות מחזיר 502 עם request_id. עם בדיקת /readyz (הנכונה), ה-ALB היה מוציא משימות שלא מוכנות מהסבב, וכאן כולן לא מוכנות: יש לך תקלה אמיתית אצל הספק, וזה הזמן ל-fallback (נושא 19)."];
+      if (fault === "health" && k === failAt()) return ["נראה תקין, וזו הבעיה", "/healthz מחזיר 200 כל עוד התהליך חי. משימה שלא יכולה לענות (למשל, במצב mock כש-mockllm לא עונה) תמשיך לקבל בקשות, כי מבחינת ה-ALB היא בריאה. בחר גם את התקלה הבאה כדי לראות את התוצאה."];
+      if (fault === "llm" && k === failAt()) return ["502 למשתמש", "llmkit מנסה שוב לפי ה-retry policy ונכשל, והשירות מחזיר 502 עם request_id. מול mockllm, בדיקת /readyz (הנכונה) הייתה מסמנת את המשימה כלא מוכנה, וב-ECS גם מחליפה אותה. מול Anthropic, גם /readyz לא היה עוזר: בכוונה הוא לא פונה לספק, כי אחרת ECS היה מחליף את כל המשימות בלולאה. יש לך תקלה אמיתית אצל הספק, וזה הזמן ל-fallback (נושא 19)."];
       return null;
     }
     function draw() {

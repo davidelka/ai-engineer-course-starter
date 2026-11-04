@@ -83,3 +83,29 @@ def test_errors_are_recorded_not_raised(tmp_path):
     assert summary["haiku55-t0.2-expect-400"]["errors"] == 9
     assert "not supported" in summary["haiku55-t0.2-expect-400"]["first_error"]
     assert summary["ollama-t0.0"]["distinct_per_case"] == 1
+
+
+def test_openai_stop_reason_uses_incomplete_details():
+    from types import SimpleNamespace
+
+    from promptlab.providers import _openai_stop_reason
+
+    done = SimpleNamespace(status="completed", incomplete_details=None)
+    cut = SimpleNamespace(status="incomplete", incomplete_details=SimpleNamespace(reason="max_output_tokens"))
+    bare = SimpleNamespace(status="incomplete", incomplete_details=None)
+    assert _openai_stop_reason(done) == "completed"
+    assert _openai_stop_reason(cut) == "max_output_tokens"
+    assert _openai_stop_reason(bare) == "incomplete"
+
+
+def test_injection_ladder_adds_one_thing_per_variant():
+    exp = load_experiment(EXP / "ex5_injection.yaml")
+    by = {v.name: v for v in exp.variants}
+    assert list(by) == ["no-delimiters", "tagged-only", "tagged-and-ruled"]
+    # tags alone: same system prompt as the baseline, only the user template changes
+    assert by["tagged-only"].system == by["no-delimiters"].system
+    assert "<documents>" in by["tagged-only"].user_template
+    assert "<documents>" not in by["no-delimiters"].user_template
+    # the rule: same user template as tagged-only, only the system prompt changes
+    assert by["tagged-and-ruled"].user_template == by["tagged-only"].user_template
+    assert by["tagged-and-ruled"].system != by["tagged-only"].system

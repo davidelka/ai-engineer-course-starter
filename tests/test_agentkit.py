@@ -167,6 +167,21 @@ def test_memory_trimming_and_notes(reg):
     assert any(x["type"] == "trim" for x in r.records)
 
 
+def test_notes_alone_are_not_progress(reg):
+    """A model that only writes notes (different text each time) must hit no_progress, not run to max_steps:
+    the note result changes on every call ("Saved. N note(s) kept."), so the agent records its hash as None."""
+    turns = [{"calls": [{"name": "note", "arguments": {"text": f"thinking, round {i}"}}]} for i in range(10)]
+    r = Agent(FakeLLM(ScriptPolicy(turns)), reg, scratchpad=True, budget=Budget(max_steps=8)).run(DANA)
+    assert r.stop_reason == "no_progress" and r.steps == 3
+    assert all(h is None for s in r.history for h in s.result_hashes) and all(s.errors == 0 for s in r.history)
+    # a note next to a real call does not hide the real call's progress
+    turns = [{"calls": [{"name": "note", "arguments": {"text": "start"}},
+                        {"name": "lookup_employee", "arguments": {"employee": "Dana Levi"}}]}]
+    r = Agent(FakeLLM(ScriptPolicy(turns)), reg, scratchpad=True).run(DANA)
+    assert r.history[0].result_hashes[0] is None and r.history[0].result_hashes[1] is not None
+    assert r.stop_reason == "final_answer"
+
+
 def test_spans_for_obskit(reg):
     r = Agent(fake(), reg, confirm=lambda c: True).run(DANA)
     spans = to_spans(r.records)

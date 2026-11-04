@@ -30,6 +30,7 @@ locals {
       { name = "SQLITE_EXCLUSIVE", value = "1" },
       { name = "ROUTER_LLM", value = "auto" },
       { name = "APP_VERSION", value = var.image_tag },
+      { name = "TMPDIR", value = "/tmp" }, # the writable "tmp" volume, explicit for tempfile and PyTorch
     ]
 
     # valueFrom "<secret-arn>:<json-key>::" picks one key out of a JSON secret.
@@ -41,7 +42,13 @@ locals {
 
     readonlyRootFilesystem = true
 
-    mountPoints = [{ sourceVolume = "state", containerPath = "/data", readOnly = false }]
+    # readonlyRootFilesystem makes /tmp read-only too, and Fargate does not support tmpfs
+    # (linuxParameters.tmpfs is EC2-only). The "tmp" volume below is a Fargate bind mount: writable
+    # scratch space on the task's ephemeral storage, gone when the task stops. compose uses tmpfs instead.
+    mountPoints = [
+      { sourceVolume = "state", containerPath = "/data", readOnly = false },
+      { sourceVolume = "tmp", containerPath = "/tmp", readOnly = false },
+    ]
 
     healthCheck = {
       command     = ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:${var.container_port}/healthz', timeout=2)"]
@@ -81,9 +88,16 @@ resource "aws_ecs_task_definition" "brain" {
   execution_role_arn = aws_iam_role.execution.arn
   task_role_arn      = aws_iam_role.task.arn
 
-  # /tmp for libraries that need scratch space under a read-only root filesystem
+  # Task ephemeral storage (21 GiB is the Fargate minimum). It backs the "tmp" bind mount below; it does
+  # NOT by itself make /tmp writable when readonlyRootFilesystem is on.
   ephemeral_storage {
     size_in_gib = 21
+  }
+
+  # Writable /tmp for libraries that need scratch space (tempfile, PyTorch). A volume
+  # with no host or EFS configuration is a Fargate bind mount on the ephemeral storage. Never tested.
+  volume {
+    name = "tmp"
   }
 
   volume {

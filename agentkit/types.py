@@ -22,7 +22,10 @@ class Budget:
     max_steps               model calls in the act loop (the planner call is not a step)
     max_tokens              input + output tokens of every model call, planner included
     max_cost_usd            dollars, planner included
-    max_seconds             wall time since the run started
+    max_seconds             the sum of the steps' elapsed_s: each step's model call, its tool
+                            calls and any human-approval wait inside it. NOT counted: the
+                            planner call before the loop, replans, and the summary call
+                            after a stop, so a run's wall time can exceed this limit.
     repeat_limit            the same tool call (name + identical arguments) this many
                             times in one run -> "repetition"
     no_progress_steps       this many steps in a row that produced no NEW successful
@@ -48,8 +51,10 @@ class StepRecord:
     """What the stop policy sees about one step. Per-step values, not running totals.
 
     calls / fingerprints / result_hashes are aligned: one entry per tool call.
-    result_hashes[i] is None when that call FAILED (is_error), else a short hash of
-    the result text, so "did this step learn anything new?" is a set lookup.
+    result_hashes[i] is None when that call FAILED (is_error) or was the local `note`
+    tool (a note teaches the agent nothing new about the world), else a short hash of
+    the result text, so "did this step learn anything new?" is a set lookup. `errors`
+    counts only real failures, so a note-only step is not a tool_errors step.
     """
 
     n: int

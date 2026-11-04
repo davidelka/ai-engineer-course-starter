@@ -20,6 +20,8 @@ x-hardening: &hardening
   cap_drop: [ALL]                     # no Linux capabilities: the app needs none
   security_opt: ["no-new-privileges:true"]
   restart: unless-stopped
+  tmpfs: ["/tmp"]                     # writable scratch in memory: the service writes nothing, but
+                                      # Python's tempfile and many libraries expect a writable /tmp
 
 x-api-build: &api-build
   context: ../..                      # the repo root: the image needs llmkit/

@@ -114,7 +114,8 @@ python labs/14-tool-use/injection_demo.py --model anthropic:claude-haiku-5-5 --d
 ```bash
 python labs/14-tool-use/ask.py --set
 python labs/14-tool-use/ask.py --set --parallel-off
-python labs/14-tool-use/ask.py --set --mine
+python labs/14-tool-use/ask.py --set --no-strict
+python labs/14-tool-use/ask.py --set --mine     # your run_tool_loop builds its own request, so --parallel-off/--no-strict do not apply here
 ```
 
 ## כללים

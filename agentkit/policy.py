@@ -16,7 +16,8 @@ Why each rule exists:
   tool_errors              every call failing, step after step: the tools are down or the
                            model cannot form valid calls. Stop before burning the budget.
   no_progress              the subtle loop: calls DIFFER (so repetition misses it), but no
-                           step learns anything new (same results, or only errors).
+                           step learns anything new (same results, or only errors, or
+                           only `note` calls: the agent records those with hash None).
 """
 
 from __future__ import annotations

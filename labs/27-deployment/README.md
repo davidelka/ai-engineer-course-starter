@@ -8,7 +8,7 @@
 
 - **תרגילים 1 עד 6: חינם לגמרי.** הכול רץ אצלך, מול mockllm. בתרגיל 3 יש צעד אופציונלי מול Claude Haiku 5.5: פחות מעשירית סנט לשאלה.
 - **תרגיל 7: חינם.** `terraform plan` לא יוצר שום משאב. ה-budget של AWS לא עולה כסף.
-- **תרגיל 8: עולה כסף, כ-0.05$ לשעה** כל עוד הסטאק קיים (load balancer, כתובות IPv4 ציבוריות, משימת Fargate). סשן של שלוש שעות עולה בערך 0.15$ עד 0.25$, ועוד כמה סנטים של טוקנים. **סטאק שנשכח דולק עולה כ-1.25$ ליום, כ-37$ לחודש.** לכן תרגיל 8 נגמר ב-`terraform destroy` ובבדיקה שלא נשאר כלום, וה-budget מתרגיל 7 נשאר לשמור עליך.
+- **תרגיל 8: עולה כסף, כ-0.05$ לשעה** כל עוד הסטאק קיים (load balancer, כתובות IPv4 ציבוריות, משימת Fargate). סשן של שלוש שעות עולה בערך 0.15$ (0.051$ לשעה לפי `deploykit/cost.py`, הערכה), ועוד כמה סנטים של טוקנים. **סטאק שנשכח דולק עולה כ-1.23$ ליום, כ-37$ לחודש.** לכן תרגיל 8 נגמר ב-`terraform destroy` ובבדיקה שלא נשאר כלום, וה-budget מתרגיל 7 נשאר לשמור עליך.
 - המספרים מגיעים מ-`deploykit/cost.py` (מחירי us-east-1, נבדקו ב-1 בנובמבר 2026, עם קישורים למקורות). אחרי תרגיל 7 תוכל לחשב אותם בעצמך לכל תצורה.
 
 ## הכנה
@@ -73,6 +73,8 @@ docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy:0.76.
   image --severity HIGH,CRITICAL --quiet company-brain-api:single
 ```
 
+אם ה-Docker שלך רץ במצב rootless, ה-socket נמצא ב-`$XDG_RUNTIME_DIR/docker.sock` ולא ב-`/var/run/docker.sock`, והפקודה תיכשל: החלף את הנתיב הראשון ב-`-v`.
+
 שאלות: כמה פגיעויות HIGH ו-CRITICAL בכל image, ומאיפה רובן מגיעות (חבילות מערכת או חבילות Python)? למה image קטן יותר הוא גם image בטוח יותר? אם אתה מחובר ל-Docker Hub, אפשר להשוות גם עם `docker scout quickview company-brain-api:dev`. החזר את ההערות שהוספת לפני שממשיכים.
 
 **3. הסטאק המקומי עם docker compose (חינם, וצעד אופציונלי של פחות מסנט).** הרם את השירות יחד עם mockllm. ה-API מחכה ש-mockllm יהיה healthy לפני שהוא עולה, והפורט פתוח רק ל-localhost.
@@ -89,7 +91,7 @@ python call_api.py                                  # healthz 200, readyz 503, a
 docker compose start mockllm
 ```
 
-הסבר במשפט אחד: למה `/healthz` נשאר 200 כש-mockllm למטה, ומה היה קורה ב-AWS אם ה-load balancer היה בודק את `/healthz` במקום את `/readyz`?
+הסבר במשפט אחד: למה `/healthz` נשאר 200 כש-mockllm למטה, ומה היה קורה ב-AWS אם ה-load balancer היה בודק את `/healthz` במקום את `/readyz`? ושאלה שנייה: קרא את `readyz` ב-`app/service/main.py`. במצב live הוא בודק רק שהמפתח נטען, ולא פונה ל-Anthropic. למה זה בכוונה? (רמז: ב-ECS, משימה שנכשלת ב-health check של ה-ALB נעצרת ומוחלפת, לא רק מוצאת מהסבב.)
 
 הצעד האופציונלי, מול Claude: המפתח נטען רק ל-shell הנוכחי, ו-compose מעביר אותו כ-secret, כלומר כקובץ ב-`/run/secrets/anthropic_api_key` ולא כמשתנה סביבה.
 

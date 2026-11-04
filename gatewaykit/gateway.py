@@ -327,7 +327,13 @@ class Gateway:
                 self.cache.put(ckey, result, dep_id)
                 out_headers["x-gateway-cache"] = "miss"
             # 9. cost from usage -> budget
-            cost = result.cost_usd if result.cost_usd is not None else 0.0
+            # Never count a call as free: if the provider result carries no cost (unknown price),
+            # charge the worst-case estimate the budget check already used, and say so in the audit.
+            if result.cost_usd is not None:
+                cost = result.cost_usd
+            else:
+                cost = estimate
+                rec["cost_note"] = "no price for the provider's model: charged the pre-call estimate"
             u = result.usage
             rec.update(cost_usd=round(cost, 10), provider_model=self.cfg.deployment(dep_id).model_spec,
                        usage={"input_tokens": u.input_tokens, "output_tokens": u.output_tokens,

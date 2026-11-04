@@ -1,7 +1,9 @@
 """Exercise 1 — the price of a language.
 
 Counts tokens for the same paragraph in English, Hebrew and Arabic with:
-  - Anthropic's count_tokens endpoint (free, needs ANTHROPIC_API_KEY)
+  - Anthropic's count_tokens endpoint (free, needs ANTHROPIC_API_KEY). The endpoint counts a
+    whole request, including a few tokens of message framing; we subtract that baseline
+    (measured once on a one-character message) so the row shows the text alone.
   - tiktoken's o200k_base encoding (OpenAI's recent tokenizer, fully offline)
   - Gemini's count_tokens (needs GEMINI_API_KEY)
 Providers without a key are skipped.
@@ -23,13 +25,26 @@ from promptlab.__main__ import _load_dotenv  # noqa: E402
 LANGS = {"en": "English", "he": "Hebrew", "ar": "Arabic"}
 
 
+_CLAUDE_FRAMING: dict[str, int] = {}
+
+
+def _claude_request_tokens(client, text: str, model: str) -> int:
+    resp = client.messages.count_tokens(model=model, messages=[{"role": "user", "content": text}])
+    return resp.input_tokens
+
+
 def count_claude(text: str, model: str) -> int:
+    """Tokens of the text alone: request count minus the message-framing baseline.
+
+    The API rejects an empty message, so the baseline is a one-character message
+    (".", assumed to be one token) minus 1. It is approximate by a token or so.
+    """
     import anthropic
 
-    resp = anthropic.Anthropic().messages.count_tokens(
-        model=model, messages=[{"role": "user", "content": text}]
-    )
-    return resp.input_tokens  # includes a few tokens of message framing
+    client = anthropic.Anthropic()
+    if model not in _CLAUDE_FRAMING:
+        _CLAUDE_FRAMING[model] = _claude_request_tokens(client, ".", model) - 1
+    return _claude_request_tokens(client, text, model) - _CLAUDE_FRAMING[model]
 
 
 def count_tiktoken(text: str) -> int:
@@ -55,7 +70,7 @@ def main() -> None:
 
     counters = {"o200k (OpenAI)": count_tiktoken}
     if os.environ.get("ANTHROPIC_API_KEY"):
-        counters["Claude"] = lambda t: count_claude(t, args.claude_model)
+        counters["Claude (text)"] = lambda t: count_claude(t, args.claude_model)
     if os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY"):
         counters["Gemini"] = lambda t: count_gemini(t, args.gemini_model)
 
@@ -75,6 +90,9 @@ def main() -> None:
     words = {k: len(t.split()) for k, t in texts.items()}
     print("\nwords:      " + ", ".join(f"{LANGS[k]} {w}" for k, w in words.items()))
     print("characters: " + ", ".join(f"{LANGS[k]} {len(t)}" for k, t in texts.items()))
+    if "Claude (text)" in results:
+        framing = _CLAUDE_FRAMING.get(args.claude_model, 0)
+        print(f"Claude: {framing} framing tokens per message subtracted (a real request pays them too).")
     print("\nQuestion for your notes: what would the same chatbot cost per month in each language?")
 
 

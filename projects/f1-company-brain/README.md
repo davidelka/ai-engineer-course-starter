@@ -138,9 +138,12 @@ BRAIN_DEMO_KEYS=1 python -m cbrain mcp --transport http &      # Streamable HTTP
 
 ```bash
 python -m cbrain demo | tail -25
-python -m cbrain slo --traces results/state/traces.jsonl
-python -m obskit.viewer results/state/traces.jsonl -o results/traces.html && xdg-open results/traces.html
+T="$(ls -td /tmp/cbrain-demo-*/ | head -1)traces.jsonl"   # the demo writes its traces to a fresh temp folder
+python -m cbrain slo --traces "$T"
+python -m obskit.viewer "$T" -o results/traces.html && xdg-open results/traces.html
 ```
+
+ה-demo כותב את ה-traces לתיקייה זמנית חדשה בכל הרצה (`/tmp/cbrain-demo-*/traces.jsonl`, הנתיב המדויק מודפס בסוף הפלט שלו), ולא ל-`results/state/`, כדי לא לערבב אותם עם ה-state של השירות.
 
 ענה: מתחת ל-`company_brain.ask` אתה רואה את ה-span של M1 (`acme_assistant`). איך זה קרה בלי לשנות את M1? למה ה-tool spans של ה-workflow צריכים את `TracedRegistry`?
 
@@ -195,7 +198,7 @@ docker compose down
 8. בדיקה: `curl -s $(terraform output -raw url)/readyz`, ואז seed דרך ה-API (התהליך היחיד שפותח את קבצי ה-SQLite): `curl -s -X POST $(terraform output -raw url)/admin/seed -H "Authorization: Bearer <ops key>"`. פתח את ה-URL בדפדפן והכנס את המפתח של dana.
 9. **הורדה:** `terraform destroy`. אחר כך ודא בקונסול: אין ECS service, אין ALB, אין EFS, ה-ECR נמחק, והסודות נמחקו (recovery window 0). התקציב של שיעור 27 נשאר.
 
-**למה EFS ולמה משימה אחת (ADR-0003):** ה-SqliteSaver של LangGraph מפעיל WAL, ו-WAL לא עובד על network filesystem (התיעוד של SQLite). המשימה מריצה עם `SQLITE_EXCLUSIVE=1`: הקובץ נפתח במצב EXCLUSIVE לפני שה-WAL מופעל, ואז SQLite לא יוצר את קובץ הזיכרון המשותף. המחיר: תהליך אחד בלבד, ולכן ה-deploy עוצר את המשימה הישנה לפני שהחדשה עולה (כדקה של חוסר זמינות). כשצריך יותר ממשימה אחת, עוברים ל-Postgres (`langgraph-checkpoint-postgres`).
+**למה EFS ולמה משימה אחת (ADR-0003):** ה-SqliteSaver של LangGraph מפעיל WAL, ו-WAL לא עובד על network filesystem (התיעוד של SQLite). המשימה מריצה עם `SQLITE_EXCLUSIVE=1`: הקובץ נפתח במצב EXCLUSIVE לפני שה-WAL מופעל, ואז SQLite לא יוצר את קובץ הזיכרון המשותף. המחיר: תהליך אחד בלבד, ולכן ה-deploy עוצר את המשימה הישנה לפני שהחדשה עולה (השבתה מתוכננת בכל deploy, לפחות כדקה, הערכה שלא נמדדה). גם אין HA: קריסה של המשימה היא השבתה עד שחלופית עולה, ו-EXCLUSIVE על EFS אמיתי לא נבדק מעולם. כשצריך יותר ממשימה אחת או זמינות בזמן deploy, עוברים ל-Postgres (`langgraph-checkpoint-postgres`; Multi-AZ כ-28$ לחודש, הערכה שנבדקה בנובמבר 2026). המחירים וההשוואה המלאה ב-ADR-0003.
 
 ## מה לבדוק אצלך, כי כאן לא היה אפשר
 

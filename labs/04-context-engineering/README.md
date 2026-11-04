@@ -25,7 +25,7 @@ python -m pytest -q labs/04-context-engineering/tests   # התרגילים של�
   - `--cache-min-tokens` ו-`--no-cache`.
 - **ctxkit (חבילה חדשה בשורש):** ספירת טוקנים, פירוק בקשה לשכבות, בניית בקשה שמתאימה ל-caching, compaction, מודל עלות של caching, ו-haystack לבדיקת מיקום. שלושה מהמודולים הם קוד הייחוס של התרגילים שלך, אז אל תקרא את `layers.py`, `layout.py` ו-`compaction.py` לפני שהבדיקות שלך עוברות.
 - **הנתונים של המעבדה** (סינתטיים, נוצרים מחדש עם `make_fixtures.py`):
-  - `data/acme_handbook.md`: מדריך עובד של Acme, כ-10,500 טוקנים בהערכה של תווים חלקי 4 (בסביבת הבנייה tiktoken לא היה זמין, ואצלך הסקריפטים יספרו ב-o200k), ובהנחה של פי 1.3 כ-13,000 אצל Claude. שני המספרים לא נמדדו; את המדויק נותן `--calibrate`. 79 סעיפים: משרדים, צוותים, אש"ל לפי מדינה, מערכות פנימיות ונהלים. זו הקידומת הגדולה של ניסויי ה-caching, וה-haystack של בדיקת המיקום.
+  - `data/acme_handbook.md`: מדריך עובד של Acme, כ-10,500 טוקנים בהערכה של תווים חלקי 4 (בסביבת הבנייה tiktoken לא היה זמין, ואצלך הסקריפטים יספרו ב-o200k), ובהנחה של פי 1.3 כ-13,000 אצל Claude. שני המספרים לא נמדדו; את הסך האמיתי אצל Claude נותן `--calibrate`. 79 סעיפים: משרדים, צוותים, אש"ל לפי מדינה, מערכות פנימיות ונהלים. זו הקידומת הגדולה של ניסויי ה-caching, וה-haystack של בדיקת המיקום.
   - `data/long_conversation.json`: שיחה של 56 הודעות. ב-24 ההודעות הראשונות העובדת מספרת 12 עובדות על עצמה, ואחריהן באות 32 הודעות של שאלות מדיניות רגילות. לכל עובדה יש שאלת בדיקה.
   - `requests/agent_turn.json`: בקשה אחת של Company Brain, עם 4 כלים, system prompt עם נקודת שבירה, 5 תורות קודמות ו-2 מסמכים שאוחזרו.
 - **`mine.py`**: הקוד שלך לתרגילים 1, 2 ו-6.
@@ -42,7 +42,7 @@ python -m pytest -q labs/04-context-engineering/tests   # התרגילים של�
 ```bash
 python -m pytest -q labs/04-context-engineering/tests/test_ex1_layers.py
 python labs/04-context-engineering/context_budget.py
-python labs/04-context-engineering/context_budget.py --scenario agent --calibrate   # הספירה המדויקת של Claude, חינם
+python labs/04-context-engineering/context_budget.py --scenario agent --calibrate   # הסך האמיתי של Claude, חינם
 ```
 
 **2. עוזר HR שבנוי ל-caching.** ממש את `build_hr_request`. ה"לפני" הוא `naive_hr_request` מ-`ctxkit/layout.py`: התאריך ושם העובד בשורה הראשונה של ה-system, והמסמכים אחרי השאלה. ה"אחרי" צריך להיראות כך:
@@ -81,11 +81,14 @@ python labs/04-context-engineering/cache_experiment.py --mode explicit --ttl 1h 
 
 איפה המודל טועה? האם ראית "lost in the middle"? הרץ כל תצורה פעמיים לפני שאתה מסיק משהו, כי כל תא בטבלה הוא דגימה אחת.
 
+בונוס: `--filler corpus` בונה את ה-haystack מ-49 קובצי ה-Markdown של `data/acme/corpus/docs/` במקום ממדריך העובד. המסמכים שם שונים זה מזה בנושא ובסגנון, והמחט בולטת פחות מאשר בתוך מדריך אחיד. אם התיקייה חסרה, הסקריפט חוזר למדריך ומדפיס הודעה.
+
 ```bash
 python labs/04-context-engineering/position_test.py --dry-run
 python labs/04-context-engineering/position_test.py
 python labs/04-context-engineering/position_test.py --distractors 3
 python labs/04-context-engineering/position_test.py --distractors 3 --question-first
+python labs/04-context-engineering/position_test.py --filler corpus --distractors 3   # בונוס
 ```
 
 **6. Compaction.** ממש את `compact` ב-`mine.py`: סיכום של התורות הישנות, והתורות האחרונות נשארות מילה במילה. אחר כך הרץ את `compaction_eval`, שמשווה שלוש אסטרטגיות על השיחה הארוכה, בתקציב של 400 טוקנים:
@@ -94,6 +97,8 @@ python labs/04-context-engineering/position_test.py --distractors 3 --question-f
 - `compact`: הפונקציה שלך.
 
 התוצאה היא כמה מתוך 12 העובדות שרדו. קודם הרץ offline, אחר כך live, ונסה תקציב קטן יותר.
+
+שים לב לעלות הסיכום: אם אחרי הסיכום השיחה עדיין חורגת מהתקציב, `compact` מקטין את K ב-2 ומסכם מחדש את כל החלק הישן, מההתחלה. כל ניסיון כזה הוא קריאה נוספת למודל, שקוראת שוב את מה שכבר סוכם (לכן `compaction_eval.py` מעריך עד 6 קריאות סיכום). זה פשוט ונכון לתרגיל, אבל בפרודקשן עדיף לחשב מראש כמה תורות להשאיר, או לסכם רק את מה שנוסף לסיכום הקודם.
 
 ```bash
 python -m pytest -q labs/04-context-engineering/tests/test_ex6_compact.py
@@ -127,5 +132,5 @@ python labs/04-context-engineering/context_budget.py --file labs/04-context-engi
 
 ## כללים
 
-- `--calibrate` משתמש ב-endpoint החינמי `count_tokens` של Anthropic. כל השאר נספר עם tiktoken, וזה רק קירוב. אם tiktoken לא מצליח לטעון את o200k_base, הספירה נופלת להערכה של תווים חלקי 4, ומודפסת אזהרה; כל סקריפט כותב בכותרת באיזו ספירה הוא השתמש. ה-tokenizer של Claude Haiku 5.5 סופר בדרך כלל יותר טוקנים מ-o200k על אותו טקסט (הסקריפטים מניחים פי 1.3 בהערכת עלות), ואת היחס האמיתי תראה עם `--calibrate`.
+- `--calibrate` משתמש ב-endpoint החינמי `count_tokens` של Anthropic. הוא מחזיר את הסך של הבקשה כולה, ולכן רק שורת ה-TOTAL היא ספירה של Claude. כל שכבה מוכפלת באותו יחס, אז החלוקה בין השכבות נשארת הערכה: JSON של כלים, אנגלית ועברית לא נבדלים מ-o200k באותו יחס. כל השאר נספר עם tiktoken, וזה רק קירוב. אם tiktoken לא מצליח לטעון את o200k_base, הספירה נופלת להערכה של תווים חלקי 4, ומודפסת אזהרה; כל סקריפט כותב בכותרת באיזו ספירה הוא השתמש. ה-tokenizer של Claude Haiku 5.5 סופר בדרך כלל יותר טוקנים מ-o200k על אותו טקסט (הסקריפטים מניחים פי 1.3 בהערכת עלות), ואת היחס האמיתי תראה עם `--calibrate`.
 - תוצאות נשמרות ב-`labs/04-context-engineering/results/`, ולא נכנסות ל-git.

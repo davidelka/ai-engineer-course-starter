@@ -20,7 +20,9 @@ dependencies = [
     "beautifulsoup4>=4.12",             # ... and the HTML pages
     "lxml>=5.0",
     "tiktoken>=0.8",                    # token counts for context packing
-    "pillow>=12.0",                     # llmkit.media imports it
+    "pillow>=12.0",                     # nothing in the image imports it (llmkit.media reads image headers
+                                        # itself); runtime-e5's sentence-transformers pulls it in anyway.
+                                        # Removable from "runtime": drop this line, run `uv lock`, rebuild.
     "langgraph>=1.2.19",                # the approval workflow (lesson 16)
     "langgraph-checkpoint-sqlite>=3.1.3",
     "mcp>=2.3.0",                       # the MCP server (lesson 17)

@@ -65,6 +65,23 @@ SCENARIOS = {
                   "four employees are called Shani. In plan mode, watch the failed step trigger a replan."),
 }
 
+# Scenarios BUILT to fail the gold check with the offline model: the point is that the loop stops them, or
+# that only the evaluation catches them. A FAIL there is the expected result, not a bug in your code.
+EXPECTED_FAIL = {
+    "tool-down-stubborn": "the policy stops a model that never gives up",
+    "misleading": "the evaluator flags the document/check_policy conflict (rerun with --careful)",
+    "stale": "only the gold check catches a confidently wrong answer",
+    "loop-repeat": "the policy stops the loop before the request is filed",
+    "loop-paraphrase": "the policy stops the loop before the request is filed",
+    "mock-loop": "the policy stops the loop before the request is filed",
+}
+
+
+def expected_note(name: str, ok: bool, a) -> str:
+    if ok or name not in EXPECTED_FAIL or (name == "misleading" and a.careful):
+        return ""
+    return f"  (expected{' with the fake model' if is_live(a.model) else ''}: {EXPECTED_FAIL[name]})"
+
 
 def run(name: str, a) -> dict:
     task, faults, heur, mock_fault, gold, note = SCENARIOS[name]
@@ -82,7 +99,8 @@ def run(name: str, a) -> dict:
     if not a.summary_only:
         print(f"\n######## {name}: {note}")
         print(format_trajectory(res.records))
-        print(f"GOLD: {'SUCCESS' if s['success'] else 'FAIL'} " + "; ".join(s["reasons"]))
+        print(f"GOLD: {'SUCCESS' if s['success'] else 'FAIL'} " + "; ".join(s["reasons"])
+              + expected_note(name, s["success"], a))
     return {"name": name, "stop": res.stop_reason, "steps": res.steps, "errors": res.errors, "replans": res.replans,
             "ok": s["success"], "cost": res.cost_usd}
 
@@ -109,7 +127,7 @@ def main() -> None:
     if a.summary_only:
         for r in rows:
             print(f"{r['name']:<20} stop={r['stop']:<12} steps={r['steps']} errors={r['errors']} replans={r['replans']} "
-                  f"gold={'OK' if r['ok'] else 'FAIL'}")
+                  f"gold={'OK' if r['ok'] else 'FAIL'}{expected_note(r['name'], r['ok'], a)}")
 
 
 if __name__ == "__main__":

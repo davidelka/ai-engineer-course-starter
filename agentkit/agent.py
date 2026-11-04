@@ -255,7 +255,10 @@ class Agent:
             out.calls += calls
             out.results += results
             fps = [fingerprint(c) for c in calls]
-            hashes = [result_hash(x) for x in results]
+            # a note is local bookkeeping, not information from the world: its result ("Saved. N note(s)
+            # kept.") changes on every call, so hashing it would let a model that only writes notes
+            # look like it is making progress forever. Record it like a call that taught nothing (None).
+            hashes = [None if c.name == NOTE_TOOL else result_hash(x) for c, x in zip(calls, results)]
             for c, res, fp, h in zip(calls, results, fps, hashes):
                 spec = self.registry.get(c.name)
                 rec["calls"].append({"id": c.id, "name": c.name, "arguments": c.arguments, "fp": fp})

@@ -48,7 +48,7 @@ python labs/19-ai-architecture/cost_model.py labs/19-ai-architecture/specs/compa
 python labs/19-ai-architecture/cost_model.py labs/19-ai-architecture/specs/company_brain.arch.yaml --scale 2
 ```
 
-**2. תקציב latency.** ממש את `latency_budget`. בפלט של `cost_model.py` תראה שני מספרים לכל מסלול: סכום ה-p95 של השלבים, וה-p95 של סימולציה. הסבר במשפט אחד למה הסכום גבוה מהסימולציה, ומתי בכל זאת נכון לתכנן לפי הסכום.
+**2. תקציב latency.** ממש את `latency_budget`. בפלט של `cost_model.py` תראה שני מספרים לכל מסלול: סכום ה-p95 של השלבים, וה-p95 של סימולציה. הסבר במשפט אחד למה הסכום גבוה מהסימולציה, ומתי בכל זאת נכון לתכנן לפי הסכום. שים לב: הסכום בדרך כלל פסימי, אבל הוא לא חסם מתמטי, כי אחוזונים לא מתחברים כמו ממוצעים. כשלשלב יש זנב כבד (מהיר רוב הזמן ואיטי מאוד לפעמים), ה-p95 של הזמן הכולל יכול לעבור את סכום ה-p95. הסימולציה מניחה שהשלבים בלתי תלויים.
 
 ```bash
 python -m pytest -q labs/19-ai-architecture/tests/test_ex2_latency.py
@@ -86,7 +86,7 @@ python labs/19-ai-architecture/cost_model.py labs/19-ai-architecture/specs/acces
 python labs/19-ai-architecture/adr_check.py labs/19-ai-architecture/adr/0001-company-brain-orchestration.md
 ```
 
-**7. מדרישות לארכיטקטורה: מיון פניות תמיכה.** קרא את `cases/ticket_triage/REQUIREMENTS.md`. כתוב שלוש שאלות שהיית שואל את מנהלת התמיכה לפני שמתחילים, ואת מדדי ההצלחה במספרים. אחר כך העתק את קובץ ההתחלה והשלם אותו: אילו חלקים הם קוד דטרמיניסטי ואילו צריכים מודל, איזה pattern (online או batch, תור, fallback), אילו מודלים, ואיפה עובר מידע אישי. המטרה: אפס שגיאות בבודק, עלות בתוך התקציב, ו-p95 של P1 בתוך 60 שניות.
+**7. מדרישות לארכיטקטורה: מיון פניות תמיכה.** קרא את `cases/ticket_triage/REQUIREMENTS.md`. כתוב שלוש שאלות שהיית שואל את מנהלת התמיכה לפני שמתחילים, ואת מדדי ההצלחה במספרים. אחר כך העתק את קובץ ההתחלה והשלם אותו: אילו חלקים הם קוד דטרמיניסטי ואילו צריכים מודל, איזה pattern (online או batch, תור, fallback), אילו מודלים, ואיפה עובר מידע אישי. המטרה: אפס שגיאות בבודק, עלות בתוך התקציב, ו-p95 של P1 בתוך 60 שניות. שים לב שהכלים לא ממדלים תורים: אם תוסיף שלב `queue_wait`, ה-p95 שלו הוא הנחה שאתה כותב. נמק אותו בהערה ב-YAML מקצב ההגעה בשיא (פי 3), ממספר ה-workers ומזמן הטיפול, כמו בהערכה שבשקופית "תקציב latency" בהאב.
 
 ```bash
 cp labs/19-ai-architecture/cases/ticket_triage/starter.arch.yaml labs/19-ai-architecture/cases/ticket_triage/mine.arch.yaml
@@ -98,7 +98,7 @@ python labs/19-ai-architecture/diagram.py labs/19-ai-architecture/cases/ticket_t
 **8. (רשות, חי) ביקורת של מודל על ה-ADR.** קודם הרץ offline כדי לראות איך נראית ביקורת מוקלטת, ואחר כך על ה-ADR שלך מול Haiku 5.5. השווה את הציונים של המודל לציונים שנתת לעצמך לפי המחוון: איפה הוא היה נדיב מדי, ואיפה הוא מצא משהו שפספסת?
 
 ```bash
-python labs/19-ai-architecture/critique_adr.py adr/0001-company-brain-orchestration.md --offline
+python labs/19-ai-architecture/critique_adr.py labs/19-ai-architecture/adr/0001-company-brain-orchestration.md --offline
 python labs/19-ai-architecture/critique_adr.py labs/19-ai-architecture/adr/0001-company-brain-orchestration.md
 ```
 

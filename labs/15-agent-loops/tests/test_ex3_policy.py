@@ -104,6 +104,16 @@ def test_inside_an_agent(tmp_path):
     assert r.stop_reason == "final_answer" and r.side_effects()
 
 
+def test_notes_alone_are_not_progress(tmp_path):
+    # the agent records a note's result hash as None (its text changes on every call but teaches nothing),
+    # so a model that only writes notes must be stopped by YOUR rule 10, not run to max_steps
+    from agentkit import ScriptPolicy
+    reg = acme_registry(requests_db=tmp_path / "r.db")
+    turns = [{"calls": [{"name": "note", "arguments": {"text": f"thinking, round {i}"}}]} for i in range(10)]
+    r = Agent(FakeLLM(ScriptPolicy(turns)), reg, policy=mine.should_stop, scratchpad=True).run(DANA)
+    assert r.stop_reason == "no_progress" and r.steps == 3
+
+
 @pytest.mark.parametrize("budget,reason", [(Budget(max_steps=2), "max_steps"),
                                            (Budget(max_cost_usd=0.0004), "budget_cost"),
                                            (Budget(max_tokens=3000), "budget_tokens")])

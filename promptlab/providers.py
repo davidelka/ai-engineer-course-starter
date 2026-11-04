@@ -97,6 +97,21 @@ def call_anthropic(spec: CallSpec) -> Result:
 
 
 # ------------------------------------------------------------------- OpenAI
+def _openai_stop_reason(resp) -> str:
+    """Why a Responses API call stopped.
+
+    `status` is "completed" for a normal answer. A cut-off answer has status "incomplete" and
+    the reason (e.g. "max_output_tokens" or "content_filter") in `incomplete_details.reason`;
+    that reason is what stop_reason should carry, like max_tokens on Anthropic.
+    """
+    status = getattr(resp, "status", None) or ""
+    if status == "incomplete":
+        details = getattr(resp, "incomplete_details", None)
+        reason = getattr(details, "reason", None) if details is not None else None
+        return reason or status
+    return status
+
+
 def call_openai(spec: CallSpec) -> Result:
     from openai import OpenAI
 
@@ -121,7 +136,7 @@ def call_openai(spec: CallSpec) -> Result:
             text=resp.output_text or "",
             in_tokens=getattr(usage, "input_tokens", 0) if usage else 0,
             out_tokens=getattr(usage, "output_tokens", 0) if usage else 0,
-            stop_reason=resp.status or "",
+            stop_reason=_openai_stop_reason(resp),
         )
 
     return _timed(run)

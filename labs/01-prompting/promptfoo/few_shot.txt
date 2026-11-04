@@ -41,7 +41,7 @@ If a request matches more than one track, the strictest track wins (needs_securi
 <label>needs_security</label>
 </example>
 <example>
-<request>Google Workspace account for a new hire in finance</request>
+<request>Google Workspace account for a new hire in marketing</request>
 <label>auto_approve</label>
 </example>
 <example>

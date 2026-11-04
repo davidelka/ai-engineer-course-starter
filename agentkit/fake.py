@@ -1,8 +1,9 @@
 """Offline models for agents: deterministic, free, and honest about being fake.
 
 FakeLLM(policy) has the same complete(req) -> ChatResult interface as llmkit.LLM, so
-the Agent cannot tell the difference. Tokens are ESTIMATED (characters / 4, plus the 286
-token tool prompt Anthropic adds) and priced like Claude Haiku 5.5; results say
+the Agent cannot tell the difference. Tokens are ESTIMATED (characters / 4, plus a fixed
+286-token stand-in for the tool prompt Anthropic adds; the real size depends on the model
+and tool_choice, so read it from a live run's usage) and priced like Claude Haiku 5.5; results say
 estimated_cost=True. Two policies:
 
   ScriptPolicy(turns)    replays a fixed list of turns: for unit tests.

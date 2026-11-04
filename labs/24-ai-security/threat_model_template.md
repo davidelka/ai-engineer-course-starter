@@ -8,7 +8,7 @@ Company Brain, כמו שהוא נראה בסוף פאזה 3 של הקורס:
 
 - **ממשק צ'אט** (דפדפן) שמציג את התשובות של המודל כ-HTML. עובדים מתחברים דרך Okta, ולכל עובד יש role.
 - **API** שמקבל שאלה, מזהה את המשתמש ומפעיל את כל השאר.
-- **אינדקס ה-RAG**: הקורפוס של Acme (`data/acme/corpus`, 55 מסמכים) אחרי ingestion. לכל מסמך יש `classification` (public, internal, confidential). בקורפוס יש מסמך עם הזרקה (`sales-partner-northwind-notes`) ושלושה postmortems שמסווגים confidential.
+- **אינדקס ה-RAG**: הקורפוס של Acme (`data/acme/corpus`, 55 מסמכים) אחרי ingestion. לכל מסמך יש `classification` (public, internal, confidential). בקורפוס יש מסמך עם הזרקה (`sales-partner-northwind-notes`), ושלושה postmortems של הנדסה (`eng-pm-2026-03-scheduler`, `eng-pm-2026-06-billing`, `eng-pm-2026-08-api`) ומסמך HR אחד (`hr-relocation`) שמסווגים confidential. העוזר של guardkit במעבדה טוען רק 11 מהמסמכים, ובהם שניים מה-postmortems (06-billing ו-08-api).
 - **מקורות חיצוניים**: מיילים נכנסים, דפי אינטרנט שהעוזר מחפש, הערות של לקוחות בקריאות שירות.
 - **המודל** (Claude דרך llmkit), עם הנחיות מערכת.
 - **הכלים**: `ticket_lookup` (קריאה), `find_customer_tickets` (SQL על `acme.db`), `create_ticket`, ותהליך אישור בקשות גישה (auto_approve, needs_manager, needs_security) שיכול לשנות הרשאות.

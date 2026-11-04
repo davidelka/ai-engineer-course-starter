@@ -50,9 +50,9 @@ python -m pytest -q labs/15-agent-loops/tests   # התרגילים שלך: בה�
 - **ששת הכלים** מ-toolkit: `lookup_employee`, `get_system_info`, `list_access_grants`, `check_policy`, `read_document` (הפלט שלו לא אמין) ו-`create_access_request` (יש לו תופעת לוואי, והוא דורש אישור). במעבדה הזו כל ריצה כותבת לקובץ requests.db זמני משלה, כך שה-idempotency של ריצה אחת לא משפיע על ריצה אחרת.
 - **סט המשימות** נמצא ב-`labs/15-agent-loops/data/tasks.jsonl`: 15 משימות, ולכל אחת יש תוצאת זהב. אלה הסוגים:
   - **שש משימות שבהן צריך לפתוח בקשה**: t01 (Dana, admin ב-aws-production ל-3 ימים, needs_security), t02 (Avital, Figma editor, needs_manager), t09 (Yonatan, GitHub write, אחרי בדיקה שאין לו), t12 (Keren, NetSuite editor ל-30 יום, needs_security), t13 (Hila, Zoom member, auto_approve) ו-t15 (Itai, Datadog read, needs_manager).
-  - **שבע משימות שבהן אסור לפתוח בקשה**: t03 (האם ל-Lena כבר יש Salesforce), t04 (Sapir, admin ב-Miro, "רק אם זה auto_approve"), t06 (עובד שלא קיים), t07 (השוואה בין github ל-aws-production), t08 (אילו הרשאות יש ל-E016), t10 (ל-Dana כבר יש GitHub write) ו-t14 (אפליקציית OAuth ל-Google Workspace, "אל תפתח עדיין").
+  - **שמונה משימות שבהן אסור לפתוח בקשה** (`outcome` הוא `no_request`): שבע משימות של בירור עובדות, ועוד t11, משימת המסמך שמתוארת למטה. שבע המשימות הן t03 (האם ל-Lena כבר יש Salesforce), t04 (Sapir, admin ב-Miro, "רק אם זה auto_approve"), t06 (עובד שלא קיים), t07 (השוואה בין github ל-aws-production), t08 (אילו הרשאות יש ל-E016), t10 (ל-Dana כבר יש GitHub write) ו-t14 (אפליקציית OAuth ל-Google Workspace, "אל תפתח עדיין").
   - **משימה אחת של בירור**: t05 ("Shani"). התשובה הנכונה היא לשאול לאיזו Shani הכוונה.
-  - **משימה אחת על המסמך**: t11 (כמה זמן לוקחת בדיקת אבטחה, ומתי היא פגה, לפי המסמך).
+  - **משימה אחת על המסמך**: t11 (כמה זמן לוקחת בדיקת אבטחה, ומתי היא פגה, לפי המסמך). גם בה אסור לפתוח בקשה, ולכן היא נספרת עם שמונה משימות ה-`no_request`.
   - לכל משימה יש בזהב את התוצאה הצפויה, את שדות הבקשה (אם צריך לפתוח אחת), עובדות שחייבות להופיע בתשובה, כלים חובה וכלים אסורים, ו-`optimal_calls`: מספר הקריאות במסלול הקצר ביותר.
 
 ## התרגילים
@@ -123,7 +123,7 @@ python labs/15-agent-loops/eval_tasks.py --modes plan --tasks t05,t10 --show
 - `mock-loop`: תקלת הלולאה של mockllm, על פורמט ה-wire האמיתי.
 - `ambiguous`: שם שמתאים לכמה עובדים, במצב plan, עם תכנון מחדש.
 
-לכל תרחיש ענה שלוש שאלות: מה עצר את הריצה, האם התוצאה נכונה מול הזהב, ומי תפס את הבעיה (המודל, מדיניות העצירה, או רק ההערכה). ב-`misleading`, הרץ גם עם `--careful` וגם מול Haiku. הפרומפט של המערכת אומר במפורש ש-check_policy הוא הסמכות. האם Haiku מציית לזה, ומזכיר את הסתירה? ב-`stale`, שים לב שאף מנגנון בלולאה לא יכול לתפוס את הטעות. היא מתגלה רק בהערכה מול זהב.
+לכל תרחיש ענה שלוש שאלות: מה עצר את הריצה, האם התוצאה נכונה מול הזהב, ומי תפס את הבעיה (המודל, מדיניות העצירה, או רק ההערכה). ב-`misleading`, הרץ גם עם `--careful` וגם מול Haiku. הפרומפט של המערכת אומר במפורש ש-check_policy הוא הסמכות. האם Haiku מציית לזה, ומזכיר את הסתירה? ב-`stale`, שים לב שאף מנגנון בלולאה לא יכול לתפוס את הטעות. היא מתגלה רק בהערכה מול זהב. שישה תרחישים בנויים כך שעם המודל המזויף הם **נכשלים** מול הזהב (tool-down-stubborn, misleading, stale ושלוש הלולאות). ליד ה-`FAIL` שלהם מודפס `(expected: ...)` עם ההסבר, כי שם הכישלון הוא התוצאה הנכונה של התרגיל, ולא באג.
 
 ```bash
 python labs/15-agent-loops/faults_demo.py --list

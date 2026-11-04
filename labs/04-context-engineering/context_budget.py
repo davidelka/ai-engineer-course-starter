@@ -3,7 +3,7 @@
     python labs/04-context-engineering/context_budget.py                      # the three built-in requests
     python labs/04-context-engineering/context_budget.py --scenario agent --show
     python labs/04-context-engineering/context_budget.py --file labs/04-context-engineering/requests/company_brain_mine.json
-    python labs/04-context-engineering/context_budget.py --calibrate          # exact total from Claude (free, needs key)
+    python labs/04-context-engineering/context_budget.py --calibrate          # true total from Claude (free, needs key)
     python labs/04-context-engineering/context_budget.py --ref                # use ctxkit's reference instead of mine.py
 
 Scenarios (built from real lab data, so you can open them):
@@ -15,7 +15,9 @@ Scenarios (built from real lab data, so you can open them):
 
 Tokens are counted offline with tiktoken o200k_base, an approximation of Claude's tokenizer.
 If tiktoken cannot load o200k_base, counts fall back to len/4: the header says which one you got.
---calibrate asks Claude's count_tokens endpoint for the exact total and scales every layer.
+--calibrate asks Claude's count_tokens endpoint for the real TOTAL of the request, then scales every
+layer by that one ratio. The total is Claude's own count; the per-layer split is still an estimate,
+because tool JSON, English and Hebrew do not all differ from o200k by the same ratio.
 Cost assumes the steady state: the cached prefix is READ on a hit and WRITTEN on a miss.
 """
 
@@ -74,6 +76,8 @@ def analyze(name: str, body: dict, layer_report, model: str, out_tokens: int, hi
         exact = claude_count_tokens({**body, "model": model})
         scale = exact / total if total else 1.0
         print(f"[{name}] Claude count_tokens: {exact:,} tokens; {tokenizer_name()} said {total:,} (ratio {scale:.2f})")
+        print(f"[{name}] the TOTAL below is Claude's count; each layer is scaled by the same {scale:.2f}, "
+              "so the per-layer split is an estimate")
     p = PRICES.get(model) or PRICES["claude-haiku-5-5"]
     print(f"\n=== {name}  ({model}; tokens counted with {tokenizer_name()}) ===")
     cached_total = 0
@@ -112,7 +116,8 @@ def main() -> None:
     ap.add_argument("--out", type=int, default=300, help="assumed output tokens per call")
     ap.add_argument("--hit-rate", type=float, default=0.9)
     ap.add_argument("--calls", type=int, default=1000)
-    ap.add_argument("--calibrate", action="store_true", help="exact totals via Claude count_tokens (free, needs key)")
+    ap.add_argument("--calibrate", action="store_true",
+                    help="real total via Claude count_tokens, layers scaled by one ratio (free, needs key)")
     ap.add_argument("--ref", action="store_true", help="use ctxkit's reference layer_report/build_hr_request")
     ap.add_argument("--show", action="store_true", help="print the request body too")
     a = ap.parse_args()

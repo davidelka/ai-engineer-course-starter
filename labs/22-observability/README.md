@@ -68,6 +68,7 @@ python labs/22-observability/trace_demo.py
 python labs/22-observability/trace_view.py results/traces.jsonl
 docker run -d --name phoenix -p 6006:6006 -p 4317:4317 arizephoenix/phoenix:latest      # UI: http://localhost:6006
 python labs/22-observability/trace_demo.py --otlp http://localhost:6006/v1/traces
+docker rm -f phoenix                                                                     # the compose file starts its own Phoenix on 6006
 docker compose -f labs/22-observability/collector/compose.yaml up -d                     # Phoenix + Collector
 python labs/22-observability/trace_demo.py --otlp http://localhost:4318/v1/traces
 ```

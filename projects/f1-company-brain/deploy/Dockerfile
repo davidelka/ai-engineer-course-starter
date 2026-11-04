@@ -81,11 +81,12 @@ CMD ["serve"]
 # 2026-11-02: torch 2.14.1 (2026-09-30), sentence-transformers 6.1.0 (2026-09-18).
 FROM runtime AS runtime-e5
 USER root
-COPY --from=ghcr.io/astral-sh/uv:0.13.6 /uv /bin/uv
-RUN --mount=type=cache,target=/root/.cache/uv \
+# uv is bind-mounted from its image for this one RUN only, so it never enters a layer. (A COPY of uv
+# followed by `rm` in a later step would leave it in the COPY layer: deleting only adds a whiteout.)
+RUN --mount=from=ghcr.io/astral-sh/uv:0.13.6,source=/uv,target=/bin/uv \
+    --mount=type=cache,target=/root/.cache/uv \
     uv pip install --python /opt/venv/bin/python --index-url https://download.pytorch.org/whl/cpu "torch==2.14.1" \
- && uv pip install --python /opt/venv/bin/python "sentence-transformers==6.1.0" \
- && rm /bin/uv
+ && uv pip install --python /opt/venv/bin/python "sentence-transformers==6.1.0"
 ENV HF_HOME=/opt/hf HF_HUB_OFFLINE=1 EMBEDDER=e5-small
 RUN HF_HUB_OFFLINE=0 python -c "from sentence_transformers import SentenceTransformer; SentenceTransformer('intfloat/multilingual-e5-small')" \
  && chmod -R a+rX /opt/hf

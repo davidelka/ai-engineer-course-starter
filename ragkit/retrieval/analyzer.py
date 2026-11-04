@@ -9,8 +9,12 @@ and "החניון" (the parking lot) share no token with "חניון" unless som
 prefix. Real systems use a morphological analyzer (e.g. HebMorph for Elasticsearch, or
 the analyzers inside a multilingual embedding model, lesson 10). This analyzer does the
 crude thing: for a Hebrew word of 4+ letters starting with a prefix letter, it ALSO emits
-the word with one and with two prefix letters removed. Both forms are indexed, so exact
-matches still win, and recall goes up at some cost in precision ("שלום" -> "לום").
+the word without its first letter, and (only for 5+ letters whose second letter is also a
+prefix letter) without its first two. All forms are indexed, so exact matches still win,
+and recall goes up at some cost in precision ("שלום" -> "לום", "הלוואה" -> "לוואה", "וואה").
+Two side effects: the variants count in BM25's document length (Hebrew chunks look longer,
+about x1.6 terms on Acme's Hebrew Markdown docs), and the same analyzer runs on the query,
+so a query word with two prefixes can match three terms and weigh up to 3x.
 """
 
 from __future__ import annotations

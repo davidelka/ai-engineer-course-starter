@@ -2,9 +2,14 @@
 
 latency_budget(): the conservative way architects compose a budget. Sequential
 stages add up; stages in the same parallel group cost only the slowest one.
-Adding p95 values is PESSIMISTIC: it assumes every stage has its bad day on the
-same request. simulate() shows how pessimistic, by sampling each stage from a
-log-normal distribution fitted to its p50 and p95.
+Adding p95 values is USUALLY pessimistic: it matches the case where every stage
+has its bad day on the same request. It is a heuristic, not a bound: quantiles
+are not additive, so the p95 of a sum equals the sum of p95s only under perfect
+positive dependence, and can EXCEED it with heavy tails (a stage that is fast
+96% of the time and very slow 4% of the time). simulate() shows the gap for
+independent stages, by sampling each stage from a log-normal distribution
+fitted to its p50 and p95. Queue wait is not modeled: it is a stage whose p95
+the author types in.
 """
 
 from __future__ import annotations

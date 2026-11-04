@@ -39,6 +39,11 @@ locals {
 
     readonlyRootFilesystem = true # the app writes nothing to disk; an attacker cannot either
 
+    # A read-only root also makes /tmp read-only, and Fargate has no tmpfs (linuxParameters.tmpfs is
+    # EC2-only). The service does not need /tmp today; the "tmp" volume keeps tempfile and future
+    # libraries working. compose uses tmpfs for the same purpose.
+    mountPoints = [{ sourceVolume = "tmp", containerPath = "/tmp", readOnly = false }]
+
     # Liveness. ECS ignores the HEALTHCHECK in the image, so it is repeated here.
     # An unhealthy container is replaced by ECS.
     healthCheck = {
@@ -80,6 +85,12 @@ resource "aws_ecs_task_definition" "api" {
 
   execution_role_arn = aws_iam_role.execution.arn # the ECS agent: pull, logs, secrets
   task_role_arn      = aws_iam_role.task.arn      # your code
+
+  # A volume with no host or EFS configuration is a Fargate bind mount: writable, on the task's
+  # ephemeral storage, deleted when the task stops.
+  volume {
+    name = "tmp"
+  }
 
   container_definitions = jsonencode([local.api_container])
 }

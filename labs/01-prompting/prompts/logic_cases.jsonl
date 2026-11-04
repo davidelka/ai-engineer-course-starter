@@ -8,3 +8,8 @@
 {"id": "l08", "problem": "A tank fills in 6 hours with pipe A and in 3 hours with pipe B. How many hours to fill it with both pipes open?", "expect_any": ["ANSWER: 2"]}
 {"id": "l09", "problem": "How many times does the digit 7 appear when writing all integers from 1 to 100?", "expect_any": ["ANSWER: 20"]}
 {"id": "l10", "problem": "If today is Wednesday, what day of the week will it be 100 days from today? Answer with the English day name.", "expect_any": ["ANSWER: Friday"]}
+{"id": "h01", "problem": "How many integers from 1 to 10000 inclusive have a digit sum of exactly 20?", "expect_any": ["ANSWER: 633"]}
+{"id": "h02", "problem": "In how many ways can a 2x10 board be tiled using 1x2 dominoes (in either orientation) and 2x2 squares?", "expect_any": ["ANSWER: 683"]}
+{"id": "h03", "problem": "What are the last two digits of 7 to the power of 2026? Give them as a two-digit number.", "expect_any": ["ANSWER: 49"]}
+{"id": "h04", "problem": "How many distinct arrangements of the letters of MISSISSIPPI have no two S letters next to each other?", "expect_any": ["ANSWER: 7350"]}
+{"id": "h05", "problem": "January 1, 2000 was a Saturday. What day of the week is exactly 10000 days later? Answer with the English day name.", "expect_any": ["ANSWER: Wednesday"]}

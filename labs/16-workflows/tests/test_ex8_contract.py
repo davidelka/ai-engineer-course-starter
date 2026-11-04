@@ -77,5 +77,5 @@ def test_fork_reruns_side_effects(lab):
     """r2 paused at the manager gate. Fork from the checkpoint whose next node is policy with
     access_level='viewer' (app.update_state + app.stream(None, fork_config)). Assert the thread
     now ends approved AND that the requests DB holds TWO records for Dana (time travel re-ran
-    file_request with a new idempotency key). Then write down in the README answer what a
-    production system should do about the first, still pending, record."""
+    file_request with a new idempotency key). Then, as a written answer to exercise 8 (not in
+    code), say what a production system should do about the first, still pending, record."""

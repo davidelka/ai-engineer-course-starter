@@ -22,8 +22,13 @@ resource "aws_lb_target_group" "api" {
   target_type = "ip" # Fargate tasks register by IP (awsvpc networking)
   vpc_id      = data.aws_vpc.default.id
 
-  # The ALB asks "can you take traffic?" -> readiness. ECS asks "are you alive?" -> /healthz
-  # in the task definition. A task that is alive but not ready gets no traffic and is NOT killed.
+  # The ALB asks "can you take traffic?" -> /readyz. ECS asks "are you alive?" -> /healthz in the task
+  # definition. Unlike a Kubernetes readiness probe, a failed target-group check is NOT traffic-only:
+  # the ECS service scheduler treats the task as unhealthy, starts a replacement and stops it
+  # (docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs_services.html, checked Nov 2026).
+  # That is why /readyz checks only what is local to the task (config, key loaded; mockllm in mock
+  # mode) and never the model provider: a provider outage would otherwise make ECS replace every
+  # task in a loop that fixes nothing.
   health_check {
     path                = "/readyz"
     matcher             = "200"

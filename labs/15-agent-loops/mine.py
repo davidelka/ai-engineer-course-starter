@@ -29,7 +29,8 @@ def should_stop(history: list[StepRecord], budget: Budget) -> StopDecision:
 
     Each StepRecord holds PER-STEP values: calls (tool names), fingerprints (one per call,
     same tool + same arguments = same string), result_hashes (one per call; None when that
-    call failed), errors, final, gave_up, tokens, cost_usd, elapsed_s.
+    call failed, and also None for the local `note` tool, whose result is bookkeeping and
+    not new information), errors, final, gave_up, tokens, cost_usd, elapsed_s.
 
     Check the rules IN THIS ORDER and return the first that applies:
       1. history is empty                                  -> StopDecision(False, "continue")
