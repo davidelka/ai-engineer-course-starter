@@ -10,6 +10,26 @@
 - Docker נדרש לשיעורים 11, 22, 25 ו-27 ולפרויקטים. AWS נדרש רק לתרגילי הפריסה, שמסומנים בכסף.
 
 ## שלב 1: יסודות
+**שיעור 1 (prompting, בערך 5 עד 50 סנט, לפי כמה ניסויים מריצים במלואם)**
+- כל ניסוי: קודם `--dry-run`, אחר כך `--limit 3 --repeats 1`, ורק אז הריצה המלאה. `promptlab run` מדפיס תוכנית והערכה של המקרה הגרוע, ושואל לפני שהוא שולח. ההערכות הגרועות: תרגיל 2 כסנט וחצי, תרגיל 3 כ-36 סנט, תרגיל 4 כ-9, תרגיל 5 כ-6, תרגיל 6 כ-25. המחיר האמיתי נמוך מזה, כי רוב התשובות קצרות מ-`max_tokens`.
+- תרגיל 2 צריך Ollama מקומי עם המודל שב-YAML. ה-variant של Haiku 5.5 עם temperature אמור להחזיר 400: לבדוק שזה עדיין המצב.
+- תרגיל 3 כולל 15 בעיות, מהן חמש קשות (h01 עד h05), כלומר 90 קריאות ולא 60. ההבדל בין effort low ל-high אמור להופיע בעיקר בחמש הקשות.
+- `python labs/01-prompting/arena.py` ו-promptfoo (`cd labs/01-prompting/promptfoo && npx promptfoo@latest eval`): צריך Node 20 ומעלה.
+- `python labs/01-prompting/count_tokens.py`: היחס בין עברית לאנגלית. הספירה של Claude כוללת את מעטפת ההודעה, ולכן בטקסט קצר היחס מתקרב ל-1.
+
+**שיעור 2 (LLM APIs, כמה סנטים): הורץ חי בבניית הקורס, אוקטובר 2026**
+- `curl_examples.sh` ו-`raw_http.py` מול שלושת הספקים, `retry_demo.py`, ו-`bench.py --runs 10` עם Haiku, GPT ו-Gemini.
+- ממצאים חיים שכבר נכנסו לקורס: `tok/s` לא כולל טוקני חשיבה; ב-Gemini זרם שנחתך מזוהה רק לפי `finishReason`; מפתח חינמי של Gemini נתקע ב-429 של מכסה, לא של קצב.
+
+**שיעור 3 (structured outputs, כמה סנטים): הורץ חי בבניית הקורס, נובמבר 2026**
+- `raw_structured.py --twice`, ואחר כך `--bad-schema` בארבע הגרסאות.
+- ממצאים מ-Claude Haiku 5.5, בבדיקות מ-3 בנובמבר 2026:
+  - `pattern` נדחה עם 400 ("Schema is too complex"), גם על תבנית מייל פשוטה.
+  - `minLength` התקבל ונאכף: עם `minLength=40` ה-`tool` חזר באורך 63 תווים, אף ששם כלי אמיתי הוא כ-10.
+  - `additionalProperties: true` התקבל עם 200.
+  - המשמעות: לפחות `minLength` אפשר להשאיר בסכמה שנשלחת ל-Claude. לפני שמשנים את `UNSUPPORTED` ב-`llmkit/schema.py`, כדאי לבדוק באותה שיטה גם `maxLength` ו-`minimum`/`maximum`, ולהריץ את `minlength40` עוד פעם או פעמיים.
+- `extract_eval.py --mode native` ו-`--mode prompt`, על `--set normal` ועל `--set hard`.
+
 **שיעור 4 (context, כ-30 סנט לכל המעבדה)**
 - `python labs/04-context-engineering/cache_experiment.py --mode all`: קריאה 1 כותבת כ-13K טוקנים למטמון, וקריאות 2 והלאה קוראות ממנו. לבדוק אם הזמן לטוקן הראשון יורד.
 - אותו סקריפט עם `--parallel 3`: האם שלוש קריאות במקביל כולן כותבות.

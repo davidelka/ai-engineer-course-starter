@@ -48,7 +48,8 @@ window.LABGUIDE["25"] = {
     "path": "labs/25-llm-gateway/gateway.live.yaml",
     "role": "תרגיל 8: <code>haiku</code> הוא <code>anthropic:claude-haiku-5-5</code> עם fallback ל-<code>openai:gpt-5.4-mini</code>, audit ל-<code>state/audit_live.jsonl</code>."
    }
-  ]
+  ],
+  "untested": "<p>המעבדה נבנתה בסביבה שבה Docker Hub חסום, אין <code>terraform</code> ואין מפתחות API. לכן מה שכתוב כאן מפריד בין מה שבאמת רץ לבין מה שרק נכתב ונבדק סטטית. כשאתה מריץ את החלקים שלא נבדקו, התוצאה אצלך היא הקובעת, ואם משהו נשבר זה לא אתה: תגיד לי, ואתקן בשני הריפואים.</p><ul class=\"clean\">\n<li><b>נבדק:</b> ה-gateway של הקורס (<code>gatewaykit</code>) מול השרת המדומה: מפתחות, תקציבים, fallback, השחרת מידע ומדיניות, וגם בדיקות המעבדה מול הפתרון. קובץ ה-compose של LiteLLM עובר בדיקת תחביר.</li>\n<li><b>לא נבדק:</b> LiteLLM לא הורץ אף פעם. לא נבדק שהתגית <code>docker.litellm.ai/berriai/litellm:v1.106.6</code> קיימת, שה-config שלנו נטען, ואיזה קוד סטטוס הוא מחזיר כשתקציב של מפתח נגמר. גם <code>live_compare.py</code> מול שני ספקים אמיתיים לא רץ.</li>\n<li><b>מה זה אומר לך:</b> ההשוואה בין ה-gateway שלנו ל-LiteLLM בשקופיות מבוססת על התיעוד של LiteLLM, לא על הרצה.</li>\n</ul>"
  },
  "toolsDetail": [
   {

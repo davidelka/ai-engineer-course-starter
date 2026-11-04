@@ -48,7 +48,8 @@ window.LABGUIDE["22"] = {
     "path": "labs/22-observability/collector/",
     "role": "<code>compose.yaml</code> עם Phoenix ו-OpenTelemetry Collector, ו-<code>otel-collector.yaml</code> עם שרשרת redaction, tail_sampling ו-batch לפני הייצוא ל-Phoenix."
    }
-  ]
+  ],
+  "untested": "<p>המעבדה נבנתה בסביבה שבה Docker Hub חסום, אין <code>terraform</code> ואין מפתחות API. לכן מה שכתוב כאן מפריד בין מה שבאמת רץ לבין מה שרק נכתב ונבדק סטטית. כשאתה מריץ את החלקים שלא נבדקו, התוצאה אצלך היא הקובעת, ואם משהו נשבר זה לא אתה: תגיד לי, ואתקן בשני הריפואים.</p><ul class=\"clean\">\n<li><b>נבדק:</b> <code>obskit</code> מייצא spans ל-JSONL ולזיכרון, יום הנתונים הסינתטי, דוח ה-SLO ותרגיל הפורנזיקה, כולם offline, ובדיקות המעבדה מול הפתרון. קובץ ה-compose של ה-Collector עובר בדיקת תחביר.</li>\n<li><b>לא נבדק:</b> ה-Collector ו-Phoenix לא הורצו ב-Docker, ולא נבדק שתכונות <code>gen_ai.*</code> מוצגות ב-Phoenix כמו שהשקופית מתארת. Phoenix עדיין על <code>:latest</code>, ואחרי שתריץ כדאי לנעוץ גרסה. גם הייצוא ב-OTLP/HTTP לשרת אמיתי וה-<code>--live</code> של <code>trace_demo.py</code> לא רצו.</li>\n</ul>"
  },
  "toolsDetail": [
   {

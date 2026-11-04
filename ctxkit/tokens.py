@@ -10,6 +10,7 @@ matters (it calls Anthropic's free count_tokens endpoint).
 from __future__ import annotations
 
 import os
+import sys
 from functools import lru_cache
 from typing import Optional
 
@@ -21,11 +22,26 @@ def _encoding():
 
         return tiktoken.get_encoding("o200k_base")
     except Exception:  # tiktoken missing or its file cannot be downloaded: fall back
+        # Say so, once. A silent fallback is how chars/4 estimates once ended up on slides
+        # labeled "o200k" (the course was built without network access to tiktoken's file).
+        print("[ctxkit.tokens] tiktoken's o200k_base is unavailable (not installed, or its file could "
+              "not be downloaded): token counts are ESTIMATES, len(text)/4.", file=sys.stderr)
         return None
 
 
+def tokenizer_name() -> str:
+    """What count_tokens() is really using right now. Print it next to every token number."""
+    return "o200k_base" if _encoding() is not None else "estimate: chars/4 (tiktoken unavailable)"
+
+
+def is_exact_o200k() -> bool:
+    return _encoding() is not None
+
+
 def count_tokens(text: str) -> int:
-    """Approximate token count of text (o200k_base; falls back to len/4)."""
+    """Approximate token count of text (o200k_base; falls back to len/4, with a warning on stderr).
+
+    Check tokenizer_name() before calling a number "o200k"."""
     if not text:
         return 0
     enc = _encoding()

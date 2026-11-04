@@ -36,7 +36,8 @@ ROOT = LAB.parents[1]
 sys.path[:0] = [str(ROOT), str(LAB)]
 from ctxkit.compaction import llm_summarizer, messages_tokens, truncate  # noqa: E402
 from ctxkit.fake import ExtractiveLLM, heuristic_summarizer  # noqa: E402
-from ctxkit.tokens import count_tokens  # noqa: E402
+from ctxkit.tokens import count_tokens, tokenizer_name  # noqa: E402
+from ctxkit.confirm import add_cost_args, confirm_paid, price_for, usd  # noqa: E402
 from llmkit import LLM, ChatRequest, LLMError, Message, load_dotenv  # noqa: E402
 
 SYSTEM = ("You are Acme Ltd.'s HR assistant, in an ongoing chat with one employee. Answer the employee's "
@@ -58,6 +59,7 @@ def main() -> None:
     ap.add_argument("--budget", type=int, default=400, help="token budget for the history (o200k tokens)")
     ap.add_argument("--keep-last", type=int, default=4)
     ap.add_argument("--show", action="store_true", help="print the fitted history of each strategy")
+    add_cost_args(ap, default_cap=0.25)
     a = ap.parse_args()
     load_dotenv(str(ROOT / ".env"))
     if a.compact == "ref":
@@ -67,13 +69,23 @@ def main() -> None:
 
     convo, probes = load()
     fake = a.model == "fake"
+    if not fake:
+        full_tok = messages_tokens(convo, count_tokens) * 1.3
+        price = price_for(a.model)
+        # 3 strategies x probes, each at most the full history; plus the summarizer, which may be
+        # called several times as compact() shrinks keep_last (each call re-reads the old part)
+        n_probe = 3 * len(probes)
+        n_sum = 6 if a.summarizer == "llm" else 0
+        est = n_probe * usd(price, full_tok, 100) + n_sum * usd(price, full_tok, 400)
+        confirm_paid(f"about {n_probe} probe calls + up to {n_sum} summary calls to {a.model}", est,
+                     yes=a.yes, max_cost=a.max_cost, paid=price is not None)
     llm = ExtractiveLLM({p["question"]: p["answer"] for p in probes}) if fake else LLM(a.model)
     if a.summarizer == "llm" and fake:
         sys.exit("--model fake needs --summarizer heuristic (a fake model cannot write summaries)")
     summarize = heuristic_summarizer if a.summarizer == "heuristic" else llm_summarizer(llm)
 
     base = convo + [Message("user", NEXT)]
-    print(f"conversation: {len(convo)} messages, {messages_tokens(convo, count_tokens):,} tokens; "
+    print(f"conversation: {len(convo)} messages, {messages_tokens(convo, count_tokens):,} tokens ({tokenizer_name()}); "
           f"budget {a.budget}; keep_last {a.keep_last}; model {a.model}; summarizer {a.summarizer}\n")
     fitted = {"full": base, "truncate": truncate(base, a.budget, count_tokens)}
     try:

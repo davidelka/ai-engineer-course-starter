@@ -36,6 +36,8 @@ LAB = Path(__file__).resolve().parent
 ROOT = LAB.parents[1]
 sys.path[:0] = [str(ROOT), str(LAB)]
 from llmkit import LLM, Block, LLMError, load_dotenv  # noqa: E402
+from ctxkit.confirm import add_cost_args, confirm_paid, price_for, usd  # noqa: E402
+from ctxkit.tokens import count_tokens, tokenizer_name  # noqa: E402
 
 QUESTIONS = [
     "How many vacation days do I get in my first year?",
@@ -127,11 +129,19 @@ def main() -> None:
     ap.add_argument("--ttl", default="5m", choices=["5m", "1h"])
     ap.add_argument("--short", action="store_true", help="only the HR policies: a prefix near the minimum size")
     ap.add_argument("--verbose", action="store_true", help="print the start of every answer")
+    add_cost_args(ap, default_cap=0.50)
     a = ap.parse_args()
     load_dotenv(str(ROOT / ".env"))
-    llm = LLM(a.model)
     docs = documents(a.short)
     modes = ["none", "explicit", "auto", "broken"] if a.mode == "all" else [a.mode]
+    sample = make_request("explicit", a.layout, docs, 0, a.ttl)
+    prompt_tok = count_tokens("".join(b.text for b in sample.system) + "".join(m.text for m in sample.messages))
+    n_calls = len(modes) * a.calls
+    price = price_for(a.model)
+    est = n_calls * usd(price, prompt_tok * 1.3, sample.max_tokens, write_premium=True)
+    confirm_paid(f"{n_calls} calls to {a.model} ({len(modes)} mode(s) x {a.calls}), prompt ~{prompt_tok:,} tokens "
+                 f"({tokenizer_name()}) each", est, yes=a.yes, max_cost=a.max_cost, paid=price is not None)
+    llm = LLM(a.model)
     results = {}
     for m in modes:
         results[m] = run_mode(llm, m, a, docs)

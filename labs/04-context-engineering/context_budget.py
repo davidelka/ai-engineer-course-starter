@@ -14,6 +14,7 @@ Scenarios (built from real lab data, so you can open them):
               5 earlier turns and 2 retrieved documents
 
 Tokens are counted offline with tiktoken o200k_base, an approximation of Claude's tokenizer.
+If tiktoken cannot load o200k_base, counts fall back to len/4: the header says which one you got.
 --calibrate asks Claude's count_tokens endpoint for the exact total and scales every layer.
 Cost assumes the steady state: the cached prefix is READ on a hit and WRITTEN on a miss.
 """
@@ -29,7 +30,7 @@ LAB = Path(__file__).resolve().parent
 ROOT = LAB.parents[1]
 sys.path[:0] = [str(ROOT), str(LAB)]
 from ctxkit.layout import naive_hr_request  # noqa: E402
-from ctxkit.tokens import claude_count_tokens, count_tokens  # noqa: E402
+from ctxkit.tokens import claude_count_tokens, count_tokens, tokenizer_name  # noqa: E402
 from llmkit import PRICES, load_dotenv  # noqa: E402
 from llmkit.providers.anthropic import AnthropicProvider  # noqa: E402
 
@@ -72,9 +73,9 @@ def analyze(name: str, body: dict, layer_report, model: str, out_tokens: int, hi
     if calibrate:
         exact = claude_count_tokens({**body, "model": model})
         scale = exact / total if total else 1.0
-        print(f"[{name}] Claude count_tokens: {exact:,} tokens; o200k said {total:,} (ratio {scale:.2f})")
+        print(f"[{name}] Claude count_tokens: {exact:,} tokens; {tokenizer_name()} said {total:,} (ratio {scale:.2f})")
     p = PRICES.get(model) or PRICES["claude-haiku-5-5"]
-    print(f"\n=== {name}  ({model}) ===")
+    print(f"\n=== {name}  ({model}; tokens counted with {tokenizer_name()}) ===")
     cached_total = 0
     for x in layers:
         t, c = x.tokens * scale, x.cached_tokens * scale

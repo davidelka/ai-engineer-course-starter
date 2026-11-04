@@ -52,7 +52,8 @@ window.LABGUIDE["31"] = {
     "path": "projects/m1-knowledge-assistant/acmeqa",
     "role": "M1, מיובא ולא מועתק: חיפוש היברידי עם ACL לפני הדירוג, ציטוטים, הנתב בין מסמכים לנתונים (<code>acmeqa.router.route_question</code>) ו-text-to-SQL."
    }
-  ]
+  ],
+  "untested": "<p>המעבדה נבנתה בסביבה שבה Docker Hub חסום, אין <code>terraform</code> ואין מפתחות API. לכן מה שכתוב כאן מפריד בין מה שבאמת רץ לבין מה שרק נכתב ונבדק סטטית. כשאתה מריץ את החלקים שלא נבדקו, התוצאה אצלך היא הקובעת, ואם משהו נשבר זה לא אתה: תגיד לי, ואתקן בשני הריפואים.</p><ul class=\"clean\">\n<li><b>נבדק:</b> ה-eval המלא offline: ניתוב, workflow, אבטחה ועלות, וכל המספרים בשקופיות משוחזרים ממנו. שרת ה-MCP בתוך התהליך. הבודקים של <code>deploykit</code> על ה-Dockerfile ועל ה-Terraform. ומבנה התיקיות של ה-image הורץ מקומית בלי Docker, ועבר <code>/readyz</code>.</li>\n<li><b>לא נבדק:</b> אף image לא נבנה, כולל <code>runtime-e5</code> עם PyTorch. <code>readonlyRootFilesystem</code> בלי tmpfs לא נוסה עם PyTorch. Terraform לא עבר <code>validate</code> ולא <code>plan</code>. SQLite במצב EXCLUSIVE על EFS אמיתי לא נוסה, וגם זמן העלייה הראשונה מול ה-grace period לא נמדד. החיבור מ-Claude Code וה-eval החי מול Haiku לא רצו.</li>\n</ul>"
  },
  "toolsDetail": [
   {

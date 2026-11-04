@@ -52,7 +52,8 @@ window.LABGUIDE["32"] = {
     "path": "projects/f2-hebrew-tutor/deploy",
     "role": "<code>Dockerfile</code> עם <code>requirements.lock</code>, ו-<code>terraform/</code>: ECS Fargate, ALB, EFS ושלושה סודות ב-Secrets Manager."
    }
-  ]
+  ],
+  "untested": "<p>המעבדה נבנתה בסביבה שבה Docker Hub חסום, אין <code>terraform</code> ואין מפתחות API. לכן מה שכתוב כאן מפריד בין מה שבאמת רץ לבין מה שרק נכתב ונבדק סטטית. כשאתה מריץ את החלקים שלא נבדקו, התוצאה אצלך היא הקובעת, ואם משהו נשבר זה לא אתה: תגיד לי, ואתקן בשני הריפואים.</p><ul class=\"clean\">\n<li><b>נבדק:</b> המורה, התוכן, ה-eval ושער הרגרסיה, עם מודל מדומה, STT ו-TTS מדומים ועיכובים מדומים. שרת ה-web בתוך התהליך. הבודקים של <code>deploykit</code> על ה-Dockerfile ועל ה-Terraform.</li>\n<li><b>לא נבדק:</b> קול אמיתי, כלומר STT ו-TTS של OpenAI, ואם הקול הראשון מגיע תוך 1.5 שניות. כפתור ההקלטה בדפדפן אמיתי, Chrome ו-Safari. ה-image לא נבנה, ו-Terraform לא עבר <code>plan</code>. איכות העברית של מודל אמיתי לא נבדקה.</li>\n<li><b>שים לב לתאריכים:</b> מודלי ה-TTS הישנים של OpenAI נסגרים ב-2027-01-06, ו-whisper-1 ו-gpt-4o-transcribe ב-2027-02-26.</li>\n</ul>"
  },
  "toolsDetail": [
   {

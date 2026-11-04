@@ -48,7 +48,8 @@ window.LABGUIDE["11"] = {
     "path": "ragkit/vectors/sizing.py",
     "role": "<code>hnsw_ram_bytes</code> (גרסת הייחוס של תרגיל 5), מודלי העלות החודשית לכל שירות, ו-<code>PRICES</code> עם תאריך ומקורות."
    }
-  ]
+  ],
+  "untested": "<p>המעבדה נבנתה בסביבה שבה Docker Hub חסום, אין <code>terraform</code> ואין מפתחות API. לכן מה שכתוב כאן מפריד בין מה שבאמת רץ לבין מה שרק נכתב ונבדק סטטית. כשאתה מריץ את החלקים שלא נבדקו, התוצאה אצלך היא הקובעת, ואם משהו נשבר זה לא אתה: תגיד לי, ואתקן בשני הריפואים.</p><ul class=\"clean\">\n<li><b>נבדק:</b> כל הסקריפטים במצב offline (FAISS בזיכרון, על וקטורים סינתטיים ועל ה-embeddings ששמורים במטמון משיעור 10), בדיקות הסביבה של <code>ragkit.vectors</code> ובדיקות המעבדה מול הפתרון. קובץ ה-compose וקבצי ה-Terraform עוברים בדיקת תחביר (YAML ו-HCL).</li>\n<li><b>לא נבדק:</b> <code>docker compose up</code> לא הורץ אף פעם, ולא נבדק שהתגיות <code>qdrant/qdrant:v1.20.0</code> ו-<code>pgvector/pgvector:0.8.7-pg18</code> קיימות ועולות healthy. כל מה שרץ מול Qdrant ו-pgvector אמיתיים (<code>--backend qdrant</code>, <code>--backend pgvector</code>, <code>--qdrant --pgvector</code>), ותרגיל S3 Vectors מול AWS, לא רצו.</li>\n<li><b>מה זה אומר לך:</b> מספרי ה-recall וה-latency של Qdrant ו-pgvector בשקופיות הם מ-FAISS בזיכרון. מול השרתים האמיתיים הם ישתנו, במיוחד ה-latency.</li>\n</ul>"
  },
  "toolsDetail": [
   {

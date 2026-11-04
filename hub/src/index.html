@@ -308,6 +308,10 @@ details.codeinfo code, .labguide code, .tooldet code, .filemap code { overflow-w
 bdi.lt { overflow-wrap: anywhere; }
 pre, .cmd pre { max-width: 100%; overflow-x: auto; }
 bdi.lt { unicode-bidi: isolate; }
+/* stage2-untested */
+.card.untested { border-color: var(--signal); background: var(--signal-soft, var(--surface)); }
+.card.untested p, .card.untested li { line-height: 1.75; }
+.card.untested ul.clean { display: grid; gap: 8px; grid-template-columns: minmax(0, 1fr); }
 </style>
 
 <div dir="rtl">
@@ -680,6 +684,7 @@ function stLab(L, c, id) {
   if (GG && GG.guide) {
     const g = GG.guide;
     c.append(h(`<div class="card labguide"><div class="eyebrow">About this lab</div><h3>מה באים לעשות במעבדה</h3>${g.goal || ""}${g.flow ? `<h3 style="margin-top:6px">איך המעבדה בנויה</h3>${g.flow}` : ""}</div>`));
+    if (g.untested) c.append(h(`<div class="card untested"><div class="eyebrow">Verified / not verified</div><h3>מה נבדק בבניית המעבדה, ומה לא</h3>${g.untested}</div>`));
     if (g.map && g.map.length) c.append(h(`<details class="card guide"><summary>מפת הקבצים: מה נמצא איפה (${g.map.length})</summary><ul class="filemap">${g.map.map((m) => `<li><code>${esc(m.path)}</code><span>${m.role}</span></li>`).join("")}</ul></details>`));
   }
   if (L.lab.repoPath) {

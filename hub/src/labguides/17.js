@@ -44,7 +44,8 @@ window.LABGUIDE["17"] = {
     "path": "labs/17-mcp/mcp.json.example",
     "role": "דוגמה לקובץ <code>.mcp.json</code> ברמת project: שרת stdio עם <code>--read-only</code> ושרת http עם <code>Bearer ${ACME_MCP_TOKEN}</code>, בהרחבת משתנים במקום token בקובץ."
    }
-  ]
+  ],
+  "untested": "<p>המעבדה נבנתה בסביבה שבה Docker Hub חסום, אין <code>terraform</code> ואין מפתחות API. לכן מה שכתוב כאן מפריד בין מה שבאמת רץ לבין מה שרק נכתב ונבדק סטטית. כשאתה מריץ את החלקים שלא נבדקו, התוצאה אצלך היא הקובעת, ואם משהו נשבר זה לא אתה: תגיד לי, ואתקן בשני הריפואים.</p><ul class=\"clean\">\n<li><b>נבדק:</b> השרת והלקוח של <code>mcpkit</code> מול ה-SDK <code>mcp</code> 2.3.0 בתוך התהליך, כל הסקריפטים במצב offline, ובדיקות המעבדה מול הפתרון.</li>\n<li><b>לא נבדק:</b> ה-Inspector (<code>npx @modelcontextprotocol/inspector</code>, צריך Node 22.19 ומעלה), החיבור מ-Claude Code (<code>claude mcp add</code>), חלון האישור של <code>create_access_request</code> ב-Claude Code, ובאיזו גרסת פרוטוקול Claude Code מתחבר בפועל.</li>\n<li><b>מה זה אומר לך:</b> אם ה-Inspector או Claude Code מראים משהו אחר ממה שכתוב, למשל מספר כלים, גרסת פרוטוקול או התנהגות האישור, ההתנהגות שלהם נכונה, והטקסט צריך תיקון.</li>\n</ul>"
  },
  "toolsDetail": [
   {

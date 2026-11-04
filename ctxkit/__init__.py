@@ -15,10 +15,10 @@ Try not to read those three modules before your tests pass.
 from .cachemodel import CacheScenario, break_even_hit_rate, hit_probability, scenario_cost
 from .compaction import compact, llm_summarizer, messages_tokens, truncate
 from .layers import Layer, layer_report
-from .tokens import count_tokens
+from .tokens import count_tokens, is_exact_o200k, tokenizer_name
 
 __all__ = [
     "CacheScenario", "break_even_hit_rate", "hit_probability", "scenario_cost",
     "compact", "llm_summarizer", "messages_tokens", "truncate",
-    "Layer", "layer_report", "count_tokens",
+    "Layer", "layer_report", "count_tokens", "tokenizer_name", "is_exact_o200k",
 ]

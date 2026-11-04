@@ -20,6 +20,10 @@ from typing import Any
 UNSUPPORTED: dict[str, set[str]] = {
     # "pattern": the docs say simple patterns work, but in a live test (Oct 2026) even
     # ^[^@]+@[^@]+$ on a nullable field returned 400 "Schema is too complex." Measured, not assumed.
+    # "minLength": live test 2026-11-03 (lab 3, raw_structured.py --bad-schema minlength40) showed
+    # Claude Haiku 5.5 ACCEPTS and ENFORCES it (tool came back 63 chars for minLength=40). Still
+    # stripped here until maxLength and minimum/maximum are measured the same way: stripping is
+    # safe (Pydantic enforces it), keeping an unenforced keyword would not be.
     "anthropic": {"minimum", "maximum", "exclusiveMinimum", "exclusiveMaximum", "multipleOf",
                   "minLength", "maxLength", "maxItems", "uniqueItems", "minProperties", "maxProperties",
                   "pattern"},

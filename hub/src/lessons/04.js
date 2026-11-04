@@ -104,7 +104,7 @@ window.LESSONS["04"] = {
 <li><b>User turn</b><span>ההודעה החדשה של המשתמש. בדרך כלל השכבה הקטנה ביותר, והיחידה שבאמת חדשה.</span></li>
 </ol>
 <p>ה-API של Anthropic קורא את השכבות לפי סדר קבוע: <b>tools, אחר כך system, אחר כך messages</b>. הסדר הזה חשוב, כי הוא קובע מה יכול להיכנס למטמון. נחזור אליו בשקופית 6.</p>
-<div class="example"><b>הבקשה מ-requests/agent_turn.json במעבדה, לפי השכבות (טוקנים לפי o200k)</b><pre dir="ltr">tools        370  (4 tools, cache_control on the last one)
+<div class="example"><b>הבקשה מ-requests/agent_turn.json במעבדה, לפי השכבות (טוקנים: הערכה של תווים חלקי 4, כי בסביבת הבנייה tiktoken לא היה זמין. במחשב שלך <code>context_budget.py</code> יספור ב-o200k, והמספרים ישתנו)</b><pre dir="ltr">tools        370  (4 tools, cache_control on the last one)
 system       185  (Company Brain rules, cache_control)
 history      274  (5 earlier turns)
 retrieved    223  (2 documents inside &lt;documents&gt;)
@@ -128,7 +128,7 @@ user_turn     16  ("Can I work from Lisbon for a week in September?")</pre></div
     {
       kicker: "עלות וזמן",
       title: "מה כל שכבה עולה, בכסף ובזמן",
-      html: `<p>כדי לראות את ההשפעה, ניקח את עוזר ה-HR מהמעבדה: הוראות של כ-200 טוקנים, ומדריך עובד ומדיניות של כ-13,000 טוקנים אצל Claude. שאלה ותשובה של כ-300 טוקנים כל אחת. המחירים הם של Claude Haiku 5.5 לבקשות של עד 100,000 טוקנים: $0.10 למיליון טוקני קלט, ו-$0.50 למיליון טוקני פלט.</p>
+      html: `<p>כדי לראות את ההשפעה, ניקח את עוזר ה-HR מהמעבדה: הוראות של כ-200 טוקנים, ומדריך עובד ומדיניות של כ-13,000 טוקנים אצל Claude. שימו לב שזו <b>הנחה ולא מדידה</b>: כ-10,500 טוקנים בהערכה של תווים חלקי 4, כפול 1.3 בשביל ה-tokenizer של Claude. את המספר האמיתי נותן <code>--calibrate</code> במעבדה, וכל החשבון בשקופית הזו זז איתו. שאלה ותשובה של כ-300 טוקנים כל אחת. המחירים הם של Claude Haiku 5.5 לבקשות של עד 100,000 טוקנים: $0.10 למיליון טוקני קלט, ו-$0.50 למיליון טוקני פלט.</p>
 <div class="example"><b>חשבון לקריאה אחת, בלי caching</b><pre dir="ltr">input   13,500 tok x $0.10 / 1M = $0.00135
 output     300 tok x $0.50 / 1M = $0.00015
 total                             $0.00150   (90% of it is the handbook)

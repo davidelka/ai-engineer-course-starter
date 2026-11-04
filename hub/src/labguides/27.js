@@ -52,7 +52,8 @@ window.LABGUIDE["27"] = {
     "path": "deploykit/",
     "role": "קוד הייחוס: <code>dockerfile.py</code> (parser וכל כללי ה-Dockerfile), <code>terraform.py</code> (קריאת HCL עם python-hcl2 וכללי Terraform), <code>cost.py</code> (<code>PRICES</code>, <code>DeployConfig</code> ו-<code>monthly_cost</code>)."
    }
-  ]
+  ],
+  "untested": "<p>המעבדה נבנתה בסביבה שבה Docker Hub חסום, אין <code>terraform</code> ואין מפתחות API. לכן מה שכתוב כאן מפריד בין מה שבאמת רץ לבין מה שרק נכתב ונבדק סטטית. כשאתה מריץ את החלקים שלא נבדקו, התוצאה אצלך היא הקובעת, ואם משהו נשבר זה לא אתה: תגיד לי, ואתקן בשני הריפואים.</p><ul class=\"clean\">\n<li><b>נבדק:</b> הבודק של Dockerfile, של IAM ושל Terraform (<code>deploykit</code>) על הקבצים של המעבדה ועל ה-fixtures השבורים. ה-API עם השרת המדומה בתוך התהליך. מודל העלות. וגם בדיקה שכל שלב ב-image מכיל את חבילות הריפו שהקוד שלו מייבא.</li>\n<li><b>לא נבדק:</b> אף image לא נבנה, ולא הורץ <code>docker compose up</code>. כך באג בשלב <code>mockllm</code>, שבו <code>llmkit</code> היה חסר, נשאר בקורס עד הריוויו, ותוקן רק אז. גם הגדלים בשקופית (כ-1GB מול כ-170MB) הם הערכה. <code>terraform init</code>, <code>validate</code>, <code>plan</code> ו-<code>apply</code> לא רצו אף פעם: אין כאן terraform, ולכן גם לא נבדק שהגרסאות של ה-provider קיימות. הסריקה ב-Trivy לא רצה.</li>\n<li><b>מה זה אומר לך:</b> תרגילים 2, 3, 4 ו-8 הם הפעם הראשונה שהקבצים האלה רצים. הרץ <code>terraform plan</code> לפני כל <code>apply</code>, וקרא את הפלט.</li>\n</ul>"
  },
  "toolsDetail": [
   {

@@ -3,7 +3,7 @@
     python labs/04-context-engineering/make_fixtures.py
 
 Writes:
-  data/acme_handbook.md        ~10.5K o200k tokens of Acme handbook sections: offices, teams,
+  data/acme_handbook.md        ~10.5K tokens (chars/4 estimate) of Acme handbook sections: offices, teams,
                                per-diem rates, internal systems, procedures. It is the
                                big stable prefix for the caching experiments and the
                                haystack for the position test.

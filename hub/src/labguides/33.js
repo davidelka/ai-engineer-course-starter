@@ -52,7 +52,8 @@ window.LABGUIDE["33"] = {
     "path": "projects/f3-job-agent/deploy",
     "role": "<code>Dockerfile</code> עם <code>uv.lock</code>, <code>systemd/</code> (service ו-timer), ו-<code>terraform/</code>: משימת ECS מתוזמנת עם EventBridge Scheduler, S3 ו-SSM."
    }
-  ]
+  ],
+  "untested": "<p>המעבדה נבנתה בסביבה שבה Docker Hub חסום, אין <code>terraform</code> ואין מפתחות API. לכן מה שכתוב כאן מפריד בין מה שבאמת רץ לבין מה שרק נכתב ונבדק סטטית. כשאתה מריץ את החלקים שלא נבדקו, התוצאה אצלך היא הקובעת, ואם משהו נשבר זה לא אתה: תגיד לי, ואתקן בשני הריפואים.</p><ul class=\"clean\">\n<li><b>נבדק:</b> החילוץ, ה-dedup, הדירוג, ה-digest וה-eval, עם מודל מדומה וקבוצות WhatsApp סינתטיות. שרת הניהול בתוך התהליך. הבודקים של <code>deploykit</code> על ה-Dockerfile ועל ה-Terraform.</li>\n<li><b>לא נבדק:</b> ה-image לא נבנה, ו-Terraform לא עבר <code>plan</code>, כולל לוח הזמנים ב-EventBridge. טיוטת Gmail אמיתית לא נוצרה. החילוץ מול Haiku לא רץ, ולא נבדק על קבוצות WhatsApp אמיתיות.</li>\n</ul>"
  },
  "toolsDetail": [
   {

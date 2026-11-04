@@ -34,6 +34,8 @@ ROOT = LAB.parents[1]
 sys.path[:0] = [str(ROOT), str(LAB)]
 from ctxkit.fake import ExtractiveLLM  # noqa: E402
 from ctxkit.haystack import NEEDLES, build_haystack, is_correct, split_sections  # noqa: E402
+from ctxkit.tokens import tokenizer_name  # noqa: E402
+from ctxkit.confirm import add_cost_args, confirm_paid, price_for, usd  # noqa: E402
 from llmkit import LLM, PRICES, ChatRequest, LLMError, load_dotenv  # noqa: E402
 
 SYSTEM = ("You answer questions about Acme Ltd. using only the documents provided. "
@@ -66,6 +68,7 @@ def main() -> None:
     ap.add_argument("--effort", default="low")
     ap.add_argument("--workers", type=int, default=4)
     ap.add_argument("--dry-run", action="store_true")
+    add_cost_args(ap, default_cap=0.50)
     a = ap.parse_args()
     load_dotenv(str(ROOT / ".env"))
 
@@ -87,10 +90,15 @@ def main() -> None:
     if p:
         est = sum(c["tokens"] * 1.3 * p["input"] * (p.get("long_multiplier", 1) if p.get("long_threshold") and c["tokens"] * 1.3 > p["long_threshold"] else 1)
                   for c in cases) / 1e6
-    print(f"{len(cases)} calls, {total_tok:,} o200k tokens in total (about {int(total_tok * 1.3):,} Claude tokens)"
+    print(f"{len(cases)} calls, {total_tok:,} tokens in total ({tokenizer_name()}); ASSUMING Claude counts x1.3: "
+          f"about {int(total_tok * 1.3):,} Claude tokens (context_budget.py --calibrate measures the real ratio)"
           + (f", estimated input cost ${est:.3f}" if est is not None else ""))
     if a.dry_run:
         return
+    if a.model != "fake":
+        out_usd = usd(price_for(a.model), 0, 200 * len(cases))
+        confirm_paid(f"{len(cases)} calls to {a.model}", (est or 0.0) + out_usd,
+                     yes=a.yes, max_cost=a.max_cost, paid=price_for(a.model) is not None)
 
     if a.model == "fake":
         llm = ExtractiveLLM({n.question: n.sentence for n in NEEDLES})
