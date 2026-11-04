@@ -57,6 +57,11 @@ WORKDIR /app
 
 ############################ mockllm ############################
 FROM runtime AS mockllm
+# mockllm imports llmkit (mockllm/vision.py -> llmkit.media), and importing the llmkit package
+# pulls in httpx and pydantic, so this stage needs the same venv and llmkit as the api stage.
+# Without these two lines the container starts, crashes on import, and never turns healthy.
+COPY --from=builder /opt/venv /opt/venv
+COPY llmkit/ /app/llmkit/
 # Code is owned by root and only readable by the app user: the process cannot modify it.
 COPY mockllm/ /app/mockllm/
 USER app

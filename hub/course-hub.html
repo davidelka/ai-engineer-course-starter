@@ -58,8 +58,8 @@ h2 { font-size: 1.35rem; }
 h3 { font-size: 1.05rem; }
 .muted { color: var(--muted); }
 .eyebrow { font-family: var(--mono); font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); direction: ltr; unicode-bidi: isolate; }
-.stack { display: grid; gap: 14px; }
-.card { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 16px; display: grid; gap: 12px; min-width: 0; }
+.stack { display: grid; gap: 14px; grid-template-columns: minmax(0, 1fr); }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 16px; display: grid; gap: 12px; min-width: 0; grid-template-columns: minmax(0, 1fr); }
 ul.clean, ol.clean { margin: 0; padding-inline-start: 1.2em; display: grid; gap: 8px; }
 .btn { border: 1px solid var(--line); background: var(--surface); border-radius: 999px; padding: 8px 16px; font-size: .92rem; display: inline-flex; align-items: center; gap: 6px; text-decoration: none; color: var(--ink); }
 .btn.primary { background: var(--accent); border-color: var(--accent); color: var(--surface); font-weight: 500; }
@@ -92,8 +92,8 @@ ul.clean, ol.clean { margin: 0; padding-inline-start: 1.2em; display: grid; gap:
 .topic { display: grid; grid-template-columns: 2.2rem minmax(0, 1fr) auto; gap: 10px; align-items: center; padding: 10px 12px; border-radius: 10px; border: 1px solid var(--line); background: var(--surface); text-decoration: none; color: var(--ink); }
 .topic.ready { border-color: var(--accent); }
 .topic .num { font-family: var(--mono); color: var(--muted); font-size: .85rem; text-align: center; }
-.topic .t { font-weight: 500; font-size: .95rem; direction: ltr; text-align: right; unicode-bidi: plaintext; overflow-wrap: anywhere; }
-.topic .d { font-size: .82rem; color: var(--muted); }
+.topic .t { display: block; font-weight: 500; font-size: .95rem; direction: ltr; text-align: right; unicode-bidi: plaintext; overflow-wrap: anywhere; }
+.topic .d { display: block; margin-top: 2px; font-size: .82rem; color: var(--muted); }
 .pill { font-size: .72rem; padding: 2px 8px; border-radius: 999px; background: var(--line); color: var(--muted); white-space: nowrap; }
 .pill.go { background: var(--accent); color: var(--surface); }
 .pill.done { background: var(--good-soft); color: var(--good); }
@@ -108,7 +108,7 @@ ul.clean, ol.clean { margin: 0; padding-inline-start: 1.2em; display: grid; gap:
 .st.done .k { background: var(--good); color: var(--surface); }
 .st[aria-current="step"] { border-color: var(--accent); background: var(--accent-soft); font-weight: 700; }
 .st[aria-current="step"] .k { background: var(--accent); color: var(--surface); }
-.station { display: grid; gap: 14px; padding-top: 6px; }
+.station { display: grid; gap: 14px; padding-top: 6px; grid-template-columns: minmax(0, 1fr); }
 .station-title { display: flex; align-items: baseline; gap: 10px; }
 .station-title .k { font-family: var(--mono); color: var(--accent); font-weight: 600; }
 .next-bar { display: flex; flex-wrap: wrap; gap: 8px; justify-content: space-between; align-items: center; padding-top: 6px; }
@@ -121,8 +121,8 @@ ul.clean, ol.clean { margin: 0; padding-inline-start: 1.2em; display: grid; gap:
 .tag.opt { background: var(--line); color: var(--muted); }
 
 /* slides */
-.deck { display: grid; gap: 10px; }
-.slide { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 20px 18px; min-height: 420px; display: grid; gap: 12px; align-content: start; min-width: 0; touch-action: pan-y; }
+.deck { display: grid; gap: 10px; grid-template-columns: minmax(0, 1fr); }
+.slide { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 20px 18px; min-height: 420px; display: grid; gap: 12px; align-content: start; min-width: 0; touch-action: pan-y; grid-template-columns: minmax(0, 1fr); }
 .slide .eyebrow { color: var(--signal); }
 .slide h2 { font-size: 1.4rem; }
 .slide p { margin: 0; }
@@ -146,7 +146,7 @@ ul.clean, ol.clean { margin: 0; padding-inline-start: 1.2em; display: grid; gap:
 .counter { font-family: var(--mono); font-size: .8rem; color: var(--muted); }
 
 /* sims */
-.sim { display: grid; gap: 12px; direction: rtl; }
+.sim { display: grid; gap: 12px; direction: rtl; grid-template-columns: minmax(0, 1fr); min-width: 0; }
 .knob { display: grid; gap: 2px; }
 .knob-head { display: flex; justify-content: space-between; gap: 8px; }
 .knob-head b { font-family: var(--mono); direction: ltr; }
@@ -202,7 +202,7 @@ input[type="range"] { width: 100%; accent-color: var(--accent); direction: ltr; 
 .q { display: grid; gap: 8px; }
 .q h3 { font-size: 1rem; font-weight: 500; }
 .q h3 .qn { font-family: var(--mono); color: var(--muted); margin-inline-end: 6px; }
-.opt { text-align: right; border: 1px solid var(--line); background: var(--surface); border-radius: 10px; padding: 9px 12px; font-size: .93rem; line-height: 1.45; unicode-bidi: plaintext; }
+.opt { text-align: right; border: 1px solid var(--line); background: var(--surface); border-radius: 10px; padding: 9px 12px; font-size: .93rem; line-height: 1.45; unicode-bidi: plaintext; overflow-wrap: anywhere; min-width: 0; }
 .opt[disabled] { cursor: default; }
 .opt.right { border-color: var(--good); background: var(--good-soft); }
 .opt.wrong { border-color: var(--bad); background: var(--bad-soft); }
@@ -236,7 +236,7 @@ dl.gl dd { margin: 0; color: var(--muted); font-size: .92rem; }
 .screen { min-height: 120px; border: 1px solid var(--line); border-radius: 8px; padding: 12px; background: var(--surface); direction: ltr; text-align: left; font-size: 1rem; }
 .screen.broken { border-color: var(--bad); }
 .screen .partial { direction: rtl; text-align: right; color: var(--bad); font-size: .85rem; margin-top: 8px; }
-.form2 { display: grid; gap: 8px; }
+.form2 { display: grid; gap: 8px; grid-template-columns: minmax(0, 1fr); }
 .form2 label { display: grid; gap: 2px; font-size: .86rem; color: var(--muted); }
 .form2 .row label { display: inline-flex; align-items: center; gap: 6px; }
 .form2 textarea, .form2 input[type="number"], .form2 select, .pr input { font: inherit; font-family: var(--mono); font-size: .85rem; color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 6px 8px; width: 100%; }
@@ -305,6 +305,13 @@ details.codeinfo code, .labguide code, .tooldet code, .filemap code { overflow-w
 .cbar .ci { background: var(--accent); } .cbar .co { background: var(--signal); }
 @media (prefers-reduced-motion: reduce) { *, *::after { animation: none !important; transition: none !important; } }
 @media (min-width: 640px) { .hero h1 { font-size: 2.3rem; } .slide { padding: 26px 28px; min-height: 400px; } }
+/* stage1-fixes */
+.rail { box-shadow: 0 -12px 0 var(--bg), 0 1px 0 var(--line); }
+.station, .station-title, .card, .slide, .ex { scroll-margin-top: 120px; }
+.station { overflow-wrap: break-word; }
+bdi.lt { overflow-wrap: anywhere; }
+pre, .cmd pre { max-width: 100%; overflow-x: auto; }
+bdi.lt { unicode-bidi: isolate; }
 </style>
 
 <div dir="rtl">
@@ -34560,6 +34567,7 @@ function refreshRail() {
   });
 }
 
+function richText(t) { return /<\/?(code|b|i|em|strong|br|a)\b/.test(t || "") ? t : esc(t); }
 function stGoal(L, c) {
   c.append(h(`<div class="card"><h3>בסוף השיעור תדע</h3><ol class="clean">${L.goals.map((g) => `<li>${g}</li>`).join("")}</ol></div>`));
   c.append(h(`<div class="callout">${L.connects}</div>`));
@@ -34668,7 +34676,7 @@ function stLab(L, c, id) {
   c.append(h(`<h3 style="margin-top:4px">התרגילים</h3>`));
   for (const ex of L.lab.exercises) {
     const done = !!Progress.get(["ex", id, ex.id]);
-    const el = h(`<div class="ex${done ? " done" : ""}"><input type="checkbox" id="ex-${id}-${ex.id}" ${done ? "checked" : ""}><div><label for="ex-${id}-${ex.id}"><h3>${ex.id.replace("ex", "")}. ${esc(ex.title)}</h3></label><p>${esc(ex.text)}</p></div></div>`);
+    const el = h(`<div class="ex${done ? " done" : ""}"><input type="checkbox" id="ex-${id}-${ex.id}" ${done ? "checked" : ""}><div><label for="ex-${id}-${ex.id}"><h3>${ex.id.replace("ex", "")}. ${esc(ex.title)}</h3></label><p>${richText(ex.text)}</p></div></div>`);
     if (ex.cmd) $("div", el).append(cmdBlock(ex.cmd));
     const exCode = GG && GG.code && GG.code[ex.id];
     if (exCode) $("div", el).append(h(`<details class="codeinfo"><summary>מה קורה בקוד</summary>${exCode}</details>`));
@@ -34868,6 +34876,77 @@ function mountTokenLoop(host) {
 /* ---------------- boot ---------------- */
 route();
 Progress.init();
+
+/* ---------------- bidi isolation for Latin runs inside Hebrew text ---------------- */
+(function () {
+  const SKIP = "code,pre,kbd,samp,script,style,textarea,input,select,option,svg,bdi,[dir=ltr],.cmd,.no-bidi,.eyebrow,.tpath";
+  const FIRST = String.raw`["']?[A-Za-z][A-Za-z0-9_.\-/:=@*+#'"()\[\]&%]*`;
+  const NEXT = String.raw`["']?[A-Za-z0-9/][A-Za-z0-9_.\-/:=@*+#'"()\[\]&%]*`;
+  const RUN = new RegExp(FIRST + String.raw`(?: +` + NEXT + `)*`, "g");
+  const HEB = /[֐-׿]/;
+  function balanced(t) {
+    const q = (t.match(/"/g) || []).length % 2 === 0;
+    const p = (t.match(/\(/g) || []).length === (t.match(/\)/g) || []).length;
+    const b = (t.match(/\[/g) || []).length === (t.match(/\]/g) || []).length;
+    return q && p && b;
+  }
+  function trim(t) {
+    // never pull sentence punctuation into the LTR island
+    let r = t;
+    for (;;) {
+      const last = r.slice(-1);
+      if (".,;:!?".includes(last)) { r = r.slice(0, -1); continue; }
+      if ((last === ")" || last === "]" || last === '"' || last === "'") && !balanced(r)) { r = r.slice(0, -1); continue; }
+      break;
+    }
+    return r;
+  }
+  function fixNode(tn) {
+    const text = tn.nodeValue;
+    if (!text || !/[A-Za-z]/.test(text)) return;
+    const ws = getComputedStyle(tn.parentElement).whiteSpace;
+    if (ws === "pre" || ws === "pre-wrap") return;   // code-like blocks drawn by the aids keep their own layout
+    // a Latin-only node needs isolating only when its edges hold neutral characters that RTL would move
+    if (!HEB.test(text)) {
+      if (!/^\s*["'(\[]|["')\]:.]\s*$/.test(text) && !/["'=]/.test(text)) return;
+      const m0 = text.match(/^(\s*)([\s\S]*?)(\s*)$/);
+      const b0 = document.createElement("bdi"); b0.className = "lt"; b0.dir = "ltr"; b0.textContent = m0[2];
+      tn.replaceWith(m0[1], b0, m0[3]);
+      return;
+    }
+    RUN.lastIndex = 0;
+    let m, last = 0, frag = null;
+    while ((m = RUN.exec(text))) {
+      const run = trim(m[0]);
+      if (!run) continue;
+      frag = frag || document.createDocumentFragment();
+      frag.append(text.slice(last, m.index));
+      const b = document.createElement("bdi"); b.className = "lt"; b.dir = "ltr"; b.textContent = run;
+      frag.append(b);
+      last = m.index + run.length;
+      RUN.lastIndex = last;
+    }
+    if (!frag) return;
+    frag.append(text.slice(last));
+    tn.replaceWith(frag);
+  }
+  function walk(root) {
+    if (root.nodeType === 3) { if (root.parentElement && !root.parentElement.closest(SKIP)) fixNode(root); return; }
+    if (root.nodeType !== 1 || root.closest(SKIP)) return;
+    const it = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
+      acceptNode: (n) => (n.parentElement && !n.parentElement.closest(SKIP)) ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT,
+    });
+    const nodes = []; let n; while ((n = it.nextNode())) nodes.push(n);
+    nodes.forEach(fixNode);
+  }
+  let pending = new Set(), scheduled = false;
+  const mo = new MutationObserver((muts) => {
+    for (const m of muts) for (const n of m.addedNodes) if (!(n.nodeType === 1 && n.matches && n.matches("bdi.lt"))) pending.add(n);
+    if (!scheduled) { scheduled = true; requestAnimationFrame(() => { scheduled = false; const todo = [...pending]; pending = new Set(); todo.forEach((x) => x.isConnected && walk(x)); }); }
+  });
+  function start() { const app = document.getElementById("app"); if (!app) return; walk(app); mo.observe(app, { childList: true, subtree: true }); }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", start); else start();
+})();
 </script>
 
 
