@@ -7,7 +7,7 @@ Four pieces of a gateway, each one plugged into the real gatewaykit when you run
 so after the tests pass you can watch YOUR code make the decisions.
 
 Reference solutions: gatewaykit/budget.py, router.py, redact.py, policy.py.
-Try not to peek before your tests pass.
+Try not to peek before your tests pass. Stuck? HINTS.md in this folder has graded hints.
 """
 
 from __future__ import annotations
@@ -34,12 +34,13 @@ from gatewaykit.router import AllDeploymentsFailed, Attempt, RouteResult  # noqa
 # BudgetDecision(allowed, status, spent_usd, remaining_usd, warning=None, reason="")
 
 def spend_from_usage(model: str, usage: Usage, prices: Optional[dict] = None) -> float:
-    """USD for one call, computed from the usage the provider reported.
+    """USD for one call, computed from the usage the provider reported, with the
+    course's price table (`prices`, default llmkit.pricing.PRICES).
 
-    Use llmkit.pricing.cost_usd(model, usage, prices or PRICES). It returns None for a
-    model it has no price for: then raise UnknownPriceError. Never return 0 for an
-    unknown model, because a model the gateway cannot price is a free pass around
-    every budget.
+    A model with no price -> UnknownPriceError. Never return 0 for an unknown model,
+    because a model the gateway cannot price is a free pass around every budget.
+
+    Stuck? HINTS.md -> spend_from_usage
     """
     raise NotImplementedError("exercise 2")
 
@@ -47,11 +48,11 @@ def spend_from_usage(model: str, usage: Usage, prices: Optional[dict] = None) ->
 def estimate_max_cost(model: str, prompt_chars: int, max_tokens: int, prices: Optional[dict] = None) -> float:
     """Worst-case USD of a request BEFORE it is sent.
 
-    input tokens  = ceil(prompt_chars / 4)
-    output tokens = max_tokens (the most the model may write)
-    cost = (input_tokens * price["input"] + max_tokens * price["output"]) / 1_000_000
-    using (prices or PRICES)[model]. No cache discount (worst case). Unknown model ->
-    UnknownPriceError.
+    Assumptions: about 4 characters per input token (rounded UP), the model writes all
+    `max_tokens`, no cache discount. Prices in (prices or PRICES)[model] are USD per
+    million tokens, with keys "input" and "output". Unknown model -> UnknownPriceError.
+
+    Stuck? HINTS.md -> estimate_max_cost
     """
     raise NotImplementedError("exercise 2")
 
@@ -67,23 +68,25 @@ class MyBudgetLedger:
         Spend in the CURRENT window (0.0 for a key never seen).
 
     check(key_id, estimated_cost=0.0) -> BudgetDecision
-        - Blocked (allowed=False, status=402, reason="budget_exceeded") when there is
-          a hard limit and either spent >= hard, or spent + estimated_cost > hard.
-        - Otherwise allowed (status=200, reason=""), with warning="soft_limit" when
-          there is a soft limit and spent >= soft; warning=None otherwise.
-        - spent_usd = current spend; remaining_usd = max(0, hard - spent), or None
-          when there is no hard limit.
+        - Blocked (allowed=False, status=402, reason="budget_exceeded") when a hard
+          limit is already reached, or would be passed by this request's estimate.
+        - Otherwise allowed (status=200, reason=""), with warning="soft_limit" once a
+          soft limit is reached, else warning=None.
+        - spent_usd = current spend; remaining_usd = what is left under the hard limit
+          (never negative), or None without a hard limit.
         - check never changes the spend.
 
     record(key_id, cost_usd) -> float
         Add the cost and return the new spend. A negative cost -> ValueError.
 
     Periods: a key's window starts the first time the ledger sees the key (check,
-    record or spent). When clock() - window_start >= period_s, the spend goes back
-    to 0 and the window moves forward by whole periods (so it stays aligned). With
-    period_s None the budget never resets.
+    record or spent) and lasts period_s seconds; then the spend starts again from 0.
+    Windows stay aligned to that first start ([0,100), [100,200), ...) even after a
+    long idle gap. period_s None: the budget never resets.
 
     Why 402 and not 429: see the lesson. In one line: clients retry 429.
+
+    Stuck? HINTS.md -> MyBudgetLedger
     """
 
     def __init__(self, limits: dict, clock: Callable[[], float] = time.time):
@@ -116,6 +119,8 @@ class MyCircuitBreaker:
 
     The open -> half_open transition happens only inside allow(): reading `state`
     never changes it. Use self.clock() for time (tests pass a fake clock).
+
+    Stuck? HINTS.md -> MyCircuitBreaker
     """
 
     def __init__(self, failure_threshold: int = 3, cooldown_s: float = 30.0,
@@ -134,20 +139,24 @@ class MyCircuitBreaker:
 
 def route_with_fallback(deployments: list[str], call: Callable[[str], Any], breakers: dict,
                         classify: Callable[[LLMError], RetryDecision] = classify_error) -> RouteResult:
-    """Try deployments in order; return RouteResult(value, deployment, attempts).
+    """Try deployments in order; return RouteResult(value, deployment, attempts) for the
+    first one that answers. breakers[dep] is that deployment's circuit breaker.
 
-    For each deployment id `dep`, with breaker = breakers[dep]:
-      - breaker.allow() is False -> append Attempt(dep, "skipped_open"), go on.
-      - value = call(dep) succeeds -> breaker.record_success(),
-        append Attempt(dep, "ok"), return RouteResult(value, dep, attempts).
-      - call(dep) raises LLMError err -> append Attempt(dep, "error", err.status, err.message[:200]):
-          * classify(err).retry is True (429, 5xx, 529, timeout...): the provider is
-            in trouble. breaker.record_failure(), go on to the next deployment.
-          * otherwise (400, 401, 404...): the REQUEST is the problem, and the next
-            provider would reject it too. breaker.record_success() (the provider did
-            answer, so it is up) and re-raise err immediately: no fallback.
-    When the list is exhausted (or empty): raise AllDeploymentsFailed(attempts).
-    Other exception types are not caught.
+    `attempts` records every deployment touched, in order, as one of:
+      Attempt(dep, "skipped_open")                          its breaker refused
+      Attempt(dep, "ok")                                    it answered
+      Attempt(dep, "error", err.status, err.message[:200])  call(dep) raised LLMError err
+    Rules:
+      - A retryable error (classify(err).retry: 429, 5xx, 529, timeout...) means the
+        provider is in trouble: it counts against its breaker; fall back to the next.
+      - A non-retryable error (400, 401, 404...) means the REQUEST is the problem and
+        the next provider would reject it too: re-raise err at once, no fallback, and
+        it does NOT count against the provider's health (it did answer).
+      - A success is reported to the breaker too.
+      - List exhausted (or empty): raise AllDeploymentsFailed(attempts).
+      - Other exception types are not caught.
+
+    Stuck? HINTS.md -> route_with_fallback
     """
     raise NotImplementedError("exercise 3")
 
@@ -155,12 +164,11 @@ def route_with_fallback(deployments: list[str], call: Callable[[str], Any], brea
 # ====================================================================== exercise 4: PII redaction
 
 def israeli_id_valid(digits: str) -> bool:
-    """True for exactly 9 digits whose check digit is valid.
-
-    Multiply the digits by 1,2,1,2,1,2,1,2,1 (left to right). When a product is
-    greater than 9, use (product - 9), which equals the sum of its two digits.
-    Valid when the total is divisible by 10.
+    """True for exactly 9 digits whose last digit is the correct check digit of the
+    official Israeli ID algorithm (a Luhn-like weighted sum). Anything else -> False.
         "123456782" -> True      "123456789" -> False      "12345678" -> False
+
+    Stuck? HINTS.md -> israeli_id_valid
     """
     raise NotImplementedError("exercise 4")
 
@@ -170,32 +178,31 @@ def redact(text: str, types: Iterable[str] = ("email", "phone_il", "il_id"), sal
     """Replace PII with placeholders; return Redaction(text, findings).
 
     Types (any other name -> ValueError):
-      email     something@domain.tld, e.g. r"[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}"
-      phone_il  an optional "+972" or "972" (which replaces the leading 0) or a leading
-                "0"; then a mobile prefix 5X, a VoIP prefix 7X, or a one-digit landline
-                area code 2, 3, 4, 8 or 9; then 7 digits written as 3+4. One "-" or " "
-                may separate the groups. Not preceded or followed by another digit.
-                Matches: 054-1234567, 0541234567, 054-123-4567, +972-54-123-4567,
-                +972 54 1234567, 03-5550199, +972-3-555-0199.
-      il_id     exactly 9 digits (no digit right before or after) WITH a valid check
-                digit (israeli_id_valid). Nine digits without one are NOT redacted.
+      email     something@domain.tld
+      phone_il  Israeli mobile (5X), VoIP (7X) and landline (2, 3, 4, 8, 9) numbers,
+                written with 0, 972 or +972, as 3+4 digits, with or without one "-" or
+                " " between groups, not glued to other digits. Must match: 054-1234567,
+                0541234567, 054-123-4567, +972-54-123-4567, +972 54 1234567, 03-5550199,
+                +972-3-555-0199.
+      il_id     a standalone 9-digit number that passes israeli_id_valid (nine digits
+                without a valid check digit are NOT redacted).
 
     Rules:
-      - Priority: email, then phone_il, then il_id, whatever order `types` has. A
-        match that overlaps a span already taken by a higher-priority type is skipped.
-      - Placeholders: "[EMAIL_n]", "[PHONE_IL_n]", "[IL_ID_n]", numbered per type from 1
-        in order of first appearance in the text. The same value gets the same
-        placeholder. "Same" means after normalizing: emails lowercased; phones as digits
-        only with a leading 972 turned into 0 ("+972-54-123-4567" == "0541234567");
-        IDs as they are.
-      - known: an optional dict {(type, normalized_value): placeholder}. Look values up
-        in it first, add new ones to it, and continue the numbering after the
-        placeholders of that type already in it. The gateway passes one dict for all
-        the messages of a request, so [EMAIL_1] means the same person everywhere.
-      - findings: one Finding per occurrence, sorted by start, with start/end offsets
-        in the ORIGINAL text, the placeholder, and
+      - Priority email > phone_il > il_id, whatever order `types` has: a match that
+        overlaps text already taken by a higher-priority type is not redacted again.
+      - Placeholders "[EMAIL_n]", "[PHONE_IL_n]", "[IL_ID_n]": numbered per type from 1
+        in order of first appearance. The same value always gets the same placeholder,
+        compared after normalizing: emails lowercased; phones as digits only with a
+        leading 972 turned into 0 ("+972-54-123-4567" == "0541234567"); IDs as they are.
+      - known: optional dict {(type, normalized_value): placeholder} shared by all the
+        messages of one request. Reuse its placeholders, add new values to it, and
+        continue each type's numbering after the ones already there.
+      - findings: one Finding per occurrence, sorted by start, with start/end offsets in
+        the ORIGINAL text, the placeholder, and
         fingerprint = sha256((salt + normalized_value).encode()).hexdigest()[:12].
         Never put the raw value in a Finding: findings go to the audit log.
+
+    Stuck? HINTS.md -> redact
     """
     raise NotImplementedError("exercise 4")
 
@@ -216,16 +223,19 @@ def decide(policy: dict, classification: str, deployment) -> PolicyDecision:
     """May data of this classification be sent to this deployment?
 
     deployment has .provider, .model and .region (gatewaykit.config.Deployment).
-    Check in this order and return at the first match:
-      1. classification not in policy["classifications"]
-             -> PolicyDecision(False, "unknown_classification", <reason>)
-      2. no entry for it in policy["rules"]         -> (False, "no_rule", <reason>)
-      3. the rule has deny: true                    -> (False, f"{c}.deny", rule's reason or a default)
-      4. providers present and deployment.provider not in it -> (False, f"{c}.providers", <reason>)
-      5. models present and deployment.model not in it       -> (False, f"{c}.models", <reason>)
-      6. regions present and deployment.region not in it     -> (False, f"{c}.regions", <reason>)
-      7. otherwise                                  -> (True, f"{c}.allow", "")
-    The reason is free text for humans (tests only check it is non-empty on denials).
+    Returns PolicyDecision(allowed, rule, reason). `rule` names what decided, c being
+    the classification:
+      "unknown_classification"   c is not one of policy["classifications"]
+      "no_rule"                  policy["rules"] has no entry for c
+      f"{c}.deny"                the rule denies c outright (reason: the rule's own, or a default)
+      f"{c}.providers" / f"{c}.models" / f"{c}.regions"
+                                 the deployment is outside that allow-list
+      f"{c}.allow"               allowed (reason "")
+    When several apply, the earlier one in this list wins (providers before models
+    before regions). The reason is free text for humans (tests only check that it is
+    non-empty on denials).
+
+    Stuck? HINTS.md -> decide
     """
     raise NotImplementedError("exercise 5")
 
@@ -239,5 +249,7 @@ def effective_classification(requested: Optional[str], floor: Optional[str], pol
       - return the HIGHER of requested and floor (floor None = no floor). Higher means
         later in policy["classifications"]. An app whose key has floor "confidential"
         cannot label its own traffic "public".
+
+    Stuck? HINTS.md -> effective_classification
     """
     raise NotImplementedError("exercise 5")

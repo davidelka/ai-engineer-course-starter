@@ -36,23 +36,23 @@ from pss.query import KEYS, LANGS, TYPES, ParsedQuery, norm_date  # noqa: F401
 def is_excluded(rel_path: str, patterns: list[str]) -> Optional[str]:
     """Return the FIRST pattern (in list order) that excludes rel_path, or None.
 
-    rel_path: relative, "/"-separated ("kids/2026/report.pdf"); strip a leading "./".
-    Matching is case-insensitive (lower-case both sides). Empty patterns and "#comments" are skipped.
-
-    Three kinds of pattern:
-      "*.key", ".*", "*password*"   no "/": fnmatch against EVERY component of the path, folders
-                                    AND file name. So ".*" excludes ".env" and also anything under
-                                    ".git/" or ".cache/".
-      "private/"                    trailing "/": a FOLDER name pattern. Excluded when any folder
-                                    component (not the file name) matches it: "a/private/x.txt" yes,
+    rel_path: relative, "/"-separated ("kids/2026/report.pdf"); a leading "./" is ignored.
+    Matching is case-insensitive. Empty patterns and "#comments" are skipped.
+    Three kinds of pattern ("*" and "?" are globs):
+      "*.key", ".*", "*password*"   no "/": excludes when ANY component of the path, folders or
+                                    file name, matches. ".*" excludes ".env" and anything under ".git/".
+      "private/"                    trailing "/": a folder name. Excludes when a folder component
+                                    (not the file name) matches: "a/private/x.txt" yes,
                                     "notes/private.txt" no.
       "finance/*.pdf", "kids/**/report*"
                                     "/" inside: matched against the WHOLE path. "*" and "?" never
-                                    cross a "/", "**/" matches zero or more folders ("kids/**/report*"
+                                    cross a "/"; "**/" matches zero or more folders ("kids/**/report*"
                                     matches "kids/report.pdf" and "kids/2026/t1/report.pdf").
                                     A leading "/" is ignored.
     The scanner also calls you with a folder followed by "/x" (e.g. "node_modules/x") to decide
     whether to skip a whole folder without walking into it.
+
+    Stuck? HINTS.md -> is_excluded
     """
     # TODO(M2)
     raise NotImplementedError("M2: implement is_excluded")
@@ -60,19 +60,20 @@ def is_excluded(rel_path: str, patterns: list[str]) -> Optional[str]:
 
 # ------------------------------------------------------------------ M3: incremental sync
 def plan_sync(manifest: dict[str, dict], current: dict[str, dict], hash_fn: Callable[[str], str]) -> SyncPlan:
-    """Decide what to re-index. Return a SyncPlan (pss/manifest.py) with SORTED lists:
+    """Decide what to re-index. Return a SyncPlan (pss/manifest.py) with SORTED lists.
 
     manifest: what the index holds  {id: {"hash", "size", "mtime", ...}}
     current:  what the scan found   {id: {"size", "mtime"}}  (a stat call, the file was NOT read)
-    hash_fn(id) reads the file and returns its content hash. It is SLOW on a big folder:
-    call it only when needed, and at most once per id.
+    hash_fn(id) reads the file and returns its content hash. It is SLOW: call it only when the
+    answer depends on the content, and at most once per id.
+      added      in current, not in manifest
+      unchanged  in both, same size and same mtime (never hashed)
+      touched    in both, size or mtime differs, but the content hash equals the manifest's
+      changed    in both, size or mtime differs, and the hash differs
+      removed    in manifest, not in current
+    plan.hashes = {id: hash} for every id that was hashed (the indexer stores them).
 
-      id in current, not in manifest                    -> added    (hash it)
-      in both, same size AND same mtime                 -> unchanged (do NOT hash)
-      in both, size or mtime differs, hash == manifest  -> touched  (only metadata moved)
-      in both, size or mtime differs, hash != manifest  -> changed
-      id in manifest, not in current                    -> removed
-    plan.hashes = {id: hash} for every id you hashed (the indexer stores them).
+    Stuck? HINTS.md -> plan_sync
     """
     # TODO(M3)
     raise NotImplementedError("M3: implement plan_sync")
@@ -82,19 +83,21 @@ def plan_sync(manifest: dict[str, dict], current: dict[str, dict], hash_fn: Call
 def parse_query(q: str) -> ParsedQuery:
     """Split filters out of a query. Return ParsedQuery(text, filters, warnings).
 
-    A filter token is key:value or key:"value with spaces", preceded by start or whitespace.
-    Keys (KEYS maps both English and Hebrew names to the canonical key):
-      type   / סוג      comma list; each value through TYPES ("doc"->"docx", "scan"->"image").
+    A filter token is key:value or key:"value with spaces", at the start or after whitespace.
+    KEYS maps English and Hebrew key names to the canonical key:
+      type   / סוג      comma list, each value through TYPES ("doc"->"docx", "scan"->"image");
                        filters["type"] = list in order, no duplicates. Unknown value -> warning.
-      folder / תיקייה  comma list; strip "/" and lower-case. filters["folder"] = list.
+      folder / תיקייה  comma list, "/" stripped, lower-cased. filters["folder"] = list.
       after  / אחרי    norm_date(value) -> "YYYY-MM-DD" (start of the period: "2026-06" -> "2026-06-01").
       before / לפני    same. A bad date -> warning, and the token STAYS in the text.
       lang   / שפה     through LANGS ("עברית" -> "he"). Unknown -> warning.
     A token with an unknown key ("10:40", "http://x") is not a filter: it stays in the text.
-    text = everything that is not a filter, with whitespace collapsed to single spaces.
+    text = everything that is not a filter, whitespace collapsed to single spaces.
 
     Example: parse_query('type:pdf,doc folder:"kids/" after:2026-06 טיול שנתי')
       -> text "טיול שנתי", filters {"type": ["pdf", "docx"], "folder": ["kids"], "after": "2026-06-01"}
+
+    Stuck? HINTS.md -> parse_query
     """
     # TODO(M5)
     raise NotImplementedError("M5: implement parse_query")
@@ -105,11 +108,13 @@ def near_duplicate_groups(docs: dict[str, str], threshold: float = 0.8, k: int =
     """Group documents that are (nearly) the same text.
 
     docs: {file_id: text}. Two documents are similar when jaccard(shingles(a, k), shingles(b, k))
-    >= threshold (shingles and jaccard are imported above: k-word shingles, lower-cased).
-    Documents with no shingles (empty text) are never similar to anything.
-    Groups are TRANSITIVE: if A~B and B~C then A, B and C are one group even when A and C are not
-    similar enough on their own (use union-find, or a BFS over the similarity graph).
+    >= threshold (k-word shingles, lower-cased). A document with no shingles (empty text) is
+    never similar to anything.
+    Groups are TRANSITIVE: if A~B and B~C then A, B and C are one group, even when A and C are not
+    similar enough on their own.
     Return only groups with 2+ members; each group sorted; the list sorted by each group's first id.
+
+    Stuck? HINTS.md -> near_duplicate_groups
     """
     # TODO(M6)
     raise NotImplementedError("M6: implement near_duplicate_groups")
@@ -117,21 +122,20 @@ def near_duplicate_groups(docs: dict[str, str], threshold: float = 0.8, k: int =
 
 # ------------------------------------------------------------------ M8: redaction before the cloud
 def redact_for_cloud(text: str) -> tuple[str, dict[str, int]]:
-    """Mask personal identifiers. Return (redacted text, {label: count}) with only labels whose
-    count > 0. Apply, IN THIS ORDER:
-
+    """Mask personal identifiers. Return (redacted text, {label: count}), only labels with count > 0.
+    Applied IN THIS ORDER (the more specific pattern must win):
       IBAN          Israeli IBAN: "IL" + 2 digits + 19 digits, optionally in groups of 4 separated by
-                    spaces or "-" (e.g. "IL62 0108 0000 0009 9999 999")         -> "[IBAN]"
-      CARD          a run of 13-19 digits, single spaces or "-" allowed between digits, not touching
-                    another digit or "-", that passes luhn_ok (imported above)   -> "[CARD]"
+                    spaces or "-" ("IL62 0108 0000 0009 9999 999")                 -> "[IBAN]"
+      CARD          13-19 digits, single spaces or "-" allowed between digits, not touching another
+                    digit or "-", that pass luhn_ok                                -> "[CARD]"
                     (a 16-digit number that fails Luhn is an order number: leave it)
-      IL_ID, EMAIL, PHONE   guardkit's redact_pii(text) (imported above) does these three and writes
-                    "[IL_ID]", "[EMAIL]", "[PHONE]". Count them by comparing how many of each
-                    placeholder the text had before and after the call.
-      BANK_ACCOUNT  bank-branch-account written as dd-ddd-dddd..ddddddddd (2, 3, then 4-9 digits),
-                    not touching another digit or "-"                            -> "[BANK_ACCOUNT]"
-    Why this order: an IBAN contains a card-like digit run, and a card number contains digits that
-    could look like a phone number; the more specific pattern must win.
+      IL_ID, EMAIL, PHONE   as guardkit's redact_pii(text) finds and writes them:
+                    "[IL_ID]", "[EMAIL]", "[PHONE]". Count only the placeholders this call
+                    created, not ones already present in the input.
+      BANK_ACCOUNT  bank-branch-account dd-ddd-dddd..ddddddddd (2, 3, then 4-9 digits), not
+                    touching another digit or "-"                                  -> "[BANK_ACCOUNT]"
+
+    Stuck? HINTS.md -> redact_for_cloud
     """
     # TODO(M8)
     raise NotImplementedError("M8: implement redact_for_cloud")

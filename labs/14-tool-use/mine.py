@@ -4,6 +4,9 @@ Reference versions live in toolkit/ (executor.py, loop.py, confirm.py).
 Try not to peek before your tests pass.
 
     python -m pytest -q labs/14-tool-use/tests
+
+Each docstring is a contract: what goes in, what comes out, and the rules the result must follow.
+When you are stuck, HINTS.md has graded hints for every function (direction, structure, full algorithm).
 """
 
 from __future__ import annotations
@@ -31,23 +34,20 @@ def execute_tool(call: ToolCall, registry: Registry, *, timeout_s: float = 5.0,
                  confirmed: Optional[Callable[[ToolCall], bool]] = None) -> ToolResult:
     """Run ONE tool call safely and return a ToolResult. NEVER raise.
 
-    Every result has call_id=call.id and name=call.name. In order:
-      1. registry.get(call.name) is None
-           -> is_error, text contains "Unknown tool" and the available names (registry.names()).
-      2. call.parse_error is set (the arguments were not valid JSON)
-           -> is_error, text contains "Invalid arguments" and the parse error.
-      3. spec.input_model.model_validate(call.arguments) raises ValidationError
-           -> is_error, text contains "Invalid arguments for <name>" and format_errors(exc)
-              (so the model sees each field, message and value, and can fix the call).
-      4. spec.side_effect is True and not (confirmed and confirmed(call))
-           -> is_error, text starts with "NOT executed". The function must NOT be called.
-      5. Run spec.fn(validated_args) with a timeout: spec.timeout_s if set, else timeout_s.
-         Use a ThreadPoolExecutor and future.result(timeout=...).
-           timeout          -> is_error, text contains "timed out"
-           ToolError e      -> is_error, text == str(e)   (the tool wrote it for the model)
-           other Exception  -> is_error, text contains "internal error" and the exception TYPE
-                               name, but NOT the message or traceback (they may hold secrets)
-      6. Success -> is_error False, text = to_text(value) (JSON, truncated if huge).
+    Every result has call_id=call.id and name=call.name. Errors are is_error results whose text
+    the model can act on, and each case must be recognizable by these words in the text:
+      - unknown tool: "Unknown tool", plus the available names (registry.names());
+      - arguments that were not valid JSON (call.parse_error): "Invalid arguments" and the parse error;
+      - arguments that fail spec.input_model: "Invalid arguments for <name>" and format_errors(exc);
+      - a side-effect tool (spec.side_effect) that `confirmed` did not approve: text starts with
+        "NOT executed", and the tool function is never called;
+      - the tool ran longer than spec.timeout_s (if set) or timeout_s: "timed out";
+      - the tool raised ToolError e: text == str(e) exactly (the tool wrote it for the model);
+      - any other exception: "internal error" and the exception TYPE name only, never its message
+        or traceback (they may hold secrets).
+    Success: is_error False, text = to_text(value).
+
+    Stuck? HINTS.md -> execute_tool
     """
     # TODO(ex3)
     raise NotImplementedError("exercise 3: implement execute_tool")
@@ -56,20 +56,20 @@ def execute_tool(call: ToolCall, registry: Registry, *, timeout_s: float = 5.0,
 # ------------------------------------------------------------------ exercise 4
 def run_tool_loop(llm: LLM, question: str, registry: Registry, *, system: str = SYSTEM, max_rounds: int = 5,
                   executor: Optional[Callable[[list[ToolCall]], list[ToolResult]]] = None) -> LoopResult:
-    """Answer ONE question with tools. Returns toolkit.loop.LoopResult.
+    """Answer ONE question with tools. Returns toolkit.loop.LoopResult (read its fields).
 
-    req = ChatRequest(messages=[Message("user", question)], system=system, tools=registry.tools())
-    run = executor or (lambda calls: [execute_tool(c, registry) for c in calls])
-    Loop:
-      r = llm.complete(req); count model_calls, input/output tokens and cost_usd (r.cost_usd or 0)
-      - no r.tool_calls  -> append r.message, text = r.text, stop = "answer", done
-      - rounds == max_rounds already -> stop = "max_rounds", text says it stopped; do NOT append
-        the unanswered tool calls (a history ending in tool calls without results is invalid)
-      - otherwise: rounds += 1; record the calls; append r.message (the assistant turn AS
-        RECEIVED: it carries raw provider data such as Gemini thought signatures);
-        results = run(r.tool_calls); record them;
-        append Message.with_tool_results(results)   <- ALL results in ONE user message
-    Set result.messages = the whole conversation at the end.
+    The model sees the question (one user message), `system`, and registry.tools(). Tool calls are
+    run by `executor` if given, else by execute_tool on each call. The loop ends with:
+      - stop "answer": a reply without tool calls; text = its text;
+      - stop "max_rounds": the model still wants tools after max_rounds rounds of tool calls;
+        text says it stopped. The history must stay valid: it never ends with tool calls that
+        have no results.
+    The result counts model_calls, rounds, input/output tokens and cost_usd (a missing cost is 0),
+    records every call and result, and has messages = the whole conversation. Assistant turns go
+    into the history exactly as received (they carry raw provider data such as Gemini thought
+    signatures), and all the results of one round go back in ONE user message.
+
+    Stuck? HINTS.md -> run_tool_loop
     """
     # TODO(ex4)
     raise NotImplementedError("exercise 4: implement run_tool_loop")
@@ -77,9 +77,13 @@ def run_tool_loop(llm: LLM, question: str, registry: Registry, *, system: str = 
 
 # ------------------------------------------------------------------ exercise 6
 def call_fingerprint(call: ToolCall) -> str:
-    """sha256 hex of json.dumps({"name": call.name, "arguments": call.arguments},
-    sort_keys=True, separators=(",", ":"), ensure_ascii=False). The same call with keys in
-    another order gives the same fingerprint; any change in a value gives a different one."""
+    """A stable sha256 hex digest (64 characters) of the call's name and arguments.
+
+    The same call with its argument keys in another order gives the same fingerprint; any change
+    in the name or a value gives a different one. Non-ASCII text (Hebrew) must be supported.
+
+    Stuck? HINTS.md -> call_fingerprint
+    """
     # TODO(ex6)
     raise NotImplementedError("exercise 6: implement call_fingerprint")
 
@@ -89,13 +93,15 @@ class ConfirmationGate:
     """Human approval for side-effect tools. The model can ASK to run a tool; only your app,
     after a human said yes, can APPROVE it, and the model never sees the token.
 
-    approve(call) -> token: secrets.token_urlsafe(24), stored with call_fingerprint(call) and
-        an expiry of clock() + ttl_s. Also remember call.id -> token (for confirmed()).
-    check(call, token) -> bool: True only if the token is known, not expired, and was issued
-        for this call's fingerprint. A presented token is consumed either way (single use).
-        Compare fingerprints with hmac.compare_digest.
-    confirmed(call) -> bool: the Executor hook. Looks up the token remembered for call.id
-        (pop it) and returns check(call, token). No approval -> False.
+    approve(call) -> token: an unguessable string (at least 24 characters, unique per call), valid
+        for ttl_s seconds as measured by clock(), and bound to this exact call (name + arguments).
+    check(call, token) -> bool: True only for a known, unexpired token issued for this same call
+        (see call_fingerprint). A presented token is consumed either way: single use. None or an
+        unknown token -> False. Compare secrets in constant time.
+    confirmed(call) -> bool: the Executor hook (execute_tool's `confirmed`). True only if a token
+        was approved for this call.id and it passes check; the approval is used up. No approval -> False.
+
+    Stuck? HINTS.md -> ConfirmationGate
     """
 
     ttl_s: float = 300.0

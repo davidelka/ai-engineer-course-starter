@@ -37,11 +37,15 @@ from obskit.slo import ALERT_RULES, MINUTE_MS, SLO, AlertRule  # noqa: F401
 
 # ------------------------------------------------------------------ exercise 3
 def percentile(values: Sequence[float], p: float) -> float:
-    """The p-th percentile (0..100) with linear interpolation (numpy's default):
-        xs = sorted(values); rank = (len(xs) - 1) * p / 100
-        result = xs[floor(rank)] + (xs[ceil(rank)] - xs[floor(rank)]) * (rank - floor(rank))
-    percentile([1, 2, 3, 4], 50) == 2.5, percentile([10], 95) == 10.0
-    Raise ValueError for an empty sequence or p outside 0..100.
+    """The p-th percentile (p in 0..100) of the values, as a float.
+
+    Same result as numpy's default method (linear interpolation between the closest ranks);
+    the values do not have to be sorted.
+    percentile([1, 2, 3, 4], 50) == 2.5, percentile([10], 95) == 10.0,
+    percentile(range(1, 101), 95) == 95.05.
+    Raises ValueError for an empty sequence or p outside 0..100.
+
+    Stuck? HINTS.md -> percentile
     """
     # TODO(ex3)
     raise NotImplementedError("exercise 3: implement percentile")
@@ -51,26 +55,22 @@ def summarize(spans: Iterable[dict], top_n: int = 5) -> dict:
     """Aggregate spans into the numbers a dashboard shows. Return exactly this shape:
 
     {
-      "spans": <number of spans>,
-      "traces": <number of distinct trace_id>,
-      "by_type": {                      # one entry per span type, keys sorted alphabetically
-         "<type>": {"count": int, "errors": int, "p50_ms": float, "p95_ms": float, "max_ms": float},
-      },
-      "per_trace": {
-         "<trace_id>": {"name": <root span name>, "duration_ms": <root duration_ms>,
-                        "cost_usd": <sum of obskit.cost_usd over ALL spans of the trace, 0 if none>,
-                        "llm_calls": <number of spans of type "llm">,
-                        "error": <True if ANY span of the trace has status "ERROR">},
-      },
-      "cost": {"total_usd": <sum over traces>, "mean_per_trace_usd": <mean over traces>,
-               "p95_per_trace_usd": <percentile 95 of per-trace cost>},
-      "latency": {"p50_ms": ..., "p95_ms": ...},     # over ROOT durations, one per trace
-      "slowest": [{"trace_id", "name", "duration_ms"}, ...],   # top_n traces by root duration,
-                                                               # longest first, ties by trace_id
+      "spans": int, "traces": int (distinct trace_id),
+      "by_type": {"<type>": {"count", "errors", "p50_ms", "p95_ms", "max_ms"}},  # keys sorted
+      "per_trace": {"<trace_id>": {"name": <root span name>, "duration_ms": <root duration>,
+                                   "cost_usd": <obskit.cost_usd over ALL its spans, 0 if none>,
+                                   "llm_calls": <spans of type "llm">,
+                                   "error": <True if ANY of its spans has status "ERROR">}},
+      "cost": {"total_usd", "mean_per_trace_usd", "p95_per_trace_usd"},   # over per-trace costs
+      "latency": {"p50_ms", "p95_ms"},                  # over ROOT durations, one per trace
+      "slowest": [{"trace_id", "name", "duration_ms"}, ...],  # top_n by root duration,
+                                                              # longest first, ties by trace_id
     }
-    Span type: attributes["obskit.span.type"] if present, else
-    sc.TYPE_BY_OPERATION.get(attributes["gen_ai.operation.name"]), else "other".
-    "errors" counts spans whose status is "ERROR". Use your percentile().
+    Span type: attributes["obskit.span.type"] if present, else the type that
+    sc.TYPE_BY_OPERATION gives for attributes["gen_ai.operation.name"], else "other".
+    "errors" counts spans with status "ERROR". Percentiles come from your percentile().
+
+    Stuck? HINTS.md -> summarize
     """
     # TODO(ex3)
     raise NotImplementedError("exercise 3: implement summarize")
@@ -78,10 +78,11 @@ def summarize(spans: Iterable[dict], top_n: int = 5) -> dict:
 
 # ------------------------------------------------------------------ exercise 4
 def israeli_id_valid(s: str) -> bool:
-    """True when s is exactly 9 digits and the check digit is right:
-    multiply the digits by 1,2,1,2,1,2,1,2,1 (left to right); when a product is above 9,
-    subtract 9 (that is the sum of its two digits); the total must divide by 10.
-    "123456782" -> True, "123456789" -> False, "12345678" -> False.
+    """True when s is exactly 9 digits with a correct Israeli ID check digit, else False.
+
+    "123456782" -> True, "123456789" -> False (bad check digit), "12345678" -> False (length).
+
+    Stuck? HINTS.md -> israeli_id_valid
     """
     # TODO(ex4)
     raise NotImplementedError("exercise 4: implement israeli_id_valid")
@@ -90,16 +91,18 @@ def israeli_id_valid(s: str) -> bool:
 def redact_text(text: str) -> tuple[str, int]:
     """Replace personal data and return (new_text, number_of_replacements).
 
-    In this order (an email can contain digits, a phone number can look like an ID):
-      1. emails                      -> "[EMAIL]"     e.g. dana.levi@acme.example
-      2. Israeli phone numbers       -> "[PHONE]"
-           mobile 05X + 7 digits, landline 0[2-4,8,9] + 7 digits, 07X + 7 digits,
-           with or without "-" or spaces after the prefix and after 3 more digits,
-           or with +972 instead of the leading 0 (+972-52-123-4567, +972 52 1234567).
-           Not inside a longer run of digits.
-      3. Israeli ID numbers          -> "[IL_ID]"     a run of EXACTLY 9 digits (not part of
-           a longer number) that passes israeli_id_valid(). Other 9-digit numbers stay.
+      emails                    -> "[EMAIL]"   e.g. dana.levi@acme.example
+      Israeli phone numbers     -> "[PHONE]"   mobile 05X, landline 02/03/04/08/09, or 07X, plus
+                                               7 digits; optional "-" or space after the prefix
+                                               and after 3 more digits; +972 may replace the
+                                               leading 0 (+972-52-123-4567, +972 52 1234567)
+      Israeli ID numbers        -> "[IL_ID]"   exactly 9 digits that pass israeli_id_valid();
+                                               other 9-digit numbers stay
+    A phone or ID inside a longer run of digits is not replaced. The digits of an email are
+    never treated as a phone or ID, and a phone number is never counted as an ID.
     Empty text -> ("", 0).
+
+    Stuck? HINTS.md -> redact_text
     """
     # TODO(ex4)
     raise NotImplementedError("exercise 4: implement redact_text")
@@ -107,11 +110,13 @@ def redact_text(text: str) -> tuple[str, int]:
 
 def redact_attributes(attrs: Mapping[str, Any], skip: Iterable[str] = ()) -> tuple[dict, int]:
     """Return (a NEW dict, total replacements). Never modify `attrs`.
-      - str values: redact_text
-      - list/tuple values: redact each str item, keep the container type
-      - anything else (int, float, bool, None): copied as is
-      - keys listed in `skip`: copied as is
-    JSON strings (like gen_ai.input.messages) are just strings: redact them as text.
+
+      - str values are redacted with redact_text (JSON strings such as gen_ai.input.messages
+        are just strings: redact them as text);
+      - list/tuple values: each str item is redacted, the container type is kept;
+      - anything else (int, float, bool, None) and keys listed in `skip`: copied as is.
+
+    Stuck? HINTS.md -> redact_attributes
     """
     # TODO(ex4)
     raise NotImplementedError("exercise 4: implement redact_attributes")
@@ -126,22 +131,28 @@ def redact_attributes(attrs: Mapping[str, Any], skip: Iterable[str] = ()) -> tup
 
 def is_good(event: dict, slo: SLO) -> Optional[bool]:
     """True = good, False = bad, None = not eligible (counts neither way).
-      availability: good when not event["error"]
-      latency:      None when event["error"] (failures belong to availability);
-                    otherwise good when duration_ms <= slo.threshold
-      grounded:     None when event["error"] or event["grounded"] is None;
-                    otherwise good when grounded is True
+
+      availability: bad when the request failed (event["error"])
+      latency:      not eligible when the request failed (failures belong to availability);
+                    good when duration_ms <= slo.threshold
+      grounded:     not eligible when the request failed or "grounded" is None;
+                    good when grounded is True
       cost:         good when cost_usd <= slo.threshold
     Unknown kind: raise ValueError.
+
+    Stuck? HINTS.md -> is_good
     """
     # TODO(ex6)
     raise NotImplementedError("exercise 6: implement is_good")
 
 
 def burn_rate(events: Sequence[dict], slo: SLO, start_ms: float, end_ms: float) -> float:
-    """Over the events with start_ms <= t_ms < end_ms that are eligible (is_good not None):
-        (bad / eligible) / slo.budget
-    0.0 when no event is eligible. Example: target 0.995, 2 bad out of 100 -> 0.02/0.005 = 4.0
+    """The burn rate of `slo` over the window start_ms <= t_ms < end_ms (start included, end
+    excluded), counting only eligible events (is_good not None). Returns a float: 1.0 means the
+    error budget is spent exactly at the allowed pace. 0.0 when no event is eligible.
+    Example: target 0.995, 2 bad out of 100 eligible -> 4.0
+
+    Stuck? HINTS.md -> burn_rate
     """
     # TODO(ex6)
     raise NotImplementedError("exercise 6: implement burn_rate")
@@ -150,12 +161,14 @@ def burn_rate(events: Sequence[dict], slo: SLO, start_ms: float, end_ms: float) 
 def alerts_at(events: Sequence[dict], slo: SLO, now_ms: float,
               rules: Sequence[AlertRule] = ALERT_RULES) -> list[dict]:
     """Multiwindow, multi-burn-rate alerting, evaluated at now_ms.
-    A rule fires when BOTH windows ending at now_ms burn at least rule.burn:
-        long window  [now_ms - rule.long_min * MINUTE_MS,  now_ms)
-        short window [now_ms - rule.short_min * MINUTE_MS, now_ms)
-    Return one dict per firing rule, in the order of `rules`:
+
+    A rule fires when BOTH of its windows ending at now_ms (rule.long_min and rule.short_min
+    minutes long, now_ms excluded) burn at least rule.burn.
+    Returns one dict per firing rule, in the order of `rules`, with exactly these keys:
         {"severity": rule.severity, "long_min": rule.long_min, "short_min": rule.short_min,
-         "threshold": rule.burn, "long_burn": <float>, "short_burn": <float>}
+         "threshold": rule.burn, "long_burn": float, "short_burn": float}
+
+    Stuck? HINTS.md -> alerts_at
     """
     # TODO(ex6)
     raise NotImplementedError("exercise 6: implement alerts_at")

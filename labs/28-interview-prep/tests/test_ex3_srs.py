@@ -20,15 +20,15 @@ def test_interval_sequence_1_6_then_times_ef():
     s = sm2_review(None, 5, D)                     # I=1, ef 2.6
     s = sm2_review(s, 5, date(2026, 11, 2))        # I=6, ef 2.7
     assert s["interval"] == 6 and s["ef"] == pytest.approx(2.7)
-    s = sm2_review(s, 5, date(2026, 11, 8))        # I=round(6*2.7)=16, ef 2.8
-    assert s["interval"] == 16 and s["reps"] == 3
-    assert s["due"] == "2026-11-24"
+    s = sm2_review(s, 5, date(2026, 11, 8))        # I=ceil(6*2.7)=ceil(16.2)=17, ef 2.8
+    assert s["interval"] == 17 and s["reps"] == 3
+    assert s["due"] == "2026-11-25"
     assert s["ef"] == pytest.approx(2.8)
 
 
 def test_uses_old_ef_for_the_interval():
     s = {"ef": 2.5, "reps": 2, "interval": 6, "lapses": 0, "due": "2026-11-01", "last": "2026-10-26"}
-    out = sm2_review(s, 3, D)  # interval = round(6 * 2.5) = 15, then ef drops to 2.36
+    out = sm2_review(s, 3, D)  # interval = ceil(6 * 2.5) = 15, then ef drops to 2.36
     assert out["interval"] == 15
     assert out["ef"] == pytest.approx(2.36)
 

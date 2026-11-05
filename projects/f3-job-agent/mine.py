@@ -37,32 +37,37 @@ from jobagent.schedule import TZ, latest_slot, slot_key  # noqa: F401
 
 # ------------------------------------------------------------------ M3: dedup
 def job_fingerprint(job: JobPosting) -> str:
-    """A stable id for "the same role": the first 16 hex characters of the sha1 of
-        normalize_title(job.title) + "|" + WHO + "|" + normalize_location(job.location)
-    where WHO = normalize_company(job.company), or, when that is empty, normalize_contact(job.apply)
-    (without it, every anonymous "Backend Engineer" in Tel Aviv would share one fingerprint).
-    None fields normalize to "". Encode the string as UTF-8 before hashing.
+    """A stable id for "the same role": 16 lowercase hex characters.
 
+    The recipe is fixed (tests and stored data depend on it): the first 16 hex characters of the
+    sha1 of the UTF-8 string
+        normalize_title(job.title) + "|" + WHO + "|" + normalize_location(job.location)
+    where WHO = normalize_company(job.company), or normalize_contact(job.apply) when the company
+    normalizes to "" (otherwise every anonymous "Backend Engineer" in Tel Aviv would share one id).
+    None fields normalize to "".
     Example: "Senior Back-End Developer" at "CyberDome Ltd." in "Beer Sheva" and
     "Developer, Senior Backend" at "cyberdome" in "beer sheva" get the same fingerprint.
+
+    Stuck? HINTS.md -> job_fingerprint
     """
     # TODO(M3)
     raise NotImplementedError("M3: implement job_fingerprint")
 
 
 def near_duplicate(a: JobPosting, b: JobPosting, *, title_threshold: float = 0.6) -> bool:
-    """True when a and b are the same role written differently. All of these must hold:
+    """True when a and b are the same role written differently (symmetric). All must hold:
 
-    1. locations: equal after normalize_location, or at least one of them is unknown (None/"")
-    2. seniority words: the sets {junior, senior, lead, principal, staff, mid, head} found in the
-       two normalized titles are equal ("Junior Rust Developer" is NOT "Rust Developer")
+    1. locations equal after normalize_location, or at least one unknown (None/"");
+    2. the same seniority words {junior, senior, lead, principal, staff, mid, head} in both
+       normalized titles ("Junior Rust Developer" is NOT "Rust Developer");
     3. companies (normalize_company):
-         both known   -> they must be equal AND jaccard(title tokens) >= title_threshold
-         one unknown  -> the normalized titles must be identical (and not empty), AND if both
-                         jobs have an apply contact, the contacts must be equal
-                         (normalize_contact). Two different "Backend Engineer" jobs in
-                         Tel Aviv with unknown companies are not the same job.
-    Title tokens = set(normalize_title(title).split()). jaccard() is imported above.
+         both known   -> equal, AND jaccard of the title tokens >= title_threshold
+         one unknown  -> identical, non-empty normalized titles, AND when both jobs have an apply
+                         contact, equal contacts (normalize_contact). Two different "Backend
+                         Engineer" jobs in Tel Aviv with unknown companies are not the same job.
+    Title tokens = the words of normalize_title(title).
+
+    Stuck? HINTS.md -> near_duplicate
     """
     # TODO(M3)
     raise NotImplementedError("M3: implement near_duplicate")
@@ -72,26 +77,20 @@ def near_duplicate(a: JobPosting, b: JobPosting, *, title_threshold: float = 0.6
 def validate_job(job: JobPosting, source_text: str) -> tuple[JobPosting, list[Finding]]:
     """Return (a CLEANED deep copy of job, findings). Never modify `job` itself.
 
-    First apply unmark() to title, company, location and apply (models sometimes copy the
-    datamark character from the spotlighted prompt). Then:
+    Posts are untrusted, and so is the model that read them. The datamark character (unmark())
+    is removed from title, company, location and apply. Findings (tests check `code` and
+    `severity`; `detail` is free text) and their fixes:
+      apply_bad_scheme     (block)  apply is neither an email (EMAIL_RE) nor an http(s):// URL -> None
+      apply_not_in_source  (block)  apply does not appear in source_text (appears_in; a "mailto:"
+                                    prefix is dropped, also in the cleaned value)      -> None
+                                    (a bad scheme is reported instead of this, never both)
+      years_not_in_source  (warn)   years_required not in the text (number_in_text: digits or a
+                                    Hebrew word like "שנתיים")                         -> None
+      link_in_text_field   (block)  title or company contains a URL or email: cut at the first
+                                    link, strip " -:|,"; if empty: company None, title "(unknown title)"
+      title_too_long       (warn)   title over 120 characters -> cut to 120 (rstrip)
 
-    apply_not_in_source  (block)  apply is set but does not appear in source_text. Use
-                                  appears_in(needle, haystack): case-insensitive, whitespace-
-                                  normalized, trailing "/" or "." ignored. A "mailto:" prefix is
-                                  removed before comparing (and in the cleaned value).
-                                  -> apply = None
-    apply_bad_scheme     (block)  apply is neither an email (EMAIL_RE.fullmatch) nor a URL that
-                                  starts with http:// or https://   -> apply = None
-                                  (check the scheme BEFORE checking the source)
-    years_not_in_source  (warn)   years_required is set, but number_in_text(years, source_text)
-                                  is False (digits, or a Hebrew word like "שנתיים")
-                                  -> years_required = None
-    link_in_text_field   (block)  title or company contains a URL or an email (URL_RE / EMAIL_RE):
-                                  cut the field at the first link, strip " -:|,"; if nothing is
-                                  left: company -> None, title -> "(unknown title)"
-    title_too_long       (warn)   len(title) > 120 -> cut to 120 characters (rstrip)
-
-    `detail` is free text (the value or the field name); tests check `code` and `severity`.
+    Stuck? HINTS.md -> validate_job
     """
     # TODO(M5)
     raise NotImplementedError("M5: implement validate_job")
@@ -102,34 +101,30 @@ def score_job(p: JobPosting, prefs: Preferences, *, suspicious: bool = False) ->
     """Return {"score": int, "tier": "match"|"maybe"|"skip", "category": str|None,
                "cv": str|None, "reasons": [str, ...]}.
 
-    score = category (0-50) + location (0-30) + experience (0-20). Read every number from
-    `prefs` (data/preferences.yaml), never hard-code the owner's criteria.
-
-    Category (consider only categories with confidence >= 0.5 that are in prefs.targets):
-      - automation with targets["automation"].prefer_hardware and not p.hardware_oriented
-                                                    -> targets["automation"].web_score points
-      - otherwise                                   -> 50
-      - a category that is not p.primary_category   -> at most prefs.secondary_points
-      Take the best; on a tie prefer the earlier key in prefs.targets. No target -> 0, None.
-    Location: region = region_of(p.location); mode = p.work_mode
-      - region None: 30 if mode == "remote" else prefs.location.unknown_location_points
-      - else the FIRST rule in prefs.location.rules whose region is `region` or "any" and whose
-        modes list contains mode (None is a valid entry: "mode not stated") -> rule.points
-      - no rule matched -> prefs.location.default_points
-    Experience (e = prefs.experience; accepted = targets[category].accept_seniority, or
-    ["mid", "senior"] when there is no category):
-      - seniority points: junior not accepted -> e.junior_points; lead not accepted ->
-        e.lead_points; otherwise 20
-      - years points: None or <= e.ok_up_to_years -> 20; <= e.stretch_up_to_years ->
-        e.stretch_points; more -> 0
-      - experience = min(seniority points, years points)
-    Tier: "match" if score >= prefs.thresholds.match AND category points == 50;
-          "maybe" if score >= prefs.thresholds.maybe AND category points > 0; else "skip".
-          suspicious=True turns a "match" into "maybe" (and adds a reason).
+    score = category (0-50) + location (0-30) + experience (0-20). Every number comes from
+    `prefs` (data/preferences.yaml): never hard-code the owner's criteria.
+    Category: only categories with confidence >= 0.5 that are in prefs.targets count. A full
+      match is 50; automation when targets["automation"].prefer_hardware and the job is not
+      hardware_oriented is worth targets["automation"].web_score; a category other than
+      p.primary_category is worth at most prefs.secondary_points. The best wins; a tie goes to the
+      earlier key in prefs.targets. No target -> 0 points, category None.
+    Location (region_of(p.location), p.work_mode): unknown region -> 30 if remote, else
+      prefs.location.unknown_location_points; otherwise the points of the FIRST rule in
+      prefs.location.rules for that region (or "any") whose modes include the work mode (None is a
+      valid mode: "not stated"); no rule -> prefs.location.default_points.
+    Experience (prefs.experience; accepted seniority = targets[category].accept_seniority, or
+      ["mid", "senior"] with no category): the lower of a seniority score (junior or lead not
+      accepted -> junior_points / lead_points, else 20) and a years score (None or up to
+      ok_up_to_years -> 20, up to stretch_up_to_years -> stretch_points, more -> 0).
+    Tier: "match" needs score >= thresholds.match and 50 category points; "maybe" needs
+      score >= thresholds.maybe and category points > 0; else "skip". suspicious=True turns a
+      "match" into "maybe" and adds a reason.
     cv = prefs.targets[category].cv when there is a category.
     reasons: at least one Hebrew line per component, each with "<points>/<max>", e.g.
-      "[כלל] Beer Sheva (דרום, היברידי): 30/30". Prefix "[מודל]" when the line depends on a
-      model judgment (category, hardware_oriented, seniority word) and "[כלל]" otherwise.
+      "[כלל] Beer Sheva (דרום, היברידי): 30/30". Prefix "[מודל]" when the line rests on a model
+      judgment (category, hardware_oriented, seniority word), "[כלל]" otherwise.
+
+    Stuck? HINTS.md -> score_job
     """
     # TODO(M6)
     raise NotImplementedError("M6: implement score_job")
@@ -137,13 +132,15 @@ def score_job(p: JobPosting, prefs: Preferences, *, suspicious: bool = False) ->
 
 # ------------------------------------------------------------------ M7: scheduling
 def due_slot(now: datetime, done: Iterable[str], *, max_late: timedelta = timedelta(hours=6)) -> Optional[str]:
-    """The slot key to run at `now`, or None. Slots: 08:30, 15:00, 21:00 Asia/Jerusalem.
+    """The slot key to run at `now`, or None. Slots: 08:30, 15:00, 21:00 Asia/Jerusalem (TZ).
 
-    - candidate = latest_slot(now): the most recent slot time <= now (before 08:30 that is
-      yesterday's 21:00). slot_key(dt) turns it into "2026-11-01T08:30".
-    - None if that key is in `done` (already ran: a retry or a duplicate trigger)
-    - None if now - candidate > max_late (too late to be useful; the next slot covers the posts)
-    `now` may be in any time zone (compare aware datetimes, or convert with .astimezone(TZ)).
+    The candidate is the most recent slot at or before `now` (before 08:30 that is yesterday's
+    21:00), as a key like "2026-11-01T08:30" (slot_key). Return None when that key is in `done`
+    (a retry or a duplicate trigger already ran it), or when `now` is more than `max_late` after
+    the slot (the next slot covers the posts). `now` may be in any time zone; daylight saving
+    time must not shift the slots.
+
+    Stuck? HINTS.md -> due_slot
     """
     # TODO(M7)
     raise NotImplementedError("M7: implement due_slot")

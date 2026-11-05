@@ -312,6 +312,33 @@ bdi.lt { unicode-bidi: isolate; }
 .card.untested { border-color: var(--signal); background: var(--signal-soft, var(--surface)); }
 .card.untested p, .card.untested li { line-height: 1.75; }
 .card.untested ul.clean { display: grid; gap: 8px; grid-template-columns: minmax(0, 1fr); }
+/* stage6 */
+.topic .meta { display: block; margin-top: 3px; font-size: .74rem; color: var(--muted); }
+.badge { display: inline-block; font-size: .68rem; padding: 0 6px; border-radius: 999px; border: 1px solid var(--line); margin-inline-start: 6px; vertical-align: 1px; }
+.badge.core { border-color: var(--accent); color: var(--accent); background: var(--accent-soft); }
+.legend { display: flex; gap: 14px; flex-wrap: wrap; font-size: .85rem; color: var(--muted); }
+#side { display: none; }
+@media (min-width: 1280px) {
+  #side { display: block; position: fixed; top: 64px; bottom: 12px; left: 12px; width: 250px; overflow-y: auto;
+          border: 1px solid var(--line); border-radius: 12px; background: var(--surface); padding: 10px 8px; font-size: .82rem; z-index: 5; }
+  #side h5 { margin: 10px 6px 4px; font-size: .74rem; color: var(--muted); font-weight: 600; }
+  #side a { display: grid; grid-template-columns: 2.2em minmax(0, 1fr) 10px; gap: 6px; align-items: center; padding: 4px 6px; border-radius: 6px; color: var(--ink); text-decoration: none; }
+  #side a:hover { background: var(--accent-soft); }
+  #side a.cur { background: var(--accent-soft); font-weight: 600; }
+  #side .n { font-family: var(--mono); color: var(--muted); font-size: .75rem; text-align: center; }
+  #side .tt { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; direction: ltr; text-align: left; }
+  #side .dot { width: 8px; height: 8px; border-radius: 50%; border: 1px solid var(--line); }
+  #side .dot.part { background: var(--accent-soft); border-color: var(--accent); }
+  #side .dot.full { background: var(--accent); border-color: var(--accent); }
+}
+.tabs { display: flex; gap: 6px; flex-wrap: wrap; border-bottom: 1px solid var(--line); padding-bottom: 6px; }
+.tabs button { font: inherit; font-size: .9rem; border: 1px solid var(--line); background: var(--surface); color: var(--ink); border-radius: 999px; padding: 4px 12px; cursor: pointer; }
+.tabs button[aria-selected="true"] { background: var(--accent); border-color: var(--accent); color: #fff; }
+.tabpane { display: grid; gap: 14px; grid-template-columns: minmax(0, 1fr); }
+.tabpane[hidden] { display: none; }
+.live-item { border-inline-start: 3px solid var(--accent); padding: 4px 10px; display: grid; gap: 2px; }
+.live-item .when { font-family: var(--mono); font-size: .75rem; color: var(--muted); }
+.q .opt code, .q h3 code { font-size: .85em; }
 </style>
 
 <div dir="rtl">
@@ -326,106 +353,107 @@ bdi.lt { unicode-bidi: isolate; }
   <div class="toast" id="toast" hidden><span id="toast-text"></span></div>
 </div>
 
-<script src="course.js?v=16"></script>
-<script src="lessons/01.js?v=16"></script>
-<script src="lessons/02.js?v=16"></script>
-<script src="aids/l02.js?v=16"></script>
-<script src="lessons/03.js?v=16"></script>
-<script src="aids/l03.js?v=16"></script>
-<script src="lessons/04.js?v=16"></script>
-<script src="aids/l04.js?v=16"></script>
-<script src="lessons/05.js?v=16"></script>
-<script src="aids/l05.js?v=16"></script>
-<script src="lessons/06.js?v=16"></script>
-<script src="aids/l06.js?v=16"></script>
-<script src="lessons/07.js?v=16"></script>
-<script src="aids/l07.js?v=16"></script>
-<script src="lessons/08.js?v=16"></script>
-<script src="aids/l08.js?v=16"></script>
-<script src="lessons/09.js?v=16"></script>
-<script src="aids/l09.js?v=16"></script>
-<script src="lessons/10.js?v=16"></script>
-<script src="aids/l10.js?v=16"></script>
-<script src="lessons/11.js?v=16"></script>
-<script src="aids/l11.js?v=16"></script>
-<script src="lessons/12.js?v=16"></script>
-<script src="aids/l12.js?v=16"></script>
-<script src="lessons/13.js?v=16"></script>
-<script src="aids/l13.js?v=16"></script>
-<script src="lessons/14.js?v=16"></script>
-<script src="aids/l14.js?v=16"></script>
-<script src="lessons/15.js?v=16"></script>
-<script src="aids/l15.js?v=16"></script>
-<script src="lessons/16.js?v=16"></script>
-<script src="aids/l16.js?v=16"></script>
-<script src="lessons/17.js?v=16"></script>
-<script src="aids/l17.js?v=16"></script>
-<script src="lessons/18.js?v=16"></script>
-<script src="aids/l18.js?v=16"></script>
-<script src="lessons/19.js?v=16"></script>
-<script src="aids/l19.js?v=16"></script>
-<script src="lessons/20.js?v=16"></script>
-<script src="aids/l20.js?v=16"></script>
-<script src="lessons/21.js?v=16"></script>
-<script src="aids/l21.js?v=16"></script>
-<script src="lessons/22.js?v=16"></script>
-<script src="aids/l22.js?v=16"></script>
-<script src="lessons/23.js?v=16"></script>
-<script src="aids/l23.js?v=16"></script>
-<script src="lessons/24.js?v=16"></script>
-<script src="aids/l24.js?v=16"></script>
-<script src="lessons/25.js?v=16"></script>
-<script src="aids/l25.js?v=16"></script>
-<script src="lessons/26.js?v=16"></script>
-<script src="aids/l26.js?v=16"></script>
-<script src="lessons/27.js?v=16"></script>
-<script src="aids/l27.js?v=16"></script>
-<script src="lessons/28.js?v=16"></script>
-<script src="aids/l28.js?v=16"></script>
-<script src="lessons/29.js?v=16"></script>
-<script src="aids/l29.js?v=16"></script>
-<script src="lessons/30.js?v=16"></script>
-<script src="aids/l30.js?v=16"></script>
-<script src="lessons/31.js?v=16"></script>
-<script src="aids/l31.js?v=16"></script>
-<script src="lessons/32.js?v=16"></script>
-<script src="aids/l32.js?v=16"></script>
-<script src="lessons/33.js?v=16"></script>
-<script src="aids/l33.js?v=16"></script>
+<script src="course.js?v=21"></script>
+<script src="live.js?v=21"></script>
+<script src="lessons/01.js?v=21"></script>
+<script src="lessons/02.js?v=21"></script>
+<script src="aids/l02.js?v=21"></script>
+<script src="lessons/03.js?v=21"></script>
+<script src="aids/l03.js?v=21"></script>
+<script src="lessons/04.js?v=21"></script>
+<script src="aids/l04.js?v=21"></script>
+<script src="lessons/05.js?v=21"></script>
+<script src="aids/l05.js?v=21"></script>
+<script src="lessons/06.js?v=21"></script>
+<script src="aids/l06.js?v=21"></script>
+<script src="lessons/07.js?v=21"></script>
+<script src="aids/l07.js?v=21"></script>
+<script src="lessons/08.js?v=21"></script>
+<script src="aids/l08.js?v=21"></script>
+<script src="lessons/09.js?v=21"></script>
+<script src="aids/l09.js?v=21"></script>
+<script src="lessons/10.js?v=21"></script>
+<script src="aids/l10.js?v=21"></script>
+<script src="lessons/11.js?v=21"></script>
+<script src="aids/l11.js?v=21"></script>
+<script src="lessons/12.js?v=21"></script>
+<script src="aids/l12.js?v=21"></script>
+<script src="lessons/13.js?v=21"></script>
+<script src="aids/l13.js?v=21"></script>
+<script src="lessons/14.js?v=21"></script>
+<script src="aids/l14.js?v=21"></script>
+<script src="lessons/15.js?v=21"></script>
+<script src="aids/l15.js?v=21"></script>
+<script src="lessons/16.js?v=21"></script>
+<script src="aids/l16.js?v=21"></script>
+<script src="lessons/17.js?v=21"></script>
+<script src="aids/l17.js?v=21"></script>
+<script src="lessons/18.js?v=21"></script>
+<script src="aids/l18.js?v=21"></script>
+<script src="lessons/19.js?v=21"></script>
+<script src="aids/l19.js?v=21"></script>
+<script src="lessons/20.js?v=21"></script>
+<script src="aids/l20.js?v=21"></script>
+<script src="lessons/21.js?v=21"></script>
+<script src="aids/l21.js?v=21"></script>
+<script src="lessons/22.js?v=21"></script>
+<script src="aids/l22.js?v=21"></script>
+<script src="lessons/23.js?v=21"></script>
+<script src="aids/l23.js?v=21"></script>
+<script src="lessons/24.js?v=21"></script>
+<script src="aids/l24.js?v=21"></script>
+<script src="lessons/25.js?v=21"></script>
+<script src="aids/l25.js?v=21"></script>
+<script src="lessons/26.js?v=21"></script>
+<script src="aids/l26.js?v=21"></script>
+<script src="lessons/27.js?v=21"></script>
+<script src="aids/l27.js?v=21"></script>
+<script src="lessons/28.js?v=21"></script>
+<script src="aids/l28.js?v=21"></script>
+<script src="lessons/29.js?v=21"></script>
+<script src="aids/l29.js?v=21"></script>
+<script src="lessons/30.js?v=21"></script>
+<script src="aids/l30.js?v=21"></script>
+<script src="lessons/31.js?v=21"></script>
+<script src="aids/l31.js?v=21"></script>
+<script src="lessons/32.js?v=21"></script>
+<script src="aids/l32.js?v=21"></script>
+<script src="lessons/33.js?v=21"></script>
+<script src="aids/l33.js?v=21"></script>
 <!-- labguides -->
-<script src="labguides/01.js?v=16"></script>
-<script src="labguides/02.js?v=16"></script>
-<script src="labguides/03.js?v=16"></script>
-<script src="labguides/04.js?v=16"></script>
-<script src="labguides/05.js?v=16"></script>
-<script src="labguides/06.js?v=16"></script>
-<script src="labguides/07.js?v=16"></script>
-<script src="labguides/08.js?v=16"></script>
-<script src="labguides/09.js?v=16"></script>
-<script src="labguides/10.js?v=16"></script>
-<script src="labguides/11.js?v=16"></script>
-<script src="labguides/12.js?v=16"></script>
-<script src="labguides/13.js?v=16"></script>
-<script src="labguides/14.js?v=16"></script>
-<script src="labguides/15.js?v=16"></script>
-<script src="labguides/16.js?v=16"></script>
-<script src="labguides/17.js?v=16"></script>
-<script src="labguides/18.js?v=16"></script>
-<script src="labguides/19.js?v=16"></script>
-<script src="labguides/20.js?v=16"></script>
-<script src="labguides/21.js?v=16"></script>
-<script src="labguides/22.js?v=16"></script>
-<script src="labguides/23.js?v=16"></script>
-<script src="labguides/24.js?v=16"></script>
-<script src="labguides/25.js?v=16"></script>
-<script src="labguides/26.js?v=16"></script>
-<script src="labguides/27.js?v=16"></script>
-<script src="labguides/28.js?v=16"></script>
-<script src="labguides/29.js?v=16"></script>
-<script src="labguides/30.js?v=16"></script>
-<script src="labguides/31.js?v=16"></script>
-<script src="labguides/32.js?v=16"></script>
-<script src="labguides/33.js?v=16"></script>
+<script src="labguides/01.js?v=21"></script>
+<script src="labguides/02.js?v=21"></script>
+<script src="labguides/03.js?v=21"></script>
+<script src="labguides/04.js?v=21"></script>
+<script src="labguides/05.js?v=21"></script>
+<script src="labguides/06.js?v=21"></script>
+<script src="labguides/07.js?v=21"></script>
+<script src="labguides/08.js?v=21"></script>
+<script src="labguides/09.js?v=21"></script>
+<script src="labguides/10.js?v=21"></script>
+<script src="labguides/11.js?v=21"></script>
+<script src="labguides/12.js?v=21"></script>
+<script src="labguides/13.js?v=21"></script>
+<script src="labguides/14.js?v=21"></script>
+<script src="labguides/15.js?v=21"></script>
+<script src="labguides/16.js?v=21"></script>
+<script src="labguides/17.js?v=21"></script>
+<script src="labguides/18.js?v=21"></script>
+<script src="labguides/19.js?v=21"></script>
+<script src="labguides/20.js?v=21"></script>
+<script src="labguides/21.js?v=21"></script>
+<script src="labguides/22.js?v=21"></script>
+<script src="labguides/23.js?v=21"></script>
+<script src="labguides/24.js?v=21"></script>
+<script src="labguides/25.js?v=21"></script>
+<script src="labguides/26.js?v=21"></script>
+<script src="labguides/27.js?v=21"></script>
+<script src="labguides/28.js?v=21"></script>
+<script src="labguides/29.js?v=21"></script>
+<script src="labguides/30.js?v=21"></script>
+<script src="labguides/31.js?v=21"></script>
+<script src="labguides/32.js?v=21"></script>
+<script src="labguides/33.js?v=21"></script>
 <!-- /labguides -->
 <script>
 "use strict";
@@ -501,17 +529,43 @@ const REPO_URL = "https://github.com/davidelka/ai-engineer-course-starter";
 
 /* ---------------- router ---------------- */
 let cleanup = [];
+function renderSide() {
+  let nav = document.getElementById("side");
+  if (!nav) { nav = document.createElement("nav"); nav.id = "side"; nav.setAttribute("aria-label", "כל השיעורים"); document.body.append(nav); }
+  const m = location.hash.match(/^#l(\d\d)/);
+  const cur = m ? m[1] : null;
+  let html = `<a href="#" class="${cur ? "" : "cur"}"><span class="n">⌂</span><span class="tt">דף הבית</span><span></span></a>`;
+  for (const ph of COURSE.phases) {
+    html += `<h5>${ph.name}</h5>`;
+    for (const t of COURSE.topics.filter((x) => x.phase === ph.id)) {
+      const id = pad(t.n); if (!(t.ready && window.LESSONS[id])) continue;
+      const d = lessonDone(id);
+      html += `<a href="#l${id}" class="${id === cur ? "cur" : ""}" title="${esc(t.he)}"><span class="n">${t.label || id}</span><span class="tt">${esc(t.title)}</span><span class="dot ${d === 7 ? "full" : d ? "part" : ""}"></span></a>`;
+    }
+  }
+  nav.innerHTML = html;
+  const c = nav.querySelector("a.cur"); if (c && c.scrollIntoView) c.scrollIntoView({ block: "nearest" });
+}
 function route() {
   cleanup.forEach((f) => f()); cleanup = [];
+  try { renderSide(); } catch (e) {}
   const m = location.hash.match(/^#l(\d\d)(?:s(\d))?$/);
   if (m && window.LESSONS[m[1]]) renderLesson(m[1], m[2] ? Math.min(7, Math.max(1, +m[2])) - 1 : null);
   else renderHome();
   window.scrollTo(0, 0);
 }
 window.addEventListener("hashchange", route);
-Progress.on(() => { if (!location.hash.startsWith("#l")) renderHome(); else refreshRail(); });
+Progress.on(() => { if (!location.hash.startsWith("#l")) renderHome(); else refreshRail(); try { renderSide(); } catch (e) {} });
 
 /* ---------------- home ---------------- */
+// Core path: the lessons and projects that carry the course's thread (Company Brain) end to end.
+// Everything else deepens a topic and can wait. Roughly 100 hours instead of 180.
+const CORE = new Set(["01", "02", "03", "04", "07", "08", "09", "10", "12", "13", "14", "15", "16", "17", "22", "23", "24", "27", "29", "31"]);
+function shortHours(L) {
+  if (!L || !L.hours) return "";
+  const t = L.hours.replace(/<[^>]+>/g, "");
+  return t.split(" (")[0].split(". ")[0];
+}
 function renderHome() {
   const app = $("#app");
   const ready = COURSE.topics.filter((t) => t.ready);
@@ -532,6 +586,9 @@ function renderHome() {
     <p class="muted" style="margin:0">כל שיעור עובר באותן שבע תחנות, באותו סדר. אפשר לקפוץ בין תחנות, וכל תחנה שמסיימים מסומנת.</p>
     <ol class="mmm">${STATIONS.map((s) => `<li><div><b>${s.name}</b><span>${s.what}</span></div></li>`).join("")}</ol></section>`);
   app.append(how);
+  app.append(h(`<section class="card"><div class="eyebrow">Core path</div><h2>מסלול הליבה, ומה אפשר לדחות</h2>
+    <p class="muted" style="margin:0">הקורס המלא הוא בערך 150 עד 200 שעות. <b>מסלול הליבה</b> (20 יחידות, מסומנות "ליבה") עובר על כל החוט של Company Brain, מפרומפט ועד פריסה, בערך 100 שעות. השאר מעמיקים נושא מסוים, ואפשר לחזור אליהם אחר כך בלי לאבד את הרצף. ליד כל יחידה מופיעה הערכת הזמן שלה.</p>
+    <div class="legend"><span><span class="badge core">ליבה</span> חובה לרצף</span><span><span class="badge">העמקה</span> אפשר לדחות</span></div></section>`));
 
   for (const ph of COURSE.phases) {
     const sec = h(`<section class="phase" style="margin-top:18px"><div class="phase-head"><h3>${ph.name}</h3><span class="muted" style="font-size:.88rem">${ph.sub}</span></div></section>`);
@@ -542,7 +599,7 @@ function renderHome() {
       const done = isReady ? lessonDone(id) : 0;
       const pill = !isReady ? `<span class="pill">בקרוב</span>` : done === 7 ? `<span class="pill done">הושלם</span>` : done ? `<span class="pill go">${done}/7</span>` : `<span class="pill go">פתוח</span>`;
       const el = h(`<${isReady ? "a" : "div"} class="topic${isReady ? " ready" : ""}" ${isReady ? `href="#l${id}"` : ""}>
-        <span class="num">${t.label || id}</span><span><span class="t">${esc(t.title)}</span><span class="d">${esc(t.he)}</span></span>${pill}</${isReady ? "a" : "div"}>`);
+        <span class="num">${t.label || id}</span><span><span class="t">${esc(t.title)}</span><span class="d">${esc(t.he)}<span class="badge${CORE.has(id) ? " core" : ""}">${CORE.has(id) ? "ליבה" : "העמקה"}</span></span>${isReady && shortHours(window.LESSONS[id]) ? `<span class="meta">${esc(shortHours(window.LESSONS[id]))}</span>` : ""}</span>${pill}</${isReady ? "a" : "div"}>`);
       sec.append(el);
     }
     app.append(sec);
@@ -709,7 +766,10 @@ function stLab(L, c, id) {
   } else {
     c.append(h(`<div class="card"><h3>הכלים</h3><ul class="clean">${L.lab.tools.map((t) => `<li>${t}</li>`).join("")}</ul></div>`));
   }
-  c.append(h(`<h3 style="margin-top:4px">התרגילים</h3>`));
+  c.append(h(`<h3 class="ex-head" style="margin-top:4px">התרגילים</h3>`));
+  if (L.lab.repoPath && L.lab.exercises.some((e) => /mine\.py/.test((e.text || "") + (e.cmd || "")))) {
+    c.append(h(`<div class="callout"><b>תקוע בתרגיל קוד?</b> ב-<code>mine.py</code> כתוב <b>מה</b> כל פונקציה צריכה לעשות. <b>איך</b>, בשלוש רמות רמז (כיוון, מבנה, האלגוריתם המלא), נמצא ב-<a href="${REPO_URL}/blob/main/${L.lab.repoPath}/HINTS.md" target="_blank" rel="noopener" dir="ltr">HINTS.md</a> באותה תיקייה. כדאי לקרוא רמה אחת, לנסות שוב, ורק אז את הבאה.</div>`));
+  }
   for (const ex of L.lab.exercises) {
     const done = !!Progress.get(["ex", id, ex.id]);
     const el = h(`<div class="ex${done ? " done" : ""}"><input type="checkbox" id="ex-${id}-${ex.id}" ${done ? "checked" : ""}><div><label for="ex-${id}-${ex.id}"><h3>${ex.id.replace("ex", "")}. ${esc(ex.title)}</h3></label><p>${richText(ex.text)}</p></div></div>`);
@@ -720,6 +780,42 @@ function stLab(L, c, id) {
     c.append(el);
   }
   c.append(h(`<div class="callout"><b>הגשה:</b> שלח לי בצ'אט את טבלת הסיכום של כל תרגיל ושתיים-שלוש שורות פרשנות. אני בודק כמו מנחה.</div>`));
+  labTabs(c, id);
+}
+function liveCard(id) {
+  const items = (window.LIVE || {})[id] || [];
+  const card = h(`<div class="card"><div class="eyebrow">Live findings</div><h3>ממצאים חיים</h3>
+    <p class="muted" style="margin:0">מה שהתגלה כשהמעבדה רצה מול ספקים אמיתיים, אחרי שהקורס נכתב. כשמספר כאן סותר את השקופיות, המספר כאן נכון. כל ממצא חדש שאתה מגלה נכנס לכאן (קובץ <code>hub/src/live.js</code>).</p></div>`);
+  if (!items.length) card.append(h(`<p style="margin:0">עוד אין ממצאים חיים לשיעור הזה. הפקודות לבדיקה חיה נמצאות ב-<code>LIVE_CHECKS.md</code>.</p>`));
+  for (const it of items) card.append(h(`<div class="live-item"><span class="when">${esc(it.date)}</span><div>${it.text}</div></div>`));
+  return card;
+}
+function labTabs(c, id) {
+  const kids = [...c.children];
+  const split = kids.findIndex((k) => k.classList && k.classList.contains("ex-head"));
+  if (split < 0) return;
+  const panes = { overview: h(`<div class="tabpane"></div>`), exercises: h(`<div class="tabpane"></div>`), live: h(`<div class="tabpane"></div>`) };
+  const intro = kids[0];  // the one-paragraph lab intro stays above the tabs
+  kids.slice(1, split).forEach((k) => panes.overview.append(k));
+  kids.slice(split).forEach((k) => panes.exercises.append(k));
+  panes.live.append(liveCard(id));
+  const n = ((window.LIVE || {})[id] || []).length;
+  const bar = h(`<div class="tabs" role="tablist">
+    <button role="tab" data-t="overview">סקירה וכלים</button>
+    <button role="tab" data-t="exercises">תרגילים</button>
+    <button role="tab" data-t="live">ממצאים חיים${n ? ` (${n})` : ""}</button></div>`);
+  const KEY = "labtab:" + id;
+  let start = null;
+  try { start = localStorage.getItem(KEY); } catch (e) {}
+  if (!start) start = Object.keys((Progress.state.ex || {})[id] || {}).length ? "exercises" : "overview";
+  function show(t) {
+    for (const [k, el] of Object.entries(panes)) el.hidden = k !== t;
+    bar.querySelectorAll("button").forEach((b) => b.setAttribute("aria-selected", String(b.dataset.t === t)));
+    try { localStorage.setItem(KEY, t); } catch (e) {}
+  }
+  bar.addEventListener("click", (e) => { const b = e.target.closest("button[data-t]"); if (b) show(b.dataset.t); });
+  intro.after(bar, panes.overview, panes.exercises, panes.live);
+  show(panes[start] ? start : "overview");
 }
 async function setupDownload(card) {
   const row = $("#dl-row", card), note = $("#dl-note", card);
@@ -745,17 +841,22 @@ function stQuiz(L, c, id) {
   c.append(head);
   const scoreBox = h(`<div class="card" hidden><div class="score" id="score"></div><div class="muted" id="score-note"></div><div><button class="btn" id="retry">שוב מההתחלה</button></div></div>`);
   L.quiz.forEach((q, qi) => {
-    const card = h(`<div class="card q"><h3><span class="qn">${qi + 1}.</span>${esc(q.q)}</h3></div>`);
-    const opts = q.options.map((o, oi) => {
-      const b = h(`<button class="opt"></button>`); b.textContent = o;
+    const card = h(`<div class="card q"><h3><span class="qn">${qi + 1}.</span>${richText(q.q)}</h3></div>`);
+    // display order is shuffled every time; oi stays the option's index in the data
+    const order = q.options.map((_, i) => i);
+    for (let i = order.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [order[i], order[j]] = [order[j], order[i]]; }
+    const opts = [];
+    order.forEach((oi) => {
+      const o = q.options[oi];
+      const b = h(`<button class="opt"></button>`); b.innerHTML = richText(o); b.dataset.oi = oi;
       b.addEventListener("click", () => {
         if (answers[qi] !== null) return;
         answers[qi] = oi;
-        opts.forEach((x, xi) => { x.disabled = true; if (xi === q.correct) x.classList.add("right"); else if (xi === oi) x.classList.add("wrong"); });
+        opts.forEach((x) => { const xi = +x.dataset.oi; x.disabled = true; if (xi === q.correct) x.classList.add("right"); else if (xi === oi) x.classList.add("wrong"); });
         card.append(h(`<div class="why"><b>${oi === q.correct ? "נכון." : "לא בדיוק."}</b> ${q.explain}</div>`));
         if (answers.every((a) => a !== null)) finish();
       });
-      card.append(b); return b;
+      card.append(b); opts.push(b);
     });
     c.append(card);
   });
@@ -984,4 +1085,4 @@ Progress.init();
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", start); else start();
 })();
 </script>
-<script src="repo.js?v=16" defer></script>
+<script src="repo.js?v=21" defer></script>

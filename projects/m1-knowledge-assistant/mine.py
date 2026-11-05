@@ -33,19 +33,21 @@ from ragkit.types import Hit
 # ------------------------------------------------------------------ M4: context packing
 def pack_context(hits: Sequence[Hit], *, max_chunks: int = 6, max_tokens: int = 1800, max_per_doc: int = 2,
                  count: Optional[Callable[[str], int]] = None) -> list[Hit]:
-    """Choose the chunks for the prompt. Walk `hits` in order (best first) and keep a hit unless:
+    """Choose the chunks for the prompt from `hits` (ranked, best first).
 
-    1. duplicate: its text, normalized as collapse_ws(normalize(text)).lower(), equals the text of
-       a hit already kept (it-laptop-policy and it-laptop-faq repeat whole paragraphs);
-    2. per document: its doc_id already has `max_per_doc` kept hits;
-    3. budget: keeping it would make the total of count(chunk.text) over the kept hits exceed
-       `max_tokens`. Skip it and CONTINUE: a smaller chunk further down may still fit. The FIRST
-       kept hit is always kept, even when it alone is over the budget (an empty prompt helps nobody).
-    Stop as soon as `max_chunks` hits are kept.
+    Returns NEW Hits (the input hits are not modified), in input order, with rank renumbered
+    1..n and a copy of `scores`. Empty input -> [].
+    The result must satisfy:
+    - at most `max_chunks` hits;
+    - no two kept hits with the same text after collapse_ws(normalize(text)).lower()
+      (it-laptop-policy and it-laptop-faq repeat whole paragraphs);
+    - at most `max_per_doc` hits per doc_id;
+    - the total count(chunk.text) of the kept hits is <= `max_tokens`. A hit that does not fit is
+      skipped, not a reason to stop: a smaller hit further down may still fit. Exception: the
+      first kept hit is always kept, even when it alone is over the budget.
+    count defaults to get_tokenizer("approx").count.
 
-    count defaults to get_tokenizer("approx").count (deterministic, no download).
-    Return NEW Hits (dataclasses.replace) with rank renumbered 1..n and a copy of scores. Do not
-    modify the input hits. An empty input gives [].
+    Stuck? HINTS.md -> pack_context
     """
     # TODO(M4)
     raise NotImplementedError("M4: implement pack_context")
@@ -55,16 +57,16 @@ def pack_context(hits: Sequence[Hit], *, max_chunks: int = 6, max_tokens: int = 
 def resolve_citations(text: str, context: Sequence[Hit]) -> list[Citation]:
     """Turn the [n] markers of an answer into Citations, checked against the context that was sent.
 
-    - Markers: "[2]", and grouped "[1, 3]" or "[1;3]" (CITE_RE matches all three; split the group
-      on "," or ";"). "[1][3]" is two markers.
-    - Order: first appearance in the text; a number that appears again is not repeated.
-    - Valid when 1 <= n <= len(context). Then fill every field from context[n-1].chunk:
+    - Markers: "[2]", grouped "[1, 3]" or "[1;3]"; "[1][3]" is two markers. No markers -> [].
+    - One Citation per distinct number, in order of first appearance.
+    - Valid (1 <= n <= len(context)): every field comes from context[n-1].chunk:
         Citation(n, True, doc_id, chunk_id=chunk.id, title=chunk.title, section=chunk.section or None,
                  effective_date=chunk.effective_date or None, start=chunk.start, end=chunk.end,
                  snippet=snippet_of(chunk.text))
-    - Invalid (0, or larger than the number of sources): Citation(n=n, valid=False), other fields None.
-      The model invented a source; the UI shows it in red and the evaluation counts it.
-    - No markers: [].
+    - Invalid (0, or more than the number of sources): Citation(n=n, valid=False), other fields
+      None. The model invented a source; the UI shows it in red and the evaluation counts it.
+
+    Stuck? HINTS.md -> resolve_citations
     """
     # TODO(M5)
     raise NotImplementedError("M5: implement resolve_citations")
@@ -74,17 +76,18 @@ def resolve_citations(text: str, context: Sequence[Hit]) -> list[Citation]:
 def route_question(question: str) -> Route:
     """Decide the path of a question: Route(kind, reason, matched).
 
-    Normalize: q = " ".join(question.lower().split()). Search each regex of the three lists in q
-    (re.search), and collect the matched TEXT (m.group(0)) of each pattern that matches, in list order.
-
-    1. If any DOC_CUES pattern matches          -> Route("docs", "policy/process wording", <doc matches>)
-    2. elif an AGG_CUES pattern AND an ENTITY_CUES pattern match
-                                                -> Route("data", "aggregate over a table entity", <agg> + <entity>)
-    3. else                                     -> Route("docs", "no aggregate + table entity", <agg> + <entity>)
+    The cues are the regexes in DOC_CUES, AGG_CUES and ENTITY_CUES (acmeqa/router.py); matching
+    ignores case and extra whitespace. `matched` holds the matched TEXT of each cue that fired, in list order.
+    - any doc cue fires          -> Route("docs", "policy/process wording", <the doc matches>)
+    - an aggregate AND an entity cue fire (no doc cue)
+                                 -> Route("data", "aggregate over a table entity", <agg> + <entity>)
+    - otherwise                  -> Route("docs", "no aggregate + table entity", <agg> + <entity>)
 
     Examples: "How many open P1 tickets do we have right now?" -> data, matched ["how many", "tickets", "p1"];
     "How many sick days do employees in Israel accrue per year?" -> docs (doc cue "accrue");
     "כמה קריאות P1 פתוחות יש כרגע?" -> data; "What is a Red Folder account?" -> docs.
+
+    Stuck? HINTS.md -> route_question
     """
     # TODO(M6)
     raise NotImplementedError("M6: implement route_question")

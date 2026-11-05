@@ -1,7 +1,7 @@
 """Your code for lesson 27. Each part is checked by tests in ./tests.
 
 The reference versions live in deploykit/ (dockerfile.py, terraform.py, cost.py).
-Try not to read them before your tests pass.
+Try not to read them before your tests pass. Stuck? HINTS.md in this folder has graded hints.
 
     python -m pytest -q labs/27-deployment/tests
 
@@ -83,17 +83,17 @@ def rule_base_image_pinned(instrs: list[Instruction]) -> list[Finding]:
 def rule_runs_as_non_root(instrs: list[Instruction]) -> list[Finding]:
     """The FINAL stage (the one `docker build` produces by default) must not run as root.
 
-    rule name "runs_as_non_root", severity "error", at most ONE finding.
-    The effective user of a stage is the value of its LAST USER instruction (only the part
-    before ":", so "app:app" -> "app", "10001:10001" -> "10001"). A stage with no USER:
-      - built FROM an earlier stage (its base equals an earlier stage's alias, case-insensitive,
-        or its index as a string): inherits that stage's effective user (follow the chain);
-      - built FROM an external image: root, unless the image name contains "nonroot"
-        (distroless images like gcr.io/distroless/python3-debian12:nonroot run as non-root).
-    The user is root when it is "root" or "0" (case-insensitive).
-    If the final stage runs as root, return one Finding whose message contains "root";
-    where = str(line of the final stage's last USER), or of its FROM if it has no USER.
-    No FROM at all: one error, where "1", message "no FROM instruction".
+    Returns [] or exactly ONE Finding("runs_as_non_root", "error", where, message).
+    - The user a stage runs as is set by its last USER ("app:app" means user "app"). A
+      stage without USER inherits from its base: an earlier stage it is built FROM (by
+      alias, case-insensitive, or by index), or an external image, which runs as root
+      unless its name contains "nonroot" (gcr.io/distroless/python3-debian12:nonroot).
+    - Root means "root" or "0" (case-insensitive).
+    - Final stage as root: message contains "root"; where = str(line) of the final
+      stage's last USER, or of its FROM if it has none.
+    - No FROM at all: one finding, where "1", message "no FROM instruction".
+
+    Stuck? HINTS.md -> rule_runs_as_non_root
     """
     # TODO(ex5)
     raise NotImplementedError("exercise 5: implement rule_runs_as_non_root")
@@ -102,18 +102,19 @@ def rule_runs_as_non_root(instrs: list[Instruction]) -> list[Finding]:
 def rule_no_secrets_in_build(instrs: list[Instruction]) -> list[Finding]:
     """No secret may be baked into the image.
 
-    rule name "no_secrets_in_build", severity "error", where = str(ins.line).
-    For every instruction:
-      1. If it is ENV or ARG, look at each (key, value) of env_pairs(ins):
-         a. looks_like_secret_value(value)            -> a finding (message contains the key)
-         b. else looks_like_secret_name(key) and (it is an ARG, or the value is non-empty)
-                                                      -> a finding (message contains the key)
-            ARG: mention "secret" in the message (hint: RUN --mount=type=secret).
-            ENV ANTHROPIC_API_KEY= (empty) is a placeholder, not a leak: no finding.
-      2. If step 1 did NOT already report a key-shaped VALUE for this instruction, check the
-         whole text ins.args + "\\n" + ins.heredoc with looks_like_secret_value -> one finding.
-         (This catches RUN curl -H "x-api-key: sk-ant-..." and secrets in heredocs.)
-    So ENV ANTHROPIC_API_KEY=sk-ant-... gives exactly ONE finding (1a), not two.
+    Findings: Finding("no_secrets_in_build", "error", str(ins.line), message).
+    Must be reported:
+      - ENV or ARG whose value looks like a real key (message contains the variable name);
+      - ENV with a secret-looking NAME and a non-empty value (message contains the name);
+      - ARG with a secret-looking name, even without a value (message contains the name
+        and the word "secret": the fix is RUN --mount=type=secret);
+      - a key-shaped value anywhere else in an instruction or its heredoc
+        (RUN curl -H "x-api-key: sk-ant-...").
+    Not reported: ENV ANTHROPIC_API_KEY= (empty) is a placeholder, not a leak.
+    One leak, one finding: ENV ANTHROPIC_API_KEY=sk-ant-... gives exactly ONE, not two.
+    Use the helpers listed at the top of this file.
+
+    Stuck? HINTS.md -> rule_no_secrets_in_build
     """
     # TODO(ex5)
     raise NotImplementedError("exercise 5: implement rule_no_secrets_in_build")
@@ -121,20 +122,19 @@ def rule_no_secrets_in_build(instrs: list[Instruction]) -> list[Finding]:
 
 # ------------------------------------------------------------------ exercise 6
 def rule_iam_least_privilege(statements: Iterable[PolicyStatement]) -> list[Finding]:
-    """Least privilege, statement by statement. rule name "iam_least_privilege", where = st.where.
+    """Least privilege, statement by statement:
+    Finding("iam_least_privilege", severity, st.where, message). Deny statements
+    (effect "Deny", any case) produce nothing. For an Allow statement:
+      - each full wildcard action ("*", "s3:*", any case) -> error naming the action as written;
+      - each partial wildcard action ("s3:Get*")          -> warning naming it as written;
+      - not_actions used at all                           -> one error, message contains "not_actions";
+      - Resource "*" together with iam:PassRole           -> one error, message contains "PassRole";
+      - otherwise Resource "*" with any action that does not require it (that is, not in
+        STAR_ONLY_ACTIONS) -> one warning; the message contains "'*'" and those actions,
+        lower-cased, sorted, joined with ", ".
+    Trust policies (has_principals, no resources) have no Resource "*" warning.
 
-    Skip statements whose effect is "Deny" (case-insensitive). For each other statement:
-      1. for EACH action a (compare lower-cased, stripped):
-           a == "*" or a ends with ":*"     -> error, message contains the action as written
-           else "*" in a  ("s3:Get*")       -> warning, message contains the action as written
-      2. not_actions is non-empty           -> one error, message contains "not_actions"
-      3. let star = any resource equals "*"; acts = the set of lower-cased actions
-           star and "iam:passrole" in acts  -> one error, message contains "PassRole"
-           elif star and not (acts and acts <= STAR_ONLY_ACTIONS)
-                                            -> one warning, message contains "'*'" and the
-                                               sorted lower-cased actions NOT in STAR_ONLY_ACTIONS
-                                               joined with ", "
-    Trust policies (has_principals, no resources) produce nothing in step 3 because star is False.
+    Stuck? HINTS.md -> rule_iam_least_privilege
     """
     # TODO(ex6)
     raise NotImplementedError("exercise 6: implement rule_iam_least_privilege")
@@ -144,22 +144,28 @@ def rule_iam_least_privilege(statements: Iterable[PolicyStatement]) -> list[Find
 def monthly_cost(cfg: DeployConfig, prices: dict = PRICES) -> dict:
     """Monthly AWS cost of the deployment, as explained line items.
 
-    Return {"items": {...}, "total": float, "per_day": float} where items has EXACTLY these
-    keys (USD), with h = cfg.hours and f = prices["fargate"][cfg.arch]:
-      fargate_cpu      tasks_avg * vcpu * h * f["vcpu_hour"]
-      fargate_memory   tasks_avg * memory_gb * h * f["gb_hour"]
-      alb_hours        alb_count * h * prices["alb_hour"]
-      alb_lcu          alb_count * lcu_avg * h * prices["lcu_hour"]
-      public_ipv4      ((tasks_avg if task_public_ip else 0) + alb_count * azs) * h * prices["public_ipv4_hour"]
-                       (every running task with a public IP, plus one address per AZ per ALB)
-      nat_gateway      nat_gateways * h * prices["nat_hour"] + nat_gb * prices["nat_gb"]
-      vpc_endpoints    interface_endpoints * azs * h * prices["vpce_hour_per_az"]
-      secrets_manager  secrets * prices["secret_month"] + secret_api_calls / 10_000 * prices["secret_per_10k_calls"]
-      cloudwatch_logs  log_gb * (prices["logs_ingest_gb"] + prices["logs_store_gb_month"])
-      ecr_storage      image_gb * prices["ecr_gb_month"]
-      alarms           alarms * prices["alarm_month"]
-    total = sum of the items; per_day = total * 24 / h (0.0 when h == 0).
-    Raise KeyError (naturally, from the dict lookup) for an unknown cfg.arch.
+    Return {"items": {...}, "total": float, "per_day": float}. items has EXACTLY these
+    keys, in USD for the month of cfg.hours running hours, priced from `prices`
+    (Fargate rates from prices["fargate"][cfg.arch]):
+      fargate_cpu, fargate_memory   the average number of tasks, each with its vCPU / GB
+      alb_hours, alb_lcu            each ALB's hours, and its average LCUs per hour
+      public_ipv4                   every running task with a public IP, plus one address
+                                    per AZ per ALB
+      nat_gateway                   NAT gateway hours plus the data processed (nat_gb)
+      vpc_endpoints                 each interface endpoint, in every AZ
+      secrets_manager               secrets per month plus API calls (priced per 10,000)
+      cloudwatch_logs               log GB ingested and stored
+      ecr_storage, alarms           per GB-month / per alarm-month
+    total = sum of the items; per_day = the total for 24 running hours (0.0 when hours == 0).
+    An unknown cfg.arch raises KeyError (naturally, from the dict lookup).
+    cfg fields: vcpu, memory_gb, arch, tasks_avg, hours, alb_count, lcu_avg, azs,
+      task_public_ip, nat_gateways, nat_gb, interface_endpoints, secrets,
+      secret_api_calls, log_gb, image_gb, alarms.
+    prices keys: fargate[arch]["vcpu_hour" | "gb_hour"], alb_hour, lcu_hour,
+      public_ipv4_hour, nat_hour, nat_gb, vpce_hour_per_az, secret_month,
+      secret_per_10k_calls, logs_ingest_gb, logs_store_gb_month, ecr_gb_month, alarm_month.
+
+    Stuck? HINTS.md -> monthly_cost
     """
     # TODO(ex7)
     raise NotImplementedError("exercise 7: implement monthly_cost")

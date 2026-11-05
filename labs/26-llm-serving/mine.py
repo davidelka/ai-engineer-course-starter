@@ -1,7 +1,8 @@
 """Your code for lesson 26. Each part is checked by tests in ./tests.
 
 servekit/ has reference versions (ratelimit.py, gate.py, idempotency.py).
-Try not to peek before your tests pass. When they pass, run the service on
+Try not to peek before your tests pass (stuck? HINTS.md has graded hints).
+When they pass, run the service on
 YOUR code and watch it work:
 
     python -m pytest -q labs/26-llm-serving/tests
@@ -26,22 +27,22 @@ from servekit.idempotency import Begin  # the result type exercise 6 returns
 class TokenBucket:
     """A token bucket for ONE API key.
 
-    - Holds up to `burst` tokens. A new bucket starts FULL (tokens == burst).
-    - Refills continuously at `rate` tokens per second, never above `burst`.
-      Refill lazily: on every call, add (now - self.updated) * rate, cap at burst,
-      and set self.updated = now. If `now` is earlier than self.updated (a clock
-      that went backwards), add nothing.
-    - try_acquire(cost, now) takes `cost` tokens if available and returns
-      (True, 0.0). Otherwise it takes NOTHING and returns (False, wait), where
-      wait = seconds until the bucket will hold `cost` tokens:
-      (cost - tokens) / rate.
-    - A cost larger than burst can never succeed: return (False, math.inf).
+    - Holds up to `burst` tokens. A new bucket starts FULL.
+    - Refills continuously at `rate` tokens per second, never above `burst`, with no
+      background thread or timer. A clock that goes backwards adds nothing.
+    - try_acquire(cost, now) -> (ok, wait):
+        enough tokens -> takes `cost` and returns (True, 0.0);
+        otherwise     -> takes NOTHING and returns (False, wait), wait = the seconds
+                         until the bucket will hold `cost` tokens;
+        cost > burst  -> can never succeed: (False, math.inf).
     - `now` defaults to self.clock(). Tests pass explicit times.
-    - Keep the current level in self.tokens (a float): the service reads it to
+    - self.tokens (a float) always holds the current level: the service reads it to
       fill the RateLimit header.
 
     Example, rate=2/s, burst=3: at t=0 three calls pass, the 4th returns
     (False, 0.5); at t=0.5 one call passes again.
+
+    Stuck? HINTS.md -> TokenBucket
     """
 
     def __init__(self, rate: float, burst: float, clock: Callable[[], float] = time.monotonic):
@@ -63,25 +64,25 @@ class ConcurrencyGate:
     """At most `limit` requests inside at once; up to `max_queue` more may wait,
     each at most `queue_timeout` seconds; everyone else is refused at once.
 
-    acquire() rules:
-      1. If a slot is free AND nobody is waiting, take it immediately.
-         (Don't jump the queue: if someone is waiting, you wait behind them.)
-      2. Else, if self.waiting >= self.max_queue: count it in
-         self.rejected["queue_full"] and raise GateRejected("queue_full", self.retry_after()).
-         This must happen WITHOUT awaiting anything: shedding has to be instant.
-      3. Else wait for a slot for at most queue_timeout seconds, keeping
-         self.waiting correct (+1 while waiting, -1 when done waiting, whatever
-         the outcome). On timeout: count it in self.rejected["queue_timeout"]
-         and raise GateRejected("queue_timeout", self.retry_after()).
-      4. On success: self.active += 1 and self.admitted += 1.
-    Use self._sem (an asyncio.Semaphore(limit)); asyncio.wait_for gives you the timeout.
+    acquire() guarantees:
+      - No queue jumping: a newcomer gets a free slot at once only if nobody is waiting.
+      - Queue full (self.waiting already at max_queue): refused INSTANTLY, without
+        awaiting anything, with GateRejected("queue_full", self.retry_after()).
+      - A waiter that gets no slot within queue_timeout seconds is refused with
+        GateRejected("queue_timeout", self.retry_after()).
+      - Counters stay correct whatever happens: self.waiting (callers waiting right
+        now), self.active and self.admitted (+1 each on admission), and
+        self.rejected["queue_full"] / ["queue_timeout"] (+1 per refusal).
+      - Slots are the asyncio.Semaphore self._sem, which release() frees.
 
-    retry_after(): whole seconds a refused client should wait before retrying:
-      ceil(self._avg_service * (self.waiting + 1) / self.limit), and at least 1.
-    (avg_service is the moving average of how long a request holds a slot; the
-    formula is "how long until the queue in front of you drains".)
+    retry_after() -> int: whole seconds a refused client should wait, at least 1: an
+    estimate of how long until the queue in front of it drains, from self._avg_service
+    (moving average of how long a request holds a slot), self.waiting and self.limit.
+    The test checks exact values: see HINTS.md if yours differ.
 
     release() and slot() are given.
+
+    Stuck? HINTS.md -> ConcurrencyGate.acquire, ConcurrencyGate.retry_after
     """
 
     def __init__(self, limit: int, max_queue: int = 0, queue_timeout: float = 1.0):
@@ -129,9 +130,14 @@ class ConcurrencyGate:
 
 # ------------------------------------------------------------------ exercise 6
 def fingerprint(body: dict) -> str:
-    """sha256 hex digest of the body as CANONICAL JSON, so that key order and
-    whitespace don't matter: json.dumps(body, sort_keys=True, separators=(",", ":"),
-    ensure_ascii=False), encoded as UTF-8."""
+    """sha256 hex digest of the body as CANONICAL JSON: two bodies that differ only in
+    key order or whitespace get the same fingerprint, and non-ASCII text (Hebrew) is
+    hashed as UTF-8, not as \\u escapes. The canonical form is an interface shared with
+    servekit (the test checks it exactly):
+        json.dumps(body, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
+
+    Stuck? HINTS.md -> fingerprint
+    """
     # TODO(ex6)
     raise NotImplementedError("exercise 6: implement fingerprint")
 
@@ -152,6 +158,8 @@ class IdempotencyStore:
       (complete on an unknown key does nothing.)
     abandon(scope, key): forget the key (the first attempt failed; let a retry run).
     __len__: number of live entries.
+
+    Stuck? HINTS.md -> IdempotencyStore
     """
 
     def __init__(self, ttl: float = 86_400, clock: Callable[[], float] = time.monotonic):

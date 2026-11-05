@@ -4,6 +4,9 @@ NotImplementedError until you write it. The tests are in tests/; run them with
 
 Reference implementations exist in mcpkit/ (oncall.py, bridge.py, pinning.py). Don't read them
 before your tests pass.
+
+Each docstring is a contract: what goes in, what comes out, and the rules the result must follow.
+When you are stuck, HINTS.md has graded hints for every function (direction, structure, full algorithm).
 """
 
 from __future__ import annotations
@@ -47,28 +50,23 @@ def get_oncall_for_service(service: str, catalog: Optional[str] = None) -> dict:
     service: matched case-insensitively after strip(); spaces and underscores count as dashes
         ("Flow API" is not a service, "flow_api" -> "flow-api").
     catalog: the catalog Markdown text; None means read the real file (mcpkit.oncall.catalog_text()).
+        Only the "## Production services" table counts, not other tables in the document.
 
-    Returns a dict with EXACTLY these keys:
-        service            the name as written in the table ("flow-api")
-        owner_team         "Core API"
-        team_lead          "Itai Barak"
-        tier               int, 1..3
-        rotation           "core-api-oncall"; None for business-hours services (lighthouse)
-        schedule           "weekly, handover Sunday 10:00": the text after "<rotation>:" up to ";" if any.
-                           For a shared rotation ("engine-oncall (shared with flow-engine)") copy the
-                           schedule from the row that defines that rotation. None when there is none.
-        secondary          "platform-oncall" from "...; secondary is platform-oncall", else None
-        shared_with        "flow-engine" from "(shared with flow-engine)", else None
-        channel            "#data-help" for "business hours, #data-help", else None
-        pagerduty_service  "flow-api-prod"; None when the cell is "none"
-        coverage           "24/7" for tiers 1-2, "business hours" for tier 3
-        ack_minutes        5 for tier 1, 15 for tier 2, None for tier 3
-        runbook            the runbook doc id (see above) or None
-        source             always "eng-service-catalog"
+    Returns a dict with EXACTLY these keys (values for flow-api unless noted):
+        service "flow-api" (as written in the table), owner_team "Core API", team_lead "Itai Barak",
+        tier 1 (an int), rotation "core-api-oncall" (None for lighthouse), schedule "weekly, handover
+        Sunday 10:00" (a shared rotation gets the schedule of the row that defines it; None when there
+        is none), secondary "platform-oncall" for auth-service else None, shared_with "flow-engine" for
+        flow-scheduler else None, channel "#data-help" for lighthouse else None, pagerduty_service
+        "flow-api-prod" (None for "none"), coverage and ack_minutes from the tier rules above,
+        runbook (the doc id from the runbook rule above, or None), source "eng-service-catalog".
 
-    Errors: empty service -> raise ToolError("service is empty. ..."). Unknown service -> raise ToolError
-    whose message contains the requested name and either close matches (difflib.get_close_matches,
-    cutoff 0.5: "flow-ap" -> "flow-api") or, when nothing is close, the list of known service names.
+    Errors (ToolError, written for the model): empty service -> a message containing "empty";
+    unknown service -> the message names the requested service and either close matches
+    (difflib.get_close_matches, cutoff 0.5: "flow-ap" -> "flow-api") or, when nothing is close,
+    every known service name.
+
+    Stuck? HINTS.md -> get_oncall_for_service
     """
     raise NotImplementedError("exercise 3")
 
@@ -97,16 +95,18 @@ def get_oncall_for_service(service: str, catalog: Optional[str] = None) -> dict:
 
 
 def mcp_tool_to_llmkit(tool: dict, server: Optional[str] = None) -> Tool:
-    """One MCP tool (the JSON dict above) -> llmkit Tool.
+    """One MCP tool (the JSON dict above) -> llmkit Tool. The input dict is never mutated.
 
-    name:  f"{server}__{tool['name']}" when server is given, else tool["name"]. Then replace every
-           character outside [a-zA-Z0-9_-] with "_". If the result is longer than 64 characters, keep the
-           first 55, then "_", then the first 8 hex chars of sha256(<the name BEFORE replacing>, utf-8).
-    description: tool["description"], or tool["title"] if there is no description, or the name;
-           stripped of surrounding whitespace.
-    input_schema: a DEEP copy of tool["inputSchema"] (or {} if missing) without the top-level "title"
-           key, with "type": "object" and "properties": {} added when missing. Never mutate the input dict.
+    name: f"{server}__{tool['name']}" when server is given, else tool["name"], made legal for every
+        provider: each character outside [a-zA-Z0-9_-] becomes "_". A name still longer than 64
+        characters becomes its first 55 characters + "_" + the first 8 hex characters of the sha256
+        (utf-8) of the name BEFORE the replacement, so long names stay unique.
+    description: tool["description"], else tool["title"], else the name; stripped.
+    input_schema: an independent (deep) copy of tool["inputSchema"] (or {} if missing) without the
+        top-level "title" key, and always with "type": "object" and a "properties" mapping.
     strict: False.
+
+    Stuck? HINTS.md -> mcp_tool_to_llmkit
     """
     raise NotImplementedError("exercise 4a")
 
@@ -114,14 +114,16 @@ def mcp_tool_to_llmkit(tool: dict, server: Optional[str] = None) -> Tool:
 def call_result_to_tool_result(call: ToolCall, result: dict) -> ToolResult:
     """One MCP tools/call result (the JSON dict above) -> llmkit ToolResult for `call`.
 
-    Build the text from result["content"] (a list, maybe empty or missing), one part per block:
-        {"type": "text", "text": t}                          -> t
-        {"type": "resource", "resource": {"uri": u, "text": t}} -> "[resource u]\\n" + t   (rstrip the part)
-        {"type": "resource_link", "uri": u, ...}              -> "[resource link u]"
-        any other type (image, audio)                       -> "[<type> omitted: <mimeType>]"  ("?" if missing)
-    Join the non-empty parts with "\\n\\n". If that text is empty and "structuredContent" is present, use
-    json.dumps(structuredContent, ensure_ascii=False) instead.
-    Return ToolResult(call.id, text, is_error=bool(result.get("isError")), name=call.name).
+    The text has one part per block of result["content"] (a list, maybe empty or missing),
+    non-empty parts joined with "\n\n":
+        {"type": "text", "text": t}                             -> t
+        {"type": "resource", "resource": {"uri": u, "text": t}} -> "[resource u]\n" + t, rstripped
+        {"type": "resource_link", "uri": u, ...}                -> "[resource link u]"
+        any other type (image, audio)                           -> "[<type> omitted: <mimeType>]" ("?" if missing)
+    No text but a "structuredContent" -> that object as JSON (ensure_ascii=False, Hebrew stays readable).
+    Returns ToolResult(call.id, text, is_error=bool(result.get("isError")), name=call.name).
+
+    Stuck? HINTS.md -> call_result_to_tool_result
     """
     raise NotImplementedError("exercise 4b")
 
@@ -137,26 +139,33 @@ def call_result_to_tool_result(call: ToolCall, result: dict) -> ToolResult:
 
 
 def tool_fingerprint(tool: dict) -> str:
-    """sha256 hex digest of the canonical JSON of {"name", "description", "inputSchema"} only:
-    json.dumps(obj, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode("utf-8").
-    A missing description counts as "" and a missing inputSchema as {}. title, annotations and _meta
-    are ignored (they do not reach the model's prompt)."""
+    """sha256 hex digest of what reaches the model's prompt: the tool's name, description and
+    inputSchema only. It must equal mcpkit.pinning's fingerprint, so the canonical form is fixed:
+    json.dumps({"name", "description", "inputSchema"}, sort_keys=True, separators=(",", ":"),
+    ensure_ascii=False), encoded as utf-8. A missing description counts as "" and a missing
+    inputSchema as {}. title, annotations and _meta are ignored (they do not reach the prompt).
+
+    Stuck? HINTS.md -> tool_fingerprint
+    """
     raise NotImplementedError("exercise 7a")
 
 
 def diff_tool_pins(pinned: dict, current: list[dict]) -> dict:
     """Compare pins with what the server lists now.
 
-    pinned: a lockfile body as above, OR just its "tools" mapping (accept both: use pinned["tools"] when
-            the key exists). current: a list of MCP tool dicts (tools/list JSON).
+    pinned: a lockfile body as above, OR just its "tools" mapping (accept both).
+    current: a list of MCP tool dicts (tools/list JSON).
     Returns {"ok": bool, "added": [...], "removed": [...], "changed": [...]}:
         added    sorted names listed now but not pinned
         removed  sorted names pinned but not listed now
-        changed  for names in both whose tool_fingerprint differs from the pinned sha256, sorted by name:
-                 {"name", "old_sha256", "new_sha256",
-                  "description_diff": "\\n".join(difflib.unified_diff(old.splitlines(), new.splitlines(),
-                                                 "pinned", "current", lineterm=""))  or "" if the text is equal,
-                  "schema_changed": pinned inputSchema != current inputSchema (missing counts as {})}
+        changed  names in both whose tool_fingerprint differs from the pinned sha256, sorted by name,
+                 each {"name", "old_sha256", "new_sha256", "description_diff", "schema_changed"}:
+                   description_diff: a unified diff of the description lines, labelled "pinned" and
+                     "current", lines joined with "\n" and no line terminators (difflib.unified_diff
+                     with lineterm=""); "" when the text is equal. It must match mcpkit.pinning exactly.
+                   schema_changed: the inputSchemas differ (missing counts as {}).
         ok       True only when added, removed and changed are all empty.
+
+    Stuck? HINTS.md -> diff_tool_pins
     """
     raise NotImplementedError("exercise 7b")

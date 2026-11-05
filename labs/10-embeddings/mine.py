@@ -21,12 +21,13 @@ import numpy as np
 def l2_normalize(x) -> np.ndarray:
     """Scale every row of x to length 1 (Euclidean norm).
 
-    - x is array-like of shape (n, d) or (d,). A 1-D input is treated as ONE row and the
-      result has shape (1, d). Always return a NEW float32 array; do not modify x.
+    - x is array-like of shape (n, d) or (d,). A 1-D input is ONE row; the result then has
+      shape (1, d). Always return a NEW float32 array; do not modify x.
     - A row whose norm is 0 (or below 1e-12) stays all zeros: no division by zero, no NaN.
 
         l2_normalize([3, 4])             -> [[0.6, 0.8]]
         l2_normalize([[3, 4], [0, 0]])   -> [[0.6, 0.8], [0.0, 0.0]]
+    Stuck? HINTS.md -> l2_normalize
     """
     raise NotImplementedError("exercise 2: l2_normalize")
 
@@ -35,18 +36,15 @@ def cosine_top_k(query, matrix, k: int = 5) -> tuple[np.ndarray, np.ndarray]:
     """Exact nearest neighbors of `query` among the rows of `matrix`, by cosine similarity.
 
     - query: shape (d,); matrix: shape (n, d). Neither is assumed to be normalized.
-    - Return (indices, scores): two 1-D numpy arrays of length min(k, n), best first.
+    - Returns (indices, scores): two 1-D numpy arrays of length min(k, n), best first.
       indices are row numbers (ints), scores the cosine similarities (floats in [-1, 1]).
-    - Ties: the lower row index comes first.
-    - k larger than n returns all n rows; an empty matrix (n == 0) returns two empty arrays.
-    - Use vectorized numpy (normalize, one matrix-vector product), not a Python loop over rows.
-      Bonus: np.argpartition selects the top k in O(n) before sorting only those k.
+    - Ties: the lower row index first. k > n returns all n rows; n == 0 returns two empty arrays.
+    - Vectorized numpy, no Python loop over rows.
 
         m = [[10, 0], [0.6, 0.8], [0, 1]]
         cosine_top_k([1, 0], m, 2)  -> (array([0, 1]), array([1.0, 0.6]))
-        # row 0 points exactly where the query points: cosine 1.0. Its length (10) plays no
-        # role. With a raw dot product, row 0 would score 10 and a long vector in a slightly
-        # wrong direction could beat a short one in the right direction.
+        # row 0 points exactly where the query points: cosine 1.0, its length (10) plays no role.
+    Stuck? HINTS.md -> cosine_top_k
     """
     raise NotImplementedError("exercise 2: cosine_top_k")
 
@@ -63,6 +61,7 @@ def recall_at_k(ranked: Sequence[str], relevant: Iterable[str], k: int) -> float
 
         recall_at_k(["x", "a", "x", "b", "c"], ["a", "b"], 2)  -> 0.5   (ranking x, a, b, c)
         recall_at_k(["x", "a", "x", "b", "c"], ["a", "b"], 3)  -> 1.0
+    Stuck? HINTS.md -> recall_at_k
     """
     raise NotImplementedError("exercise 3: recall_at_k")
 
@@ -74,31 +73,36 @@ def reciprocal_rank(ranked: Sequence[str], relevant: Iterable[str], k: Optional[
 
         reciprocal_rank(["x", "a", "x", "b"], ["b"])        -> 1/3
         reciprocal_rank(["x", "a", "x", "b"], ["b"], k=2)   -> 0.0
+    Stuck? HINTS.md -> reciprocal_rank
     """
     raise NotImplementedError("exercise 3: reciprocal_rank")
 
 
 # ------------------------------------------------------------------ exercise 4
 def cache_key(model_id: str, kind: str, text: str) -> str:
-    """The cache key of one embedding: the sha256 hex digest (64 chars) of the UTF-8 bytes of
-    model_id + "\\x1f" + kind + "\\x1f" + text   ("\\x1f" is the ASCII unit separator).
-    kind is "query" or "document". The SAME function is used by ragkit's CachedEmbedder, so
-    your keys must match it exactly (a test checks this)."""
+    """The cache key of one embedding: a 64-char sha256 hex digest. kind is "query" or
+    "document". ragkit's CachedEmbedder uses the SAME key, so it must match exactly (a test
+    checks this). The interface:
+        sha256 of the UTF-8 bytes of  model_id + "\\x1f" + kind + "\\x1f" + text
+    ("\\x1f" is the ASCII unit separator).
+    Stuck? HINTS.md -> cache_key
+    """
     raise NotImplementedError("exercise 4: cache_key")
 
 
 def embed_with_cache(texts: Sequence[str], embed_fn: Callable[[list[str]], np.ndarray],
                      cache: MutableMapping, model_id: str, kind: str = "document") -> np.ndarray:
-    """Return the vectors of `texts` (shape (len(texts), d), float32, in the order of `texts`),
-    paying the model only for what is not cached.
+    """Return the vectors of `texts`, paying the model only for what is not cached.
 
-    - Look up every text in `cache` (a dict-like: key -> 1-D vector) by cache_key(model_id,
-      kind, text). Use cache.get(key) (it returns None for a miss).
-    - Call embed_fn AT MOST ONCE, with the missing texts only, each distinct text once, in
-      the order they first appear. Do not call it at all if nothing is missing.
-      embed_fn(list_of_str) returns an array of shape (len(list), d).
-    - Store every new vector in the cache under its key, then build the result.
+    - Returns shape (len(texts), d), float32, in the order of `texts`.
+    - cache: a dict-like, cache_key(model_id, kind, text) -> 1-D vector; cache.get(key) returns
+      None for a miss.
+    - embed_fn(list_of_str) returns shape (len(list), d). It is called AT MOST ONCE, with the
+      missing texts only, each distinct text once, in the order they first appear; not at all
+      if nothing is missing.
+    - Every new vector is stored in the cache under its key.
     - Duplicated input texts get the same vector (and are embedded once).
-    - If embed_fn returns a different number of vectors than it was given, raise RuntimeError.
+    - embed_fn returns a different number of vectors than it was given -> RuntimeError.
+    Stuck? HINTS.md -> embed_with_cache
     """
     raise NotImplementedError("exercise 4: embed_with_cache")

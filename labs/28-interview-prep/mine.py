@@ -1,7 +1,7 @@
 """Your code for lesson 28. Each part is checked by tests in ./tests.
 
 interviewkit/ (rubric.py, srs.py, aicoding.py) has reference versions.
-Try not to peek before your tests pass.
+Try not to peek before your tests pass. Stuck? HINTS.md in this folder has graded hints.
 
     python -m pytest -q labs/28-interview-prep/tests
 """
@@ -34,6 +34,8 @@ def term_in(text: str, term: str) -> bool:
       - a term that ends with "*" is a prefix: "calibrat*" is in "calibration"
       - a term whose edge is not alphanumeric has no boundary on that side:
             "%" is in "20%"
+
+    Stuck? HINTS.md -> term_in
     """
     # TODO(ex2)
     raise NotImplementedError("exercise 2: implement term_in")
@@ -57,7 +59,7 @@ def score_answer(answer: str, question: dict, min_words: int = 40, max_words: in
         measurement: the answer contains "%", or any term of MEASURE_TERMS
 
     Return:
-        {"score": int,            # round(100 * (0.75 * coverage + 0.25 * checks_passed / 4))
+        {"score": int,            # round() of 100 * (75% coverage + 25% share of the 4 checks passed)
          "coverage": float,       # covered weight / total weight, rounded to 3 places
          "covered": [ids],        # in rubric order
          "missing": [ids],        # in rubric order
@@ -66,6 +68,8 @@ def score_answer(answer: str, question: dict, min_words: int = 40, max_words: in
          "words": int}
     Raise ValueError if the rubric is empty or its total weight is 0.
     A point without "weight" has weight 1.
+
+    Stuck? HINTS.md -> score_answer
     """
     # TODO(ex2)
     raise NotImplementedError("exercise 2: implement score_answer")
@@ -83,12 +87,16 @@ def sm2_review(state: Optional[dict], grade: int, today: date) -> dict:
     grade: int 0..5 (5 perfect, 3 correct with effort, 0-2 failed). Anything else
     (including bool, float, 6, -1) raises ValueError.
 
-    If grade >= 3:  interval = 1 if reps == 0, 6 if reps == 1, else round(interval * ef)
-                    (Python's round(), using the OLD ef); then reps += 1
-    If grade < 3:   reps = 0, interval = 1, lapses += 1
-    Always, after the interval: ef = ef + (0.1 - (5 - grade) * (0.08 + (5 - grade) * 0.02))
-                    then ef = max(1.3, ef), rounded to 4 places.
-    due = today + interval days (ISO string), last = today (ISO string).
+    Behavior (classic SM-2, as in SuperMemo's published algorithm):
+      - success (grade >= 3): the next interval is 1 day after the first success, 6 after
+        the second, then the previous interval times ef (the ef from BEFORE this review),
+        rounded UP to whole days, as in the original SM-2; reps counts consecutive successes.
+      - failure (grade < 3): back to a 1-day interval, reps 0, lapses + 1.
+      - ef: the standard SM-2 easiness update for this grade (look it up, or see the
+        hints), never below 1.3, rounded to 4 places.
+      - due = today + interval days, last = today, both ISO strings.
+
+    Stuck? HINTS.md -> sm2_review
     """
     # TODO(ex3)
     raise NotImplementedError("exercise 3: implement sm2_review")
@@ -96,7 +104,10 @@ def sm2_review(state: Optional[dict], grade: int, today: date) -> dict:
 
 def grade_from_score(score: float) -> int:
     """Map a 0-100 answer score to an SM-2 grade:
-    >= 90 -> 5, >= 75 -> 4, >= 60 -> 3, >= 40 -> 2, >= 20 -> 1, else 0."""
+    >= 90 -> 5, >= 75 -> 4, >= 60 -> 3, >= 40 -> 2, >= 20 -> 1, else 0.
+
+    Stuck? HINTS.md -> grade_from_score
+    """
     # TODO(ex3)
     raise NotImplementedError("exercise 3: implement grade_from_score")
 
@@ -105,11 +116,13 @@ def pick_session(bank_ids: Iterable[str], states: dict[str, dict], today: date,
                  new_per_day: int = 5, limit: int = 15) -> list[str]:
     """Which questions to practise today, in order.
 
-    1. Due reviews: ids from bank_ids that have a state with due <= today, sorted by
-       (due, ef, id): the most overdue first, and among equals the harder card (lower ef).
-       States of ids that are not in bank_ids are ignored.
-    2. Then new cards: ids from bank_ids without a state, in bank order, at most new_per_day.
-    3. The whole list is cut to `limit`.
+    - First the due reviews: ids from bank_ids whose state is due today or earlier, the
+      most overdue first; equal due dates: the harder card (lower ef) first, then by id.
+      States of ids that are not in bank_ids are ignored.
+    - Then new cards: ids from bank_ids without a state, in bank order, at most new_per_day.
+    - At most `limit` ids in all.
+
+    Stuck? HINTS.md -> pick_session
     """
     # TODO(ex3)
     raise NotImplementedError("exercise 3: implement pick_session")
@@ -126,6 +139,8 @@ def top_k_cosine(query: np.ndarray, matrix: np.ndarray, k: int) -> list[tuple[in
     - k > n -> all n rows
     - query not 1-D, matrix not 2-D, or d mismatch -> ValueError
     Vectorize with numpy: no Python loop over the rows.
+
+    Stuck? HINTS.md -> top_k_cosine
     """
     # TODO(ex6)
     raise NotImplementedError("exercise 6: implement top_k_cosine")
@@ -136,17 +151,17 @@ def fit_to_budget(messages: list[dict], budget: int,
     """Trim a chat history to fit a token budget. messages: [{"role": ..., "content": ...}]
     with role in system / user / assistant. A message costs count(content) + MESSAGE_OVERHEAD.
 
-    Rules:
-      1. Every system message is kept, and they come first in the result.
-      2. The last non-system message (the current turn) is always kept. If the system
-         messages plus that message exceed the budget, raise ValueError.
-         No non-system messages at all -> ValueError.
-      3. Walk back from the newest older message and keep messages while the total
-         still fits. Stop at the first one that does not fit (never skip it to keep an
-         even older one: the kept history must be contiguous).
-      4. If more than one non-system message is kept and the oldest kept one is from
-         the assistant, drop it, so the conversation starts with the user.
-      5. Return new dicts (copies), in the original order. Do not mutate the input.
+    The result (total cost <= budget):
+      - every system message, first;
+      - the last non-system message (the current turn), always. ValueError if the system
+        messages plus it do not fit, or if there are no non-system messages;
+      - as many of the most recent older messages as fit, as one CONTIGUOUS stretch of
+        history (never skip a message to keep an even older one);
+      - the kept history starts with a user message: an assistant message at its start
+        is dropped (unless the current turn is the only one kept);
+      - new dicts (copies), in the original order. The input is not mutated.
+
+    Stuck? HINTS.md -> fit_to_budget
     """
     # TODO(ex6)
     raise NotImplementedError("exercise 6: implement fit_to_budget")

@@ -40,42 +40,33 @@ from datakit.guard import FORBIDDEN_FUNCTIONS, FORBIDDEN_NODES, GuardResult, Pol
 def guard_sql(sql: str, policy: Policy, role: str) -> GuardResult:
     """Decide whether SQL written by a model may run, and return the SQL to run.
 
-    policy.columns   {table: [column, ...]}         the allow-list of tables and columns
-    policy.sensitive {"table.column": "pii"|"financial"}
-    policy.roles     {role: {"tables": [...], "sees": ["pii", "financial"]}}
-    policy.row_limit the maximum LIMIT
-
-    Return GuardResult(ok=False, reason=...) on the FIRST problem, checked in this order:
-      1. unknown role                                   reason contains "unknown role"
-      2. does not parse (sqlglot.parse, read="sqlite") reason contains "parse"
-         or the number of statements is not exactly 1  reason contains "one statement"
-         (sqlglot.parse returns None for an empty trailing statement after ';': ignore those)
-      3. the statement is not a query (exp.Select or exp.SetOperation for UNION/INTERSECT/EXCEPT)
-                                                        reason contains "only SELECT"
-         or any node in FORBIDDEN_NODES appears anywhere in the tree (tree.find_all)
-                                                        reason contains "forbidden"
-         or a function in FORBIDDEN_FUNCTIONS is called (exp.Func nodes; for exp.Anonymous
-         use .name, otherwise .sql_name(); compare lowercase) reason contains "not allowed"
-      4. tables (exp.Table nodes; CTE names from exp.CTE are local and skipped):
-         - empty table name (a table-valued function like pragma_table_info(...))  "not allowed"
-         - schema-qualified (t.args.get("db") or t.args.get("catalog"))            "schema-qualified"
-         - not in policy.columns                                                    "not allowed"
-         - not in the role's tables                                                 "not allowed for role"
-      5. columns: run qualify(tree.copy(), schema=policy.schema_for(tables), dialect="sqlite",
-         validate_qualify_columns=True, quote_identifiers=False). It expands SELECT * and
-         resolves every column to its source. OptimizeError -> reason contains "resolve".
-         Then for every scope in traverse_scope(qualified), for every col in scope.columns,
-         source = scope.sources.get(col.table); if it is an exp.Table, the column read is
-         "<table>.<column>" (lowercase). Collect them in order, without duplicates.
-      6. any column read whose policy.sensitive level is not in the role's "sees":
-         reason exactly: "column <table>.<column> is <level>; role <role> may not see it"
-      7. LIMIT on the OUTERMOST query (tree.args.get("limit")):
-         - missing: add LIMIT policy.row_limit, changes ["added LIMIT <n>"]
-         - a plain integer above row_limit: lower it, changes ["lowered LIMIT <old> to <n>"]
-         - anything else (a subquery, an expression, a string): reject, reason contains "LIMIT"
-    On success: GuardResult(ok=True, sql=tree.sql(dialect="sqlite"), tables=[...in order of
-    first appearance], columns=[...], changes=[...]).
-    Write reasons for the MODEL: they are sent back to it in a repair turn.
+    Receives the SQL text, a Policy and a role name. The Policy carries:
+        policy.columns   {table: [column, ...]}   allow-list of tables and columns
+        policy.sensitive {"table.column": "pii"|"financial"}
+        policy.roles     {role: {"tables": [...], "sees": ["pii", "financial"]}}
+        policy.row_limit the maximum LIMIT;  policy.schema_for(tables) a schema for sqlglot
+    Returns a GuardResult. On the FIRST problem (in this priority order) ok=False, and reason
+    contains the quoted words:
+      1. role not in policy.roles                                        "unknown role"
+      2. SQL does not parse (SQLite dialect)                             "parse"
+         not exactly one statement (a trailing ';' alone is fine)        "one statement"
+      3. not a query (SELECT or UNION/INTERSECT/EXCEPT)                  "only SELECT"
+         a FORBIDDEN_NODES node anywhere                                 "forbidden"
+         a FORBIDDEN_FUNCTIONS function is called                        "not allowed"
+      4. a table-valued function, or a table outside policy.columns      "not allowed"
+         a schema-qualified table (main.customers)                       "schema-qualified"
+         a table outside the role's tables                               "not allowed for role"
+         (names defined by a CTE are local, not tables)
+      5. a column that cannot be resolved to a source table              "resolve"
+      6. a column READ anywhere (SELECT *, WHERE, ORDER BY, subqueries, CTEs) whose sensitive
+         level the role does not see -> reason EXACTLY:
+             "column <table>.<column> is <level>; role <role> may not see it"
+      7. the outermost LIMIT is not a plain integer                      "LIMIT"
+    On success: ok=True, sql=the query in SQLite dialect with the OUTERMOST LIMIT capped at
+    row_limit, changes=["added LIMIT <n>"] or ["lowered LIMIT <old> to <n>"] or [],
+    tables=[in order of first appearance], columns=["table.column" lowercase, in order, no
+    duplicates]. Reasons are sent back to the MODEL in a repair turn: write them for it.
+    Stuck? HINTS.md -> guard_sql
     """
     # TODO(ex3)
     raise NotImplementedError("exercise 3: implement guard_sql")
@@ -86,20 +77,17 @@ def results_match(pred_rows: Sequence[Sequence[Any]], gold_rows: Sequence[Sequen
                   ordered: bool = False, allow_extra_columns: bool = False) -> bool:
     """Execution accuracy: do two query results contain the same answer?
 
-    Normalize every value first:
-      - bool -> int
-      - float -> round(v, 4); and if the rounded value is a whole number, int (so 3.0 == 3)
-      - str -> stripped
-      - everything else (int, None) unchanged
-    Then:
-      - different number of rows -> False; both empty -> True
-      - ordered=False: compare as multisets (duplicates count: [1, 1] != [1])
-        ordered=True: compare as lists
-      - column order does not matter: try every permutation of the predicted columns
-        (itertools.permutations(range(pred_width), gold_width))
-      - the predicted result may have MORE columns than the gold only when
-        allow_extra_columns=True (then some choice of gold_width predicted columns must match);
-        fewer columns is always False
+    Receives two results (sequences of rows, each row a sequence of values). Returns bool.
+      - Values are compared after normalization: bool counts as int, floats are equal when
+        they agree to 4 decimals and a whole float equals the int (3.0 == 3), strings are
+        compared stripped. int and None compare as they are.
+      - Different number of rows -> False; both empty -> True.
+      - ordered=False: rows compared as multisets (duplicates count: [1, 1] != [1]).
+        ordered=True: compared as lists.
+      - Column order does not matter.
+      - The prediction may have MORE columns than the gold only when allow_extra_columns=True
+        (then some choice of gold-width columns must match). Fewer columns: always False.
+    Stuck? HINTS.md -> results_match
     """
     # TODO(ex5)
     raise NotImplementedError("exercise 5: implement results_match")
@@ -118,17 +106,17 @@ def apply_row_policy(sql: str, row_policy: dict[str, str], params: dict[str, str
         SELECT COUNT(*) FROM employees
      -> SELECT COUNT(*) FROM (SELECT * FROM employees WHERE team = 'core-api') AS employees
 
-    Rules:
-      - every exp.Table whose name (lowercase) is in row_policy, anywhere in the tree (FROM,
-        JOIN, subqueries, CTE bodies, UNION branches), EXCEPT names defined by a CTE
-      - collect the targets first, then replace them (so the new inner tables are not rewritten)
-      - alias = the table's alias if it has one, else its name
-      - parse the condition with sqlglot and replace each exp.Placeholder (":team") with
-        exp.Literal.string(value). Never build SQL by string concatenation: a value like
+    Rules the result must satisfy:
+      - every reference to a policed table (name compared lowercase) is filtered, wherever it
+        is: FROM, JOIN, subqueries, CTE bodies, UNION branches. A name defined by a CTE is not
+        a table and is not rewritten.
+      - the alias is the table's alias if it has one, else its name.
+      - parameter values become SQL string literals, never string concatenation: a value like
         "x' OR '1'='1" must stay one harmless string.
-      - a placeholder with no value in params: raise KeyError
-      - empty row_policy: return sql unchanged
-    Return the rewritten SQL as a string (dialect="sqlite").
+      - a placeholder with no value in params: raise KeyError.
+      - empty row_policy: return sql unchanged.
+    Returns the rewritten SQL as a string (SQLite dialect).
+    Stuck? HINTS.md -> apply_row_policy
     """
     # TODO(ex6)
     raise NotImplementedError("exercise 6: implement apply_row_policy")
@@ -139,20 +127,19 @@ def freshness_report(con: sqlite3.Connection, tables: list[str], now: Union[str,
                      max_age_hours: Union[float, dict[str, float]] = 24.0) -> list[Freshness]:
     """How old is the data in each table, and is it too old?
 
-    For each table, in the given order, return a Freshness(table, extracted_at, age_hours,
-    max_age_hours, stale, source_system, note):
-      - extracted_at: the OLDEST row's _extracted_at (SELECT MIN(_extracted_at), MAX(_extracted_at))
-      - age_hours: hours between that and `now`, rounded to 2 decimals (use parse_ts for both)
-      - max_age_hours: the number, or max_age_hours[table] (default 24) when a dict is given
+    Receives an open connection, table names, `now` (ISO string or datetime, naive or aware)
+    and max_age_hours (one number, or {table: hours} with 24 for a missing table).
+    Returns one Freshness(table, extracted_at, age_hours, max_age_hours, stale, source_system,
+    note) per table, in the given order:
+      - extracted_at: the OLDEST row's _extracted_at
+      - age_hours: hours from extracted_at to now, rounded to 2 decimals
       - stale: age_hours > max_age_hours
-      - source_system: from the provenance table (WHERE table_name = ?), "" if no row
-      - note:
-          * MIN != MAX: the rows were extracted at different times. Note must contain
-            "partial" (a half-finished load is the usual cause).
-          * else, if the provenance row's extracted_at differs from the rows: note contains
-            "provenance".
-          * else "".
+      - source_system: from the provenance table row for this table, "" if there is none
+      - note: contains "partial" if the rows were extracted at different times; otherwise
+        contains "provenance" if the provenance row's extracted_at differs from the rows';
+        otherwise "".
       - empty table: extracted_at "", age_hours float("inf"), stale True, note "table is empty"
+    Stuck? HINTS.md -> freshness_report
     """
     # TODO(ex7)
     raise NotImplementedError("exercise 7: implement freshness_report")

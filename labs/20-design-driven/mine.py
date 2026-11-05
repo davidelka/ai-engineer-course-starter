@@ -36,6 +36,8 @@ class ChatModel(Protocol):
         complete(self, system: str, prompt: str, *, max_tokens: int = 512) -> Completion
     Promises: non-empty text; raises ModelUnavailable (transient) or ModelRejected
     (permanent), never a provider or transport exception.
+
+    Stuck? HINTS.md -> ChatModel
     """
     # TODO(ex2): declare `name: str` and the `complete` method
 
@@ -48,6 +50,8 @@ class Retriever(Protocol):
         search(self, query: str, k: int = 4) -> list[Passage]
     Promises: at most k, highest score first, unique doc_ids, [] when nothing
     matches (never raises for that), deterministic; RetrieverUnavailable when down.
+
+    Stuck? HINTS.md -> Retriever
     """
     # TODO(ex2)
 
@@ -61,6 +65,8 @@ class AnswerStore(Protocol):
         put(self, answer: Answer) -> bool
     Promises: put stores only if absent and returns True; if the id exists it returns
     False and does NOT overwrite (first write wins).
+
+    Stuck? HINTS.md -> AnswerStore
     """
     # TODO(ex2)
 
@@ -71,25 +77,29 @@ class Clock(Protocol):
 
     Members:
         now(self) -> datetime          timezone-aware
+
+    Stuck? HINTS.md -> Clock
     """
     # TODO(ex2)
 
 
 # ================================================================== exercise 2: fakes
 class FakeChatModel:
-    """A fake model with real, predictable behavior.
+    """A fake model with real, predictable behavior. Satisfies the ChatModel port.
 
     __init__(self, reply=None, *, fail=None, name="fake:chat")
-      reply: None, a str (always that), a list[str] (call 1 gets reply[0], call 2
-             reply[1], ...; after the end keep returning the last one), or a callable
-             (system, prompt) -> str.
-             None: if the prompt contains <document id="X" ...>, answer with a sentence
-             that cites the FIRST such id as [X]; otherwise "I don't know."
-      fail:  None, "unavailable" (raise ModelUnavailable) or "rejected" (raise
-             ModelRejected). Anything else: ValueError in __init__.
-    complete(...) appends (system, prompt, max_tokens) to self.calls BEFORE failing or
-    answering, and returns Completion(text, model=self.name, input_tokens=len(prompt)//4,
+      reply: None, a str (always that), a list[str] (one per call in order; after the end keep
+             returning the last one), or a callable (system, prompt) -> str.
+             None: if the prompt contains <document id="X" ...>, the reply cites the FIRST such
+             id as [X]; otherwise the reply is exactly "I don't know."
+      fail:  None, "unavailable" (complete raises ModelUnavailable) or "rejected" (raises
+             ModelRejected). Any other value: ValueError in __init__.
+    self.calls: list of (system, prompt, max_tokens), one per complete() call, recorded even
+    when the call fails.
+    complete returns Completion(text, model=self.name, input_tokens=len(prompt)//4,
     output_tokens=max(1, len(text)//4)).
+
+    Stuck? HINTS.md -> FakeChatModel
     """
 
     def __init__(self, reply: Union[None, str, list[str], Callable[[str, str], str]] = None,
@@ -102,10 +112,14 @@ class FakeChatModel:
 
 
 class InMemoryRetriever:
-    """__init__(self, passages, *, fail=False). search() appends the query to
-    self.calls, raises RetrieverUnavailable if fail, else returns
-    rank(query, passages, k) (rank is in designkit.domain and already keeps the
-    promises: sorted, unique, at most k, [] on no match)."""
+    """Satisfies the Retriever port over a fixed list of passages.
+
+    __init__(self, passages, *, fail=False). self.calls: the list of queries searched, in order.
+    search raises RetrieverUnavailable when fail is set, otherwise keeps every Retriever promise
+    (designkit.domain.rank already does the ranking).
+
+    Stuck? HINTS.md -> InMemoryRetriever
+    """
 
     def __init__(self, passages: list[Passage], *, fail: bool = False):
         raise NotImplementedError("exercise 2: InMemoryRetriever")
@@ -115,7 +129,10 @@ class InMemoryRetriever:
 
 
 class InMemoryAnswerStore:
-    """A dict behind the AnswerStore port. First write wins."""
+    """A dict behind the AnswerStore port. First write wins.
+
+    Stuck? HINTS.md -> InMemoryAnswerStore
+    """
 
     def __init__(self):
         raise NotImplementedError("exercise 2: InMemoryAnswerStore")
@@ -128,8 +145,11 @@ class InMemoryAnswerStore:
 
 
 class FixedClock:
-    """now() returns a fixed aware datetime (default 2026-11-01 09:00 UTC);
-    advance(seconds) moves it forward."""
+    """Satisfies the Clock port. now() returns a fixed aware datetime (default 2026-11-01 09:00
+    UTC, or `at` when given); advance(seconds) moves it forward.
+
+    Stuck? HINTS.md -> FixedClock
+    """
 
     def __init__(self, at: Optional[datetime] = None):
         raise NotImplementedError("exercise 2: FixedClock")
@@ -145,26 +165,24 @@ class FixedClock:
 class AnswerService:
     """The behavior of legacy/tangled.py, written against the ports only.
 
-    __init__(self, model, retriever, store, clock, *, prompt=ANSWER_PROMPT_V1, k=4,
-             min_score=0.2, max_tokens=512): keep them all; construct NOTHING inside.
+    __init__ keeps every argument it receives and constructs NOTHING inside.
+    answer(req) -> Answer, with request_id = req.request_id and created_at = clock.now().
+    Outcomes (status, text, what is stored):
+      - an answer already stored for req.request_id: returned as is, no other port is called;
+      - policy_check refuses: "refused", text = the decision's reason; stored; no search, no model;
+      - retriever down (RetrieverUnavailable): "degraded", text = degraded_text([]); NOT stored;
+      - no passage with score >= min_score: "no_context", text = NO_CONTEXT_TEXT; stored; no model;
+      - model down (ModelUnavailable): "degraded", text = degraded_text(passages), citations =
+        the doc_ids of those passages; NOT stored (a retry may succeed);
+      - ModelRejected: propagates (a bug or a config problem), nothing stored;
+      - otherwise "answered": text = the completion text, citations = only ids of passages that
+        were sent (parse_citations), prompt_version = prompt.ref, model and cost_usd from the
+        Completion; stored.
+    The model is called with the prompt version's template as system, build_prompt(...) as the
+    prompt, and self.max_tokens; the retriever with self.k. If another call stored the same
+    request_id first, return the stored answer instead of yours.
 
-    answer(self, req: AnswerRequest) -> Answer, in this order:
-      1. store.get(req.request_id): if found, return it as is (no other port is called).
-      2. policy_check(question, user_email): if not allowed -> status "refused",
-         text = decision.reason; store it; return it. No search, no model call.
-      3. retriever.search(question, k), keep passages with score >= min_score.
-         RetrieverUnavailable -> status "degraded", text = degraded_text([]), NOT stored.
-         Nothing left -> status "no_context", text = NO_CONTEXT_TEXT; store; return.
-      4. model.complete(prompt.template, build_prompt(question, passages), max_tokens=...)
-         ModelUnavailable -> status "degraded", text = degraded_text(passages),
-         citations = [p.doc_id for p in passages], NOT stored (a retry may succeed).
-         ModelRejected -> let it propagate (it is a bug or a config problem).
-      5. status "answered", text = completion.text,
-         citations = parse_citations(text, {doc_ids of the passages sent}),
-         prompt_version = prompt.ref, model = completion.model, cost_usd = completion.cost_usd.
-      6. store.put(answer); if it returns False (another call stored this id first),
-         return store.get(id) instead.
-    Every Answer gets created_at = clock.now() and request_id = req.request_id.
+    Stuck? HINTS.md -> AnswerService
     """
 
     def __init__(self, model: ChatModel, retriever: Retriever, store: AnswerStore, clock: Clock,
@@ -207,6 +225,8 @@ class ChatModelContract:
       - token counts and cost are not negative
       - "unavailable" raises ModelUnavailable, and nothing else
       - "rejected" raises ModelRejected, and nothing else
+
+    Stuck? HINTS.md -> ChatModelContract
     """
 
     def make_model(self, mode: str):
@@ -224,6 +244,8 @@ class RetrieverContract:
       - unique doc_ids, even if the same passage was given twice
       - no match and an empty query both return [] (not an exception)
       - the same query twice returns the same result
+
+    Stuck? HINTS.md -> RetrieverContract
     """
 
     def make_retriever(self, passages: list[Passage]):
@@ -239,6 +261,8 @@ class AnswerStoreContract:
       - get() of an unknown id returns None
       - put() then get() returns an equal Answer, and put() returned True
       - a second put() with the same request_id returns False and does not overwrite
+
+    Stuck? HINTS.md -> AnswerStoreContract
     """
 
     def make_store(self):
@@ -254,21 +278,20 @@ class IncompatibleVersion(ValueError):
 
 def check_compatible(old: Optional[dict], new: Optional[dict]) -> list[str]:
     """Breaking changes for CODE THAT READS the output, between two JSON Schemas
-    (from Model.model_json_schema()). Look only at top-level "properties" and "required".
-    Each message starts with "breaking:" and names the field in quotes, e.g.
-        "breaking: removed field 'citations'"
+    (from Model.model_json_schema()). Only top-level "properties" and "required" matter.
 
-    Breaking:
-      - old is not None and new is None (schema removed)
-      - a field that old REQUIRED is missing in new (an optional field could always be
-        missing, so removing it breaks no careful reader)
-      - a field required in old is not required in new
-      - a field can hold a type it could not before (e.g. now also null). Types come
-        from "type" (str or list) or from the members of "anyOf".
-      - an enum gained values (a new status the reader has never seen). Enum values come
-        from "enum" or "const", also inside "anyOf" members.
-      - a field had an enum and now has none (any string is allowed)
-    NOT breaking: new fields, fewer types, fewer enum values. old is None -> [].
+    Returns a list of messages, [] when nothing breaks. Each message starts with "breaking:",
+    names the field in single quotes, and names what is new (the new type, e.g. null, or the
+    new enum values), e.g. "breaking: removed field 'citations'".
+
+    Breaking: the schema removed (old given, new None); a REQUIRED field removed; a required
+    field no longer required; a field that can now hold a type it could not before ("type" as
+    str or list, or "anyOf" members); an enum ("enum"/"const", also inside "anyOf") that gained
+    values; a field that had an enum and now has none.
+    NOT breaking: new fields, removing an optional field, fewer types, fewer enum values.
+    old is None -> [].
+
+    Stuck? HINTS.md -> check_compatible
     """
     # TODO(ex6)
     raise NotImplementedError("exercise 6: check_compatible")
@@ -280,15 +303,17 @@ class PromptRegistry:
 
     register(pv: PromptVersion) -> None
       - bad version string -> ValueError
-      - same name+version already registered: same pv.fingerprint -> do nothing;
-        different fingerprint -> ValueError (versions are immutable)
-      - otherwise, take the highest existing version of the same name with the SAME MAJOR
-        and LOWER than pv. If check_compatible(that.output_schema, pv.output_schema) finds
-        problems -> raise IncompatibleVersion (message lists the problems).
+      - same name+version again: same pv.fingerprint is a no-op; a different fingerprint ->
+        ValueError (versions are immutable)
+      - a new version must be compatible (check_compatible on output_schema) with the previous
+        version of the same name and SAME MAJOR, i.e. the highest one lower than pv; otherwise
+        raise IncompatibleVersion, whose message lists the problems, and do not register it.
     get(name, pin="latest") -> PromptVersion
       - pin "latest": highest version; "1": highest 1.x.y; "1.2": highest 1.2.x;
         "1.2.3": exactly that. Unknown name or nothing matches -> KeyError.
     versions(name) -> list[str], sorted from lowest to highest.
+
+    Stuck? HINTS.md -> PromptRegistry
     """
 
     def __init__(self):

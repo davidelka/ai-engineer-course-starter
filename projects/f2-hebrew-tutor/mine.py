@@ -44,37 +44,26 @@ from hebtutor.validate import FALLBACK_REPLY, MAX_EXPLANATION, MAX_HELP, SEVERIT
 # ------------------------------------------------------------------ M4: output validation
 def validate_assessment(a: Assessment, student_text: str, *, level: str = "A1", mode: str = "text",
                         input_flag: str = "none") -> tuple[Assessment, list[Finding]]:
-    """Return (a CLEANED deep copy of a, findings). Never modify `a` itself (a.model_copy(deep=True)).
-    Compare Hebrew with normalize_hebrew() on both sides (niqqud, punctuation, final letters).
+    """Return (a CLEANED deep copy of a, findings). Never modify `a` itself.
+    Hebrew is compared after normalize_hebrew() on both sides. Each problem gives a Finding with
+    this `code` and `severity` (tests check those two; `detail` is free text) and this fix:
+      correction_not_grounded (block)  original empty or not inside student_text -> correction None
+      correction_noop         (warn)   original == corrected                     -> correction None
+      spelling_in_voice       (info)   mode "voice" and error_type "spelling"    -> correction None
+          (only the first of these three that applies is reported)
+      explanation_not_arabic  (warn)   surviving correction, explanation mostly not Arabic
+                                       (arabic_share < 0.5) -> EXPLAIN_AR text for its error_type
+      explanation_too_long    (warn)   explanation over MAX_EXPLANATION -> cut()
+      reply_not_hebrew        (block)  share(HEB, reply_he) < 0.6 -> render(FALLBACK_REPLY[level], "m")
+      reply_too_long          (warn)   more than LEVEL_LIMITS[level]["sentences"] + 1 sentences -> trimmed
+      help_not_arabic         (warn)   help_ar set and arabic_share < 0.5 -> None
+      help_too_long           (warn)   help_ar over MAX_HELP -> cut()
+      vocab_dropped           (info)   one per dropped item: at most 3 kept, in order; drop items with
+                                       share(HEB, he) < 0.8, share(ARB, ar) < 0.5, or a repeated `he`
+      safety_downgrade        (block)  the model's safety_flag is less severe (SEVERITY) than a
+                                       non-"none" input_flag -> safety_flag = input_flag
 
-    Correction checks, in this order (the first that applies decides; the rest are skipped):
-      correction_not_grounded (block)  normalized original is empty or not a substring of the
-                                       normalized student_text            -> correction = None
-      correction_noop         (warn)   normalized original == normalized corrected -> None
-      spelling_in_voice       (info)   mode == "voice" and error_type == "spelling" -> None
-                                       (the recognizer spelled it, not the student)
-    If the correction survived:
-      explanation_not_arabic  (warn)   arabic_share(explanation_ar) < 0.5 (Hebrew letters ignored) -> replace it with
-                                       EXPLAIN_AR[error_type] (or EXPLAIN_AR["other"]).format(fix=corrected)
-      explanation_too_long    (warn)   len > MAX_EXPLANATION (160) -> cut(text, MAX_EXPLANATION)
-    Reply:
-      reply_not_hebrew        (block)  share(HEB, reply_he) < 0.6 -> reply_he =
-                                       render(FALLBACK_REPLY[level], "m")
-      reply_too_long          (warn)   otherwise, if sentences(reply_he) has more than
-                                       LEVEL_LIMITS[level]["sentences"] + 1 sentences -> keep that
-                                       many, joined with " "
-    Help (only when help_ar is not None):
-      help_not_arabic         (warn)   arabic_share(help_ar) < 0.5 -> help_ar = None
-      help_too_long           (warn)   else len > MAX_HELP (220) -> cut(help_ar, MAX_HELP)
-    Vocabulary: keep at most 3 items, in order; drop (finding vocab_dropped, info, one per item)
-      any item with share(HEB, he) < 0.8, share(ARB, ar) < 0.5, a normalized `he` already kept,
-      or when 3 are already kept.
-    Safety:
-      safety_downgrade        (block)  input_flag != "none" and the model's flag is LESS severe
-                                       (SEVERITY.index(a.safety_flag) > SEVERITY.index(input_flag))
-                                       -> safety_flag = input_flag. The model may raise a flag,
-                                       never lower the input screen's.
-    `detail` is free text; tests check `code` and `severity`.
+    Stuck? HINTS.md -> validate_assessment
     """
     # TODO(M4)
     raise NotImplementedError("M4: implement validate_assessment")
@@ -82,28 +71,34 @@ def validate_assessment(a: Assessment, student_text: str, *, level: str = "A1", 
 
 # ------------------------------------------------------------------ M5: learner model
 def sm2_update(card: Card, quality: int, today: date) -> Card:
-    """SM-2 (SuperMemo 2). Return a NEW Card (dataclasses.replace), never modify `card`.
-    quality 0..5, else ValueError.
-      ef' = max(1.3, ef + (0.1 - (5 - q) * (0.08 + (5 - q) * 0.02)))   rounded to 4 decimals
-      q < 3 (failed):  reps = 0, interval = 1, lapses + 1
-      q >= 3:          reps + 1; interval = 1 if the new reps == 1, 6 if == 2,
-                       else math.ceil(old interval * ef') (rounded UP, as in
-                       the original SM-2; compute math.ceil(round(interval * ef, 6)) to avoid float noise)
-      due = (today + interval days).isoformat()
+    """SM-2 (SuperMemo 2) after one review. Return a NEW Card, never modify `card`.
+
+    quality: 0..5, anything else -> ValueError.
+    - ef follows the standard SM-2 easiness update, never below 1.3, rounded to 4 decimals.
+    - quality < 3 (failed): reps 0, interval 1, lapses + 1.
+    - quality >= 3: reps + 1; interval 1 for the first success, 6 for the second, then the old
+      interval times the new ef, rounded UP (guard against float noise: 2.5 * 6 must give 15).
+    - due = (today + interval days).isoformat().
     Example: a new card answered 4, 4, 4 -> intervals 1, 6, 15; ef stays 2.5.
+
+    Stuck? HINTS.md -> sm2_update
     """
     # TODO(M5)
     raise NotImplementedError("M5: implement sm2_update")
 
 
 def update_level(score: float, level: str, signal: Optional[str]) -> tuple[float, str]:
-    """The CEFR estimate. score is in [1.0, 3.99]: A1 = [1, 2), A2 = [2, 3), B1 = [3, 4).
-    - signal not in BAND_MID ("unclear", None): return (score, level) unchanged.
-    - s = score + ALPHA * (BAND_MID[signal] - score), clamped to [1.0, 3.99], rounded to 4 decimals.
-    - hysteresis: the displayed level i (index in LEVELS) has the band [i+1, i+2). Change it only
-      when s >= i+2 + MARGIN (go up) or s < i+1 - MARGIN (go down); the new level is level_of(s).
-      Otherwise keep `level`.
+    """Update the CEFR estimate after one level signal. Return (new score, displayed level).
+
+    score is in [1.0, 3.99]: A1 = [1, 2), A2 = [2, 3), B1 = [3, 4).
+    - signal not in BAND_MID ("unclear", None): (score, level) unchanged.
+    - otherwise the score moves a fraction ALPHA of the way toward BAND_MID[signal]; clamped to
+      [1.0, 3.99], rounded to 4 decimals.
+    - hysteresis: the displayed level changes only when the new score leaves the level's band by
+      more than MARGIN (up or down); then it becomes level_of(score). Otherwise it stays.
     Example: (1.5, "A1", "B1") -> (1.8, "A1"); many B1 signals later the score passes 2.15 -> "A2".
+
+    Stuck? HINTS.md -> update_level
     """
     # TODO(M5)
     raise NotImplementedError("M5: implement update_level")
@@ -111,23 +106,20 @@ def update_level(score: float, level: str, signal: Optional[str]) -> tuple[float
 
 # ------------------------------------------------------------------ M6: redaction
 def redact_for_log(text: str) -> tuple[str, list[str]]:
-    """Return (redacted text, sorted list of the kinds found). Applied, in THIS order:
-      url        https?://... or www....                         -> "[קישור]"
-      email      name@domain.tld, ASCII letters/digits (a Hebrew prefix like "ל-" before it stays)
-                                                                  -> "[מייל]"
-      phone      Israeli numbers: 050-1234567, 0501234567, 08-6234567, +972-50-1234567
-                 (0 or +972, then 5X/7X or one of 2,3,4,8,9, then 3+4 digits, optional - or space)
-                                                                  -> "[טלפון]"
-      id_number  exactly 9 digits that pass is_valid_israeli_id   -> "[ת״ז]" (other 9-digit numbers stay)
-      address    רחוב / ברחוב / רח' / שדרות / شارع + one or two words + a number
-                                                                  -> "[כתובת]"
-      full_name  after קוראים לי / שמי / השם שלי / اسمي / انا اسمي: TWO words (a first name and a
-                 family name, which may start with "אבו " / "أبو " / "بو "). Keep the intro
-                 phrase, replace both words with "[שם]": "קוראים לי מרים אבו סעיד" -> "קוראים לי [שם]".
-                 One word is a first name or nickname and stays: "קוראים לי סאלם ואני..." is
-                 unchanged (the second word "ואני" is not a name: words like ואני, אני, בן, בת,
-                 גר, גרה, وانا, عمري are never a family name).
+    """Return (redacted text, sorted list of the kinds found). Applied in THIS order:
+      url        https?://... or www....                                   -> "[קישור]"
+      email      name@domain.tld, ASCII (a Hebrew prefix like "ל-" before it stays) -> "[מייל]"
+      phone      Israeli numbers: 050-1234567, 0501234567, 08-6234567, +972-50-1234567 -> "[טלפון]"
+      id_number  exactly 9 digits that pass is_valid_israeli_id (other 9-digit numbers stay) -> "[ת״ז]"
+      address    רחוב / ברחוב / רח' / שדרות / شارع + one or two words + a number -> "[כתובת]"
+      full_name  after קוראים לי / שמי / השם שלי / اسمي / انا اسمي: a first name AND a family name
+                 (which may start with "אבו " / "أبو " / "بو "). The intro stays, the two names become
+                 one "[שם]": "קוראים לי מרים אבו סעיד" -> "קוראים לי [שם]". A single word is a first
+                 name or nickname and stays: "קוראים לי סאלם ואני..." is unchanged (ואני, אני, בן,
+                 בת, גר, גרה, وانا, عمري are never a family name).
     Example: "הטלפון שלי 050-7654321" -> ("הטלפון שלי [טלפון]", ["phone"])
+
+    Stuck? HINTS.md -> redact_for_log
     """
     # TODO(M6)
     raise NotImplementedError("M6: implement redact_for_log")
@@ -136,18 +128,20 @@ def redact_for_log(text: str) -> tuple[str, list[str]]:
 # ------------------------------------------------------------------ M7: speaking feedback
 def word_feedback(expected: str, heard: str) -> SpeakingFeedback:
     """Compare the phrase the student was asked to say with what the recognizer heard.
-    Normalize both with normalize_hebrew(text, finals=False) (keep final letters: the words are
-    shown to the student), split into words, and walk align(ref, hyp)
-    (voicekit: a list of (op, ref_word, hyp_word), op in ok | sub | del | ins):
-      ok   -> WordResult(r, "ok", h, 0.0)
-      sub  -> c = round(cer(r, h).rate, 3);
-              status "homophone" if homophone_key(r) == homophone_key(h) (ט/ת, כ/ח, א/ע, ס/ש, ב/ו:
-              the recognizer's spelling, not the student's), else "close" if c <= 0.34, else "wrong";
-              hint = sound_hint(r, h) ("p_b" for פ heard as ב, "v_f" for ו/ב heard as פ, else None)
-      del  -> WordResult(r, "missing", "", 1.0)
-      ins  -> the heard word goes to SpeakingFeedback.extra (not to words)
-    SpeakingFeedback.score and .missed are computed from the words for you.
+
+    Words are compared after normalize_hebrew(text, finals=False) (final letters are kept: the
+    words are shown to the student). Return SpeakingFeedback(words, extra), one WordResult per
+    expected word, in order (score and missed are computed for you):
+      said right    WordResult(r, "ok", h, 0.0)
+      said wrong    WordResult(r, status, h, c, hint), c = round(cer(r, h).rate, 3);
+                    status "homophone" when homophone_key says the difference is only spelling
+                    (ט/ת, כ/ח, א/ע, ס/ש, ב/ו), else "close" if c <= 0.34, else "wrong";
+                    hint = sound_hint(r, h)
+      not said      WordResult(r, "missing", "", 1.0)
+      heard words that match no expected word go to `extra`.
     Example: expected "כמה פעמים ביום", heard "כמה בעמים ביום" -> ok, close (hint p_b), ok.
+
+    Stuck? HINTS.md -> word_feedback
     """
     # TODO(M7)
     raise NotImplementedError("M7: implement word_feedback")

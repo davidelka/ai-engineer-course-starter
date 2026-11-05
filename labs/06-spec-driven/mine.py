@@ -25,27 +25,24 @@ from spectools.trace import Matrix, Row  # noqa: F401
 def lint_spec(spec: Spec) -> list[Finding]:
     """Check every requirement in a parsed spec. Return one Finding per problem.
 
-    spec.requirements is a list of Requirement(id, title, kind, statement, criteria, line),
-    in file order; criteria is a list of Criterion(id, text, line). See spectools/spec.py.
-
-    Rules (Finding(rule, req_id, message, severity)); req_id is the requirement's id or None:
-      missing-id          the heading has no REQ-<n>/NFR-<n> id (req_id=None)
-      duplicate-id        the id was already used by an earlier requirement (report the later one)
-      missing-statement   statement is empty
-      not-ears            statement does not contain the word SHALL (any case), OR does not start
-                          with one of: THE, WHEN, WHILE, IF, WHERE (any case, followed by a space)
-      weak-modal          one Finding per word from WEAK_MODALS found in the statement,
-                          severity "warning"; the message names the word, e.g. '"should" in statement'
-      vague-word          one Finding per word from VAGUE_WORDS found in the statement, and one per
-                          word per criterion; the message names the word and where, e.g.
-                          '"quickly" in statement' or '"some" in AC-5.1'
-      nfr-not-measurable  kind == "non-functional" and the statement has no digit
+    spec.requirements: Requirement(id, title, kind, statement, criteria, line) in file order;
+    criteria: Criterion(id, text, line). See spectools/spec.py.
+    Finding(rule, req_id, message, severity): req_id is the requirement's id (None if it has
+    none); severity is "error" for every rule except weak-modal ("warning"). Rules:
+      missing-id          the heading has no REQ-<n>/NFR-<n> id
+      duplicate-id        the id was used by an earlier requirement (report the later one)
+      missing-statement   empty statement (then no other statement rule applies)
+      not-ears            no SHALL, or not starting with THE/WHEN/WHILE/IF/WHERE + space
+      weak-modal          one per WEAK_MODALS word in the statement; message '"should" in statement'
+      vague-word          one per VAGUE_WORDS word in the statement and in each criterion;
+                          message '"quickly" in statement' or '"some" in AC-5.1'
+      nfr-not-measurable  a non-functional requirement whose statement has no digit
       no-criteria         no acceptance criteria
-      criterion-not-gwt   a criterion without the words GIVEN, WHEN, THEN in that order (any case)
+      criterion-not-gwt   a criterion without GIVEN, WHEN, THEN in that order
+    All matching ignores case. Words match whole words only: "fast" matches "Fast." but not
+    "breakfast"; multi-word entries such as "as needed" count as one word.
 
-    Word matching is case-insensitive and on word boundaries: "fast" matches "Fast." but not
-    "breakfast"; "user-friendly" and "as needed" are single entries. Only check the statement
-    of a requirement that has one. All severities are "error" except weak-modal.
+    Stuck? HINTS.md -> lint_spec
     """
     # TODO(ex2)
     raise NotImplementedError("exercise 2: implement lint_spec")
@@ -55,23 +52,19 @@ def lint_spec(spec: Spec) -> list[Finding]:
 def scan_req_markers(paths: Iterable[Union[str, Path]]) -> dict[str, list[str]]:
     """Find which tests point at which requirement, by reading test files (no imports).
 
-    paths: files or directories. In a directory, scan test_*.py and *_test.py recursively.
-    Return {"REQ-4": ["test_routing.py::test_admin", "sub/test_x.py::TestA::test_b"], ...}
-    with each list sorted and without duplicates.
+    paths: files or directories; in a directory, test_*.py and *_test.py, recursively.
+    Returns {"REQ-4": ["test_routing.py::test_admin", "sub/test_x.py::TestA::test_b"], ...},
+    each list sorted and without duplicates. Node ids are "<file>::<function>" or
+    "<file>::<Class>::<method>"; <file> is relative to the directory passed (posix slashes),
+    or just the file name for a file passed directly.
+    Markers that count (several ids allowed in one marker, stacked markers combine):
+      @pytest.mark.req("REQ-1", ...) or @mark.req(...) on a module-level test* function;
+      the same on a class Test*, applying to each of its test* methods;
+      a module-level pytestmark = pytest.mark.req(...) or a list/tuple containing one,
+      applying to every test in the file.
+    Other markers, non-test functions and non-Test classes are ignored.
 
-    Node ids: "<file>::<function>" or "<file>::<Class>::<method>", where <file> is the path
-    relative to the directory that was passed (posix slashes), or just the file name when a
-    file was passed directly.
-
-    Recognize (use the ast module):
-      @pytest.mark.req("REQ-1")                  on a module-level function named test*
-      @pytest.mark.req("REQ-1", "REQ-2")         several ids in one marker
-      @mark.req("REQ-1")                         after `from pytest import mark`
-      @pytest.mark.req(...) on a class Test*     applies to every test* method in it
-      pytestmark = pytest.mark.req("REQ-9")      module level, applies to every test in the file
-      pytestmark = [pytest.mark.req("REQ-9"), pytest.mark.slow]   (a list or tuple)
-    Ignore other markers (parametrize, skip...), functions not named test*, and classes not
-    named Test*. Stacked decorators combine.
+    Stuck? HINTS.md -> scan_req_markers
     """
     # TODO(ex3)
     raise NotImplementedError("exercise 3: implement scan_req_markers")
@@ -80,11 +73,13 @@ def scan_req_markers(paths: Iterable[Union[str, Path]]) -> dict[str, list[str]]:
 def build_matrix(spec: Spec, markers: dict[str, list[str]]) -> Matrix:
     """Requirement -> tests, plus the two kinds of gap.
 
-    rows:      one Row(req_id, title, tests) per id in spec.ids() (spec order, first occurrence),
-               tests sorted; results stays empty
-    uncovered: ids from the spec with no test, in spec order
-    orphans:   {id: sorted tests} for ids that tests mention but the spec does not contain,
-               keys sorted
+    Returns a Matrix with:
+      rows:      one Row(req_id, title, tests) per id in spec.ids() (spec order, first
+                 occurrence), tests sorted, results left empty;
+      uncovered: spec ids with no test, in spec order;
+      orphans:   {id: sorted tests} for ids that tests mention but the spec lacks, keys sorted.
+
+    Stuck? HINTS.md -> build_matrix
     """
     # TODO(ex3)
     raise NotImplementedError("exercise 3: implement build_matrix")
@@ -94,28 +89,24 @@ def build_matrix(spec: Spec, markers: dict[str, list[str]]) -> Matrix:
 def find_drift(contract: dict, implemented: dict) -> list[Drift]:
     """Compare two OpenAPI 3.1 documents: the contract file and what the code says about itself.
 
-    Return Drift(kind, where, detail) items:
-      missing-operation       (method, path) in the contract, not in the code. where="POST /a/{}"
+    Returns Drift(kind, where, detail) items. Paths are compared with their parameters
+    normalized ("/a/{}"); each document resolves its own $refs.
+      missing-operation       in the contract, not in the code; where="POST /a/{}"
       undocumented-operation  in the code, not in the contract
-      For every operation in both, with where = "<METHOD> <normalized path>":
-      missing-status          a response code in the contract, not in the code. detail="404"
+    For each operation in both, where = "<METHOD> <normalized path>":
+      missing-status          a response code in the contract, not in the code; detail="404"
       undocumented-status     a response code in the code, not in the contract ("default" ignored)
-      For the application/json request body, and for every 2xx response code in both:
-        where = "<METHOD> <path> request body"  or  "<METHOD> <path> <code> response"
-      missing-property        a property in the contract's object schema, not in the code's
+    For the application/json request body and each 2xx response code in both,
+    where = "<METHOD> <path> request body" or "<METHOD> <path> <code> response":
+      missing-property        in the contract's object schema, not in the code's
       undocumented-property   the other way round
-      enum-mismatch           a property in both whose enum sets differ;
-                              detail starts with the property path, e.g. "status: ..."
-      Recurse into properties that exist on both sides: into objects, and into arrays of
-      objects with "[]" in the path: "items[].status". Stop after depth 5.
+      enum-mismatch           a property in both with different enum sets; detail starts
+                              with the property path, e.g. "status: ..."
+      Nested properties present on both sides are compared too, objects and arrays of
+      objects ("items[].status"), down to depth 5.
+    spectools/contract.py (imported above) has helpers for the OpenAPI plumbing.
 
-    Helpers you can use (spectools/contract.py):
-      operations(doc)          {("POST", "/access-requests/{}"): op}; path params normalized
-      json_body_schema(doc, x) the resolved application/json schema of a requestBody/response
-      unwrap(doc, schema)      resolves $ref and drops a nullable anyOf/oneOf wrapper
-      enum_values(doc, schema) set of allowed values (enum or const), or None
-    Each document resolves its own $refs: contract refs against `contract`, code refs against
-    `implemented`.
+    Stuck? HINTS.md -> find_drift
     """
     # TODO(ex5)
     raise NotImplementedError("exercise 5: implement find_drift")

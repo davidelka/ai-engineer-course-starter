@@ -8,6 +8,8 @@ One deliberate reading: EF is updated after every review, including failed ones
 
 from __future__ import annotations
 
+import math
+
 from datetime import date, timedelta
 from typing import Iterable, Optional
 
@@ -29,7 +31,9 @@ def sm2_review(state: Optional[dict], grade: int, today: date) -> dict:
         elif reps == 1:
             interval = 6
         else:
-            interval = round(interval * ef)
+            # the original SM-2 description rounds a fractional interval UP (as F2's learner.py does);
+            # the inner round() absorbs float noise such as 6 * 2.5000000001
+            interval = math.ceil(round(interval * ef, 6))
         reps += 1
     else:
         reps, interval, lapses = 0, 1, lapses + 1
