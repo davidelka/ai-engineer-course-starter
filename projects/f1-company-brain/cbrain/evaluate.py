@@ -83,7 +83,7 @@ class BrainAsAssistant:
     def __init__(self, brain: Brain, principal: Principal):
         self.brain, self.p = brain, principal
         a = brain.knowledge.assistant
-        self.job, self.s = a.job, a.s
+        self.job, self.s, self.hooks = a.job, a.s, a.hooks
         self.misrouted: list[str] = []
         self.dropped: list[dict] = []
 
