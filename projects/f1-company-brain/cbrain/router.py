@@ -82,29 +82,10 @@ ACCESS_WORD_RE = re.compile(r"(?i)\b(?:access|seat|admin|editor|viewer|permissio
                             r"|גישה|הרשאה|הרשאת|אדמין")
 
 
-def rule_intent(text: str) -> dict:
-    """Reference for milestone 3 (mine.rule_intent has the full specification)."""
-    t = (text or "").strip()
-    if not t:
-        return {"intent": None, "confidence": 0.0, "matched": []}
-    request = bool(REQUEST_RE.search(t) and ACCESS_OBJECT_RE.search(t))
-    policy_q = bool(POLICY_QUESTION_RE.search(t))
-    matched = (["request"] if request else []) + (["policy_question"] if policy_q else [])
-    if request and not policy_q:
-        return {"intent": "access_request", "confidence": 0.9, "matched": matched}
-    if request and policy_q:
-        return {"intent": None, "confidence": 0.5, "matched": matched}
-    if policy_q:
-        return {"intent": "knowledge", "confidence": 0.85, "matched": matched}
-    from acmeqa.router import route_question
-    r = route_question(t)
-    if r.kind == "data":
-        return {"intent": "data", "confidence": 0.8, "matched": [f"data:{m}" for m in r.matched]}
-    if DATA_RE.search(t):
-        return {"intent": "data", "confidence": 0.8, "matched": ["data_rule"]}
-    if ACCESS_WORD_RE.search(t) and not QUESTION_RE.search(t):
-        return {"intent": None, "confidence": 0.4, "matched": ["access_word"]}
-    return {"intent": "knowledge", "confidence": 0.6, "matched": ["default"]}
+def rule_intent(*args, **kwargs):
+    """Milestone 3: runs your mine.rule_intent (see cbrain/hooks.py)."""
+    from .hooks import call
+    return call("rule_intent", *args, **kwargs)
 
 
 # ---------------------------------------------------------------- the structured-output stage
@@ -182,25 +163,6 @@ class IntentRouter:
         self.min_confidence = min_confidence
 
     def route(self, text: str) -> RouteResult:
-        rv = self.rules(text)
-        if rv.get("intent") and self.llm_mode != "always":
-            return RouteResult(rv["intent"], float(rv["confidence"]), "rules", list(rv.get("matched", [])))
-        if self.llm is None or self.llm_mode == "never":
-            return RouteResult(rv.get("intent") or "knowledge", float(rv.get("confidence") or 0.0), "fallback",
-                               list(rv.get("matched", [])), reason="rules unsure, no model: safe default")
-        from llmkit.errors import LLMError
-        from llmkit.structured import StructuredError, complete_structured
-        prompt = f"<message>\n{text}\n</message>"
-        try:
-            res = complete_structured(self.llm, prompt, IntentDecision, system=ROUTER_SYSTEM, max_repairs=1,
-                                      max_tokens=200)
-        except (StructuredError, LLMError) as exc:
-            return RouteResult("knowledge", 0.0, "fallback", list(rv.get("matched", [])),
-                               reason=f"router model failed ({type(exc).__name__}): safe default")
-        d: IntentDecision = res.value
-        info = {"intent": d.intent, "confidence": d.confidence, "cost_usd": res.cost_usd or 0.0,
-                "input_tokens": res.input_tokens, "output_tokens": res.output_tokens}
-        if d.confidence < self.min_confidence:
-            return RouteResult("knowledge", d.confidence, "fallback", list(rv.get("matched", [])),
-                               reason=f"model unsure ({d.intent}, {d.confidence:.2f}): safe default", llm=info)
-        return RouteResult(d.intent, d.confidence, "llm", list(rv.get("matched", [])), reason=d.reason, llm=info)
+        from .hooks import call                         # milestone 3: mine.route_message
+        return call("route_message", text, rules=self.rules, llm=self.llm, llm_mode=self.llm_mode,
+                    min_confidence=self.min_confidence)

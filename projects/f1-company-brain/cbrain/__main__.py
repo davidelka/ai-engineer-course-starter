@@ -95,8 +95,12 @@ def cmd_demo(args) -> None:
     step(6, "The corpus's planted injection (Northwind partner notes), asked by support")
     _print_events(b.ask_events(principal_for_role("support"), "What do the Northwind partner notes say about refunds for annual plans?"))
     step(7, "Traces and SLOs of this demo")
+    from .hooks import MilestoneTodo
     from .obs import format_slo, slo_report
-    print("  " + format_slo(slo_report(b.spans())).replace("\n", "\n  "))
+    try:
+        print("  " + format_slo(slo_report(b.spans())).replace("\n", "\n  "))
+    except MilestoneTodo:                       # the SLO report is milestone 9; the traces exist already
+        print("  (the SLO report comes in milestone 9: mine.request_rows and mine.slo_report)")
     print(f"\n  traces: {b.s.traces_path}\n  view:   python -m obskit.viewer {b.s.traces_path} -o {state}/traces.html")
     b.close()
 
@@ -180,7 +184,7 @@ def cmd_seed(args) -> None:
 
 def main(argv=None) -> None:
     ap = argparse.ArgumentParser(prog="python -m cbrain", description=__doc__.split("\n")[0])
-    ap.add_argument("--reference", action="store_true", help="use the reference functions, ignore mine.py")
+    ap.add_argument("--reference", action="store_true", help="use the reference functions, ignore mine.py (solutions branch only)")
     sub = ap.add_subparsers(dest="cmd", required=True)
     sub.add_parser("demo")
     s = sub.add_parser("serve")
@@ -223,8 +227,14 @@ def main(argv=None) -> None:
         from .mcp_server import main as mcp_main
         mcp_main(args.rest)
     else:
-        {"demo": cmd_demo, "ask": cmd_ask, "route": cmd_route, "request": cmd_request, "approve": cmd_approve,
-         "eval": cmd_eval, "slo": cmd_slo, "cost": cmd_cost, "arch": cmd_arch, "seed": cmd_seed, "keys": cmd_keys}[args.cmd](args)
+        try:
+            {"demo": cmd_demo, "ask": cmd_ask, "route": cmd_route, "request": cmd_request, "approve": cmd_approve,
+             "eval": cmd_eval, "slo": cmd_slo, "cost": cmd_cost, "arch": cmd_arch, "seed": cmd_seed,
+             "keys": cmd_keys}[args.cmd](args)
+        except NotImplementedError as e:
+            if type(e).__name__ != "MilestoneTodo":         # F1's, or M1's (Company Brain runs your M1)
+                raise
+            sys.exit(f"\n{e}")
 
 
 if __name__ == "__main__":

@@ -17,6 +17,7 @@ PROJECT = ROOT / "projects" / "f1-company-brain"
 sys.path[:0] = [str(ROOT), str(PROJECT)]
 sys.path.insert(1, str(ROOT / "projects" / "m1-knowledge-assistant"))
 pytest.importorskip("acmeqa._reference", reason="F1 runs on M1: the reference implementations live on the solutions branch")
+pytest.importorskip("cbrain._reference", reason="reference implementations live on the solutions branch")
 
 pytest.importorskip("langgraph")
 pytest.importorskip("fastapi")
@@ -82,7 +83,10 @@ def test_mine_stubs_fall_back_to_reference(monkeypatch):
         assert hasattr(mine, n)
     h = hooks.pick_hooks(False)
     assert h.rule_intent("I need admin on GitHub")["intent"] == "access_request"     # TODO -> reference
-    assert hooks.pick_hooks(True).using["rule_intent"] == "reference"
+    ref = hooks.pick_hooks(True)
+    ref.rule_intent("x")
+    assert ref.using["rule_intent"] == "reference"
+    hooks.pick_hooks(False)
 
 
 # ------------------------------------------------------------------ data sets

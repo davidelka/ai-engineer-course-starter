@@ -7,8 +7,9 @@
 What M1 already does and is NOT re-implemented here: hybrid retrieval (BM25 + dense, RRF), the ACL
 as a `where` before ranking, the version filter, context packing, citations resolved to exact
 spans, the refusal protocol, the docs/data router with text-to-SQL, streaming, prompt caching and
-a trace per question. M1 is built with Settings(reference=True), so Company Brain always runs M1's
-reference functions, whatever state your M1 mine.py is in.
+a trace per question. M1 runs YOUR M1 functions (projects/m1-knowledge-assistant/mine.py): Company
+Brain is built on the knowledge assistant you wrote, so finish M1 first. With --reference (solutions
+branch) M1's references run too.
 
 What this module adds, by composition (no M1 file changes):
 - the input screen before M1 runs (guards.Screens.question)
@@ -37,7 +38,7 @@ _SINK: contextvars.ContextVar[Optional[dict]] = contextvars.ContextVar("cbrain_g
 def m1_settings(s: BrainSettings, *, trace: bool = True):
     from acmeqa.config import Settings
     m1_mode = "live" if s.mode == "live" else "offline"
-    kw = dict(mode=m1_mode, reference=True, index_dir=s.index_dir, cache_dir=s.state_dir / "embeddings",
+    kw = dict(mode=m1_mode, reference=s.reference, index_dir=s.index_dir, cache_dir=s.state_dir / "embeddings",
               trace_file=s.traces_path if (trace and s.tracing) else None)
     if s.embedder:
         kw["embedder"] = s.embedder

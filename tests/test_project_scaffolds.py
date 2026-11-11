@@ -42,8 +42,9 @@ def _all_todo(hooks, mine):
     for name, milestone in hooks.MILESTONES.items():
         params = inspect.signature(getattr(mine, name)).parameters.values()
         args = [None for p in params if p.default is p.empty and p.kind == p.POSITIONAL_OR_KEYWORD]
+        kwargs = {p.name: None for p in params if p.default is p.empty and p.kind == p.KEYWORD_ONLY}
         with pytest.raises(hooks.MilestoneTodo, match=f"milestone {milestone}: mine.{name}"):
-            hooks.call(name, *args)
+            hooks.call(name, *args, **kwargs)
 
 
 def test_m2_scaffold():
@@ -58,4 +59,14 @@ def test_m2_scaffold():
                       mtime=path.stat().st_mtime, ext=".pdf")
     ex = extract(entry, ocr="off")                            # reading files is ready-made
     assert ex.pages >= 2 and any(u.page == 2 for u in ex.units)
+    _all_todo(hooks, hooks.load_mine())
+
+
+def test_f1_scaffold():
+    hooks = _project("f1-company-brain", "cbrain")
+    if hooks.has_reference():
+        pytest.skip("solutions branch: the reference implementations are here")
+    from cbrain.auth import load_users
+    from cbrain.config import DATA
+    assert len(load_users(DATA / "users.json")) >= 3          # identity and keys are ready-made
     _all_todo(hooks, hooks.load_mine())
