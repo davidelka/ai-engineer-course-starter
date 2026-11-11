@@ -1,4 +1,4 @@
-// Course map: the 28 topics of the DevOps Experts "AI Engineer" syllabus, grouped into 4 phases.
+// Course map: the 28 topics of the "AI Engineer" course, grouped into 4 phases.
 // A topic becomes clickable when its lesson file exists in lessons/ and `ready: true`.
 window.COURSE = {
   title: "AI Engineer",
