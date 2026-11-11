@@ -18,9 +18,10 @@ ROOT = Path(__file__).resolve().parents[1]
 
 def _project(name: str, pkg: str):
     proj = ROOT / "projects" / name
-    for p in (str(ROOT), str(proj)):
-        if p not in sys.path:
-            sys.path.insert(0, p)
+    for p in (str(ROOT), str(proj)):          # front of the path: other projects also have a mine.py
+        while p in sys.path:
+            sys.path.remove(p)
+        sys.path.insert(0, p)
     for m in [m for m in sys.modules if m == "mine" or m == pkg or m.startswith(pkg + ".")]:
         del sys.modules[m]
     return importlib.import_module(f"{pkg}.hooks")
