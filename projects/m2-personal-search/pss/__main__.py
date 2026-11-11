@@ -337,7 +337,7 @@ def main(argv=None) -> None:
     ap.add_argument("--config")
     ap.add_argument("--index-dir")
     ap.add_argument("--embedder", help="ragkit embedder spec: fake | e5-small | e5-base | bge-m3 ...")
-    ap.add_argument("--reference", action="store_true", help="use the reference functions, not mine.py")
+    ap.add_argument("--reference", action="store_true", help="use the reference functions, not mine.py (solutions branch only)")
     sub = ap.add_subparsers(dest="cmd", required=True)
     p = sub.add_parser("demo")
     p.set_defaults(fn=cmd_demo)
@@ -393,9 +393,16 @@ def main(argv=None) -> None:
     args = ap.parse_args(argv)
     if not hasattr(args, "folders"):
         args.folders = None
-    if args.reference:
-        hooks.force_reference(True)
-    args.fn(args)
+    try:
+        if args.reference:
+            hooks.force_reference(True)
+        args.fn(args)
+    except hooks.MilestoneTodo as e:
+        sys.exit(f"\n{e}")
+    except RuntimeError as e:
+        if "solutions branch" not in str(e):
+            raise
+        sys.exit(f"\n{e}")
 
 
 if __name__ == "__main__":

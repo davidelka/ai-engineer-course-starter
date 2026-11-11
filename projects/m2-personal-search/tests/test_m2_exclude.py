@@ -37,8 +37,8 @@ def test_path_patterns_with_slash():
     pats = ["finance/*.pdf", "kids/**/report*"]
     assert is_excluded("finance/car-insurance-2026.pdf", pats) == "finance/*.pdf"
     assert is_excluded("finance/2026/car.pdf", pats) is None           # * does not cross /
-    assert is_excluded("kids/report-noa.pdf", pats) == "kids/**/report*"  # ** = zero folders
-    assert is_excluded("kids/2026/t1/report-noa.pdf", pats) == "kids/**/report*"
+    assert is_excluded("kids/report-maya.pdf", pats) == "kids/**/report*"  # ** = zero folders
+    assert is_excluded("kids/2026/t1/report-maya.pdf", pats) == "kids/**/report*"
     assert is_excluded("home/kids/report.pdf", pats) is None           # anchored at the start
     assert is_excluded("finance/car.pdf", ["/finance/*.pdf"]) == "/finance/*.pdf"
 

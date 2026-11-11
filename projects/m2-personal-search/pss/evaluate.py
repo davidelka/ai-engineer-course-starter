@@ -37,6 +37,7 @@ from typing import Any, Optional
 
 from evalkit.metrics import fact_coverage, numbers_in
 
+from . import hooks
 from .config import PROJECT, SAMPLE, Settings
 from .extract import tesseract_langs
 
@@ -117,18 +118,10 @@ def eval_retrieval(index, golden: list[dict], modes=("bm25", "dense", "hybrid"),
             t0 = time.perf_counter()
             ranked = index.rank_files(q["q"], mode=mode, depth=depth)
             times.append((time.perf_counter() - t0) * 1000)
-            ids = [f for f, _ in ranked]
-            rel = set(q["relevant"])
-            first = next((i for i, f in enumerate(ids) if f in rel), None)
-            page_ok = None
-            if q.get("pages"):
-                pf = next(((f, p) for f, p in ranked if f in q["pages"]), None)
-                page_ok = bool(pf and pf[1] in q["pages"][pf[0]])
-            row = {"id": q["id"], "kind": q["kind"], "lang": q["lang"], "relevant": sorted(rel),
-                   "ranked": ids, "rr": 1.0 / (first + 1) if first is not None else 0.0, "page_ok": page_ok,
-                   "must_not_hit": sorted(set(q.get("must_not", [])) & set(ids))}
-            for k in (1, 5, 10):
-                row[f"r{k}"] = (len(rel & set(ids[:k])) / len(rel)) if rel else 0.0
+            m = hooks.get("retrieval_row")(q, ranked)                  # milestone 10 (mine.py)
+            row = {"id": q["id"], "kind": q["kind"], "lang": q["lang"], "relevant": sorted(set(q["relevant"])),
+                   "ranked": [f for f, _ in ranked],
+                   **{k: m[k] for k in ("rr", "page_ok", "must_not_hit", "r1", "r5", "r10")}}
             rows.append(row)
         by_kind = {k: _summ([r for r in rows if r["kind"] == k]) for k in KINDS if any(r["kind"] == k for r in rows)}
         by_lang = {lg: _summ([r for r in rows if r["lang"] == lg]) for lg in ("he", "en")}

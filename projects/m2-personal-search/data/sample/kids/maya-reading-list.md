@@ -1,8 +1,8 @@
-# Noa's reading list / רשימת קריאה של נועה
+# Maya's reading list / רשימת קריאה של מאיה
 
 Books we finished:
 - "Frog and Toad Are Friends" (in English, with dad)
-- "הדוב הלבן" - נועה קראה לבד!
+- "הדוב הלבן" - מאיה קראה לבד!
 
 Next:
 - "Magic Tree House #1" - the librarian recommended it for grade 3

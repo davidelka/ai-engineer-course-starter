@@ -20,6 +20,7 @@ import pytest
 ROOT = Path(__file__).resolve().parents[1]
 PROJECT = ROOT / "projects" / "m2-personal-search"
 sys.path[:0] = [str(ROOT), str(PROJECT)]
+pytest.importorskip("pss._reference", reason="reference implementations live on the solutions branch")
 os.environ.setdefault("PSS_HOME", tempfile.mkdtemp(prefix="pss-home-"))
 
 from llmkit import ChatRequest, Message  # noqa: E402
@@ -102,12 +103,12 @@ def test_incremental_sync_and_reload(tmp_path):
     b = PersonalIndex.open(s)
     assert len(b.chunks) == a.chunks_added
     os.utime(root / "travel" / "eilat-weekend-ideas.md", (1, 1))         # touched only
-    (root / "travel" / "packing-list-georgia.md").write_text("# רשימה\n- דרכונים\n", encoding="utf-8")
-    (root / "travel" / "new-note.txt").write_text("Hotel in Kazbegi: Rooms Hotel, check-in 15:00\n")
+    (root / "travel" / "packing-list-italy.md").write_text("# רשימה\n- דרכונים\n", encoding="utf-8")
+    (root / "travel" / "new-note.txt").write_text("Hotel in Florence: Rooms Hotel, check-in 15:00\n")
     r = b.sync()
-    assert r.plan.added == ["travel/new-note.txt"] and r.plan.changed == ["travel/packing-list-georgia.md"]
+    assert r.plan.added == ["travel/new-note.txt"] and r.plan.changed == ["travel/packing-list-italy.md"]
     assert r.plan.touched == ["travel/eilat-weekend-ideas.md"] and not r.plan.removed
-    assert b.rank_files("Kazbegi", mode="bm25")[0][0] == "travel/new-note.txt"
+    assert b.rank_files("Florence", mode="bm25")[0][0] == "travel/new-note.txt"
     s2 = replace(s)
     s2.chunker = "recursive:120:20"                                      # settings changed: rebuild
     assert PersonalIndex.open(s2).sync().rebuilt
@@ -120,7 +121,7 @@ def test_search_modes_filters_and_folding(idx):
     assert r.files[0].also == ["home/lease-2026 (1).pdf"]                # the copy is folded in
     assert "<mark>" in r.files[0].snippet
     for mode in ("bm25", "dense", "hybrid"):
-        assert idx.search("check-in Old Town Rooms", mode=mode).files[0].id == "travel/tbilisi-hotel-booking-2026-08.pdf"
+        assert idx.search("check-in Old Town Rooms", mode=mode).files[0].id == "travel/rome-hotel-booking-2026-08.pdf"
     f = idx.search("folder:receipts after:2026-06")
     assert sorted(x.id for x in f.files) == ["receipts/receipt-pharmacy-2026-08.txt", "receipts/receipt-supermarket-2026-10.html"]
     assert all(x.format == "pdf" for x in idx.search("type:pdf אחריות", k=10).files)
@@ -329,7 +330,7 @@ def test_hooks_fall_back_to_reference_until_mine_is_done():
             mod.parse_query("x")
         except NotImplementedError:
             implemented = False
-        assert hooks.using_mine("parse_query") == implemented
         assert fn("type:pdf x").text == "x"
+        assert hooks.using_mine("parse_query") == implemented
     finally:
         hooks.force_reference(True)
