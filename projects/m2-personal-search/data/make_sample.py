@@ -44,9 +44,9 @@ def add(path: str, kind: str, **spec) -> None:
 # ----------------------------------------------------------------- home
 LEASE_PAGES = [
     """<h1>הסכם שכירות בלתי מוגנת</h1>
-<p>שנערך ונחתם בבאר שבע ביום 15 ביולי 2026, בין <b>יוסף מזרחי</b> (להלן: "המשכיר") לבין <b>דוד בן-עמי</b> (להלן: "השוכר").</p>
+<p>שנערך ונחתם במודיעין ביום 15 ביולי 2026, בין <b>יוסף מזרחי</b> (להלן: "המשכיר") לבין <b>יונתן שני</b> (להלן: "השוכר").</p>
 <h2>1. המושכר</h2>
-<p>דירת 4 חדרים ברחוב הנרקיס 12, דירה 7, באר שבע, כולל מחסן וחניה אחת מקורה.</p>
+<p>דירת 4 חדרים ברחוב הנרקיס 12, דירה 7, מודיעין, כולל מחסן וחניה אחת מקורה.</p>
 <h2>2. תקופת השכירות</h2>
 <p>תקופת השכירות היא 12 חודשים, מיום 1 באוגוסט 2026 ועד יום 31 ביולי 2027.</p>
 <h2>3. דמי שכירות</h2>
@@ -71,7 +71,7 @@ add("home/lease-2026 (1).pdf", "copy", source="home/lease-2026.pdf")  # a downlo
 
 add("home/fridge-warranty-2026-03.pdf", "pdf", dir="rtl", title="תעודת אחריות למקרר", pages=[
     """<h1>תעודת אחריות - מקרר קירור פלוס KP-560</h1>
-<p>שם הלקוח: דוד בן-עמי. תאריך רכישה: 14 במרץ 2026. מקום הרכישה: חשמל הנגב, באר שבע.</p>
+<p>שם הלקוח: יונתן שני. תאריך רכישה: 14 במרץ 2026. מקום הרכישה: חשמל המרכז, מודיעין.</p>
 <h2>תקופת האחריות</h2>
 <p>אחריות מלאה על המקרר, חלקים ועבודה, למשך שנה אחת מיום הרכישה. אחריות על המדחס (קומפרסור) למשך 5 שנים מיום הרכישה.</p>
 <p>Warranty: 1 year full warranty (parts and labor). Compressor warranty: 5 years.</p>
@@ -86,7 +86,7 @@ add("home/fridge-warranty-2026-03.pdf", "pdf", dir="rtl", title="תעודת אח
 
 add("home/arnona-2026.md", "md", text="""# ארנונה 2026 - הודעת תשלום
 
-עיריית באר שבע, אגף הגבייה. נכס: רחוב הנרקיס 12, דירה 7. שטח לחיוב: 96 מ"ר.
+עיריית מודיעין, אגף הגבייה. נכס: רחוב הנרקיס 12, דירה 7. שטח לחיוב: 96 מ"ר.
 
 ## סכום החיוב
 
@@ -105,7 +105,7 @@ add("home/arnona-2026.md", "md", text="""# ארנונה 2026 - הודעת תשל
 
 add("home/solar-water-heater-service.txt", "txt", text="""Solar water heater (dud shemesh) - service log
 
-Last service: 2026-04-10, by Negev Solar Services (technician: Amir).
+Last service: 2026-04-10, by Shemesh Solar Services (technician: Amir).
 Cost: 250 NIS including the visit.
 Recommended: a full service once a year, before winter.
 The anode should be replaced every 3 years; it was last replaced in April 2025.
@@ -128,20 +128,20 @@ add("home/internet-plan-2026.html", "html", lang="he", text="""<!doctype html><h
 </body></html>""")
 
 # ----------------------------------------------------------------- receipts
-add("receipts/receipt-laptop-2026-03.html", "html", lang="he", text="""<!doctype html><html dir="rtl" lang="he"><head><meta charset="utf-8"><title>חשבונית מס קבלה 30412 - מחשבים בנגב</title></head>
+add("receipts/receipt-laptop-2026-03.html", "html", lang="he", text="""<!doctype html><html dir="rtl" lang="he"><head><meta charset="utf-8"><title>חשבונית מס קבלה 30412 - מחשבים פלוס</title></head>
 <body><nav>החשבון שלי | הזמנות | עגלה</nav>
 <main>
 <h1>חשבונית מס קבלה מספר 30412</h1>
-<p>תאריך: 2 במרץ 2026. לקוח: דוד בן-עמי.</p>
+<p>תאריך: 2 במרץ 2026. לקוח: יונתן שני.</p>
 <ul>
 <li>מחשב נייד Lenovo ThinkPad E14, 16GB RAM, SSD 512GB - 3,890 ש"ח</li>
 <li>תיק למחשב נייד - 120 ש"ח</li>
 </ul>
 <p>סה"כ לתשלום כולל מע"מ: 4,010 ש"ח. שולם בכרטיס אשראי בשלושה תשלומים.</p>
 <p>אחריות יצרן למחשב: 3 שנים, שירות במעבדה. החזרת מוצר תקין: תוך 14 ימים באריזה המקורית.</p>
-</main><footer>מחשבים בנגב בע"מ | שירות לקוחות</footer></body></html>""")
+</main><footer>מחשבים פלוס בע"מ | שירות לקוחות</footer></body></html>""")
 
-add("receipts/receipt-furniture-2026-05.txt", "txt", text="""HOME & WOOD - Beer Sheva branch
+add("receipts/receipt-furniture-2026-05.txt", "txt", text="""HOME & WOOD - Modiin branch
 Receipt no. 77810          Date: 2026-05-19
 
 1 x Bookcase, oak finish, 80x180 cm ......... 690.00 NIS
@@ -167,13 +167,13 @@ add("receipts/receipt-pharmacy-2026-08.txt", "txt", text="""בית מרקחת ה
 add("receipts/receipt-supermarket-2026-10.html", "html", lang="he", text="""<!doctype html><html dir="rtl" lang="he"><head><meta charset="utf-8"><title>הקבלה הדיגיטלית שלך</title></head>
 <body><header>סופר השכונה - קבלה דיגיטלית</header><main>
 <h1>קבלה דיגיטלית</h1>
-<p>תאריך: 24 באוקטובר 2026, סניף רמות, באר שבע.</p>
+<p>תאריך: 24 באוקטובר 2026, סניף הנביאים, מודיעין.</p>
 <ul><li>חלב 3% ליטר x2 - 13.80</li><li>לחם מחמצת - 18.90</li><li>עגבניות 2 ק"ג - 15.80</li><li>ביצים L תבנית 12 - 14.90</li><li>אבקת כביסה - 49.90</li><li>עוף שלם - 39.90</li></ul>
 <p>סה"כ: 386.20 ש"ח (כולל מוצרים נוספים שלא הוצגו). שולם באפליקציה.</p>
 </main><footer>תודה שקניתם אצלנו</footer></body></html>""")
 
 add("scans/hardware-store-receipt.png", "png", lines=[
-    "NEGEV HARDWARE", "Beer Sheva, Industrial Zone", "Date: 2026-06-21",
+    "CITY HARDWARE", "Modiin, Industrial Zone", "Date: 2026-06-21",
     "Cordless drill 18V ........ 349.00", "Drill bits set ............ 59.00",
     "Wall anchors x50 .......... 19.90", "TOTAL NIS ................ 427.90",
     "Warranty on drill: 2 years", "Keep this receipt"])
@@ -181,7 +181,7 @@ add("scans/hardware-store-receipt.png", "png", lines=[
 # ----------------------------------------------------------------- kids
 add("kids/school-supplies-grade3-2026.docx", "docx", title="רשימת ציוד לכיתה ג'", rtl=True, paras=[
     ("h1", "רשימת ציוד לכיתה ג' - שנת הלימודים תשפ\"ז"),
-    ("p", "בית הספר היסודי \"נופים\", באר שבע. כיתה ג'2, המחנכת: מירב אלון."),
+    ("p", "בית הספר היסודי \"נופים\", מודיעין. כיתה ג'2, המחנכת: מירב אלון."),
     ("p", "יש להביא את כל הציוד עד יום 1 בספטמבר 2026, כשכל פריט מסומן בשם הילד/ה."),
     ("h2", "מחברות"),
     ("li", "4 מחברות חשבון משובצות, 40 דף"),
@@ -206,9 +206,9 @@ add("kids/school-trip-permission-2026-11.docx", "docx", title="אישור הור
     ("p", "את ספח האישור החתום יש להחזיר למחנכת עד 5 בנובמבר 2026. ילד ללא אישור חתום לא יוכל לצאת לטיול."),
 ])
 
-add("kids/kindergarten-yoav-2026-27.md", "md", text="""# גן "שקד" - מידע להורים, תשפ"ז
+add("kids/kindergarten-itai-2026-27.md", "md", text="""# גן "שקד" - מידע להורים, תשפ"ז
 
-הגננת: ליאת, הסייעת: חנה. הגן של יואב, בשכונת רמות.
+הגננת: ליאת, הסייעת: חנה. הגן של איתי, בשכונת הנביאים.
 
 ## שעות פעילות
 
@@ -227,30 +227,30 @@ add("kids/kindergarten-yoav-2026-27.md", "md", text="""# גן "שקד" - מיד�
 בגדים להחלפה בתיק, בקבוק מים, כריך ופרי. בימי שישי: ארוחת בוקר משותפת לפי תורנות.
 """)
 
-add("kids/parents-meeting-2026-10.md", "md", text="""# אסיפת הורים - נועה, כיתה ג', אוקטובר 2026
+add("kids/parents-meeting-2026-10.md", "md", text="""# אסיפת הורים - מאיה, כיתה ג', אוקטובר 2026
 
 נכחו: דוד, המחנכת מירב.
 
-- הקריאה של נועה השתפרה מאוד מתחילת השנה. מומלץ להמשיך לקרוא איתה 15 דקות כל ערב.
+- הקריאה של מאיה השתפרה מאוד מתחילת השנה. מומלץ להמשיך לקרוא איתה 15 דקות כל ערב.
 - שיעורי בית: שלוש פעמים בשבוע, בימים א', ג' ו-ה'.
 - בחשבון: עובדים על לוח הכפל עד 5. כדאי לתרגל בעל פה בדרך לבית הספר.
 - חברתית: משתלבת יפה, אוהבת את חוג השחמט.
 - הפגישה הבאה: ינואר 2027.
 """)
 
-add("kids/chess-club-2026.html", "html", lang="he", text="""<!doctype html><html dir="rtl" lang="he"><head><meta charset="utf-8"><title>חוג שחמט - מתנ"ס רמות</title></head>
+add("kids/chess-club-2026.html", "html", lang="he", text="""<!doctype html><html dir="rtl" lang="he"><head><meta charset="utf-8"><title>חוג שחמט - מתנ"ס הנביאים</title></head>
 <body><nav>חוגים | צהרונים | אירועים | צור קשר</nav><main>
 <h1>חוג שחמט לילדי כיתות ב'-ד'</h1>
-<p>החוג נפגש בימי שלישי בשעה 16:00 במתנ"ס רמות, חדר 3. משך המפגש: שעה.</p>
+<p>החוג נפגש בימי שלישי בשעה 16:00 במתנ"ס הנביאים, חדר 3. משך המפגש: שעה.</p>
 <p>מחיר: 180 ש"ח לחודש. הרשמה דרך אתר המתנ"ס. אפשר להצטרף לשיעור ניסיון אחד ללא תשלום.</p>
 <p>המדריך: אלכס, מדריך מוסמך של איגוד השחמט.</p>
-</main><footer>מתנ"ס רמות | כל הזכויות שמורות</footer></body></html>""")
+</main><footer>מתנ"ס הנביאים | כל הזכויות שמורות</footer></body></html>""")
 
-add("kids/noa-reading-list.md", "md", text="""# Noa's reading list / רשימת קריאה של נועה
+add("kids/maya-reading-list.md", "md", text="""# Maya's reading list / רשימת קריאה של מאיה
 
 Books we finished:
 - "Frog and Toad Are Friends" (in English, with dad)
-- "הדוב הלבן" - נועה קראה לבד!
+- "הדוב הלבן" - מאיה קראה לבד!
 
 Next:
 - "Magic Tree House #1" - the librarian recommended it for grade 3
@@ -264,10 +264,10 @@ add("scans/gan-note-he.png", "png", hebrew=True, lines=[
 
 # ----------------------------------------------------------------- health (logistics only)
 add("health/clinic-appointment-2026-11-18.pdf", "pdf", dir="rtl", title="זימון לתור", pages=[
-    """<h1>זימון לתור - מרפאת רמות</h1>
-<p>לכבוד: דוד בן-עמי</p>
+    """<h1>זימון לתור - מרפאת הנביאים</h1>
+<p>לכבוד: יונתן שני</p>
 <p>נקבע עבורך תור לרופאת המשפחה, ד"ר רונית שגיא, ביום רביעי 18 בנובמבר 2026 בשעה 10:40.</p>
-<p>כתובת המרפאה: שדרות הציונות 40, באר שבע, קומה 2.</p>
+<p>כתובת המרפאה: שדרות הציונות 40, מודיעין, קומה 2.</p>
 <h2>הנחיות</h2>
 <ul><li>יש להגיע 10 דקות לפני מועד התור.</li><li>יש להביא תעודת זהות.</li>
 <li>ביטול או שינוי תור: דרך האפליקציה, עד 24 שעות לפני המועד.</li></ul>
@@ -275,10 +275,10 @@ add("health/clinic-appointment-2026-11-18.pdf", "pdf", dir="rtl", title="זימ�
 
 add("health/dental-checkup-2026-12.txt", "txt", text="""Smile Dental Clinic - appointment reminder
 
-Patient: David Ben-Ami
+Patient: Yonatan Shani
 Appointment: routine check-up and cleaning
 Date: 2026-12-03 at 16:15, with Dr. Maya Kaplan
-Address: 8 Rager Blvd, Beer Sheva, 1st floor
+Address: 8 Emek Ayalon Blvd, Modiin, 1st floor
 
 Price with your dental plan: 180 NIS.
 Please cancel at least 24 hours in advance to avoid a 100 NIS no-show fee.
@@ -333,7 +333,7 @@ Notes for myself:
 
 INS_PAGES = [
     """<h1>פוליסת ביטוח רכב מקיף 2026</h1>
-<p>המבוטח: דוד בן-עמי. רכב: מאזדה 3, שנת ייצור 2021.</p>
+<p>המבוטח: יונתן שני. רכב: מאזדה 3, שנת ייצור 2021.</p>
 <p>תקופת הביטוח: מיום 1 בינואר 2026 ועד יום 31 בדצמבר 2026.</p>
 <h2>1. כיסויים עיקריים</h2>
 <p>נזק לרכב המבוטח בתאונה, גניבה, שריפה ונזקי טבע. נזק לרכוש צד שלישי עד 1,000,000 ש"ח.</p>""",
@@ -360,7 +360,7 @@ add("finance/tax-refund-checklist-2025.md", "md", text="""# החזר מס לשנ
 
 - טופס 106 מכל מעסיק שעבדתי אצלו בשנה (בית הספר + העבודה הנוספת).
 - קבלות על תרומות למוסדות מוכרים (סעיף 46): זיכוי של 35% מהסכום.
-- אישור על ילדים: נקודות זיכוי על נועה ויואב.
+- אישור על ילדים: נקודות זיכוי על מאיה ואיתי.
 - אישור ניכוי מס במקור, אם היו הכנסות מעבודה עצמאית.
 
 ## איך מגישים
@@ -371,12 +371,12 @@ add("finance/tax-refund-checklist-2025.md", "md", text="""# החזר מס לשנ
 add("finance/pension-annual-statement-2025.html", "html", lang="en", text="""<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Annual pension statement 2025 - summary</title></head>
 <body><nav>Home | My savings | Documents | Logout</nav><main>
 <h1>Annual pension statement 2025 (summary)</h1>
-<p>Member: David Ben-Ami. Fund: Negev Pension (fictional). Track: general, age-based.</p>
+<p>Member: Yonatan Shani. Fund: Horizon Pension (fictional). Track: general, age-based.</p>
 <p>Management fees: 0.22% of the accumulated savings per year, and 1.5% of each monthly deposit.</p>
 <p>Return in 2025 for your track: 7.4% (before fees).</p>
 <p>Insurance coverage: disability and survivors, according to the default coverage of the fund.</p>
 <p>To change your investment track, log in and choose My savings &gt; Change track. The change applies from the next month.</p>
-</main><footer>Negev Pension | Privacy | Accessibility</footer></body></html>""")
+</main><footer>Horizon Pension | Privacy | Accessibility</footer></body></html>""")
 
 # ----------------------------------------------------------------- courses and work notes
 RAG = """# RAG notes (AI Engineer course)
@@ -410,38 +410,38 @@ add("courses/prompting-notes-he.md", "md", text="""# סיכום: הנדסת פר
 - תמיד לבדוק על סט דוגמאות קבוע לפני ואחרי שינוי בפרומפט.
 """)
 
-add("courses/hebrew-app-spec.md", "md", text="""# אפליקציה לתרגול עברית מדוברת - אפיון ראשוני
+add("courses/home-budget-app-spec.md", "md", text="""# אפליקציה לניהול תקציב משפחתי - אפיון ראשוני
 
 ## קהל יעד
 
-תלמידי תיכון שעברית היא לא שפת האם שלהם, שרוצים לדבר בביטחון במצבים יומיומיים.
+משפחות שרוצות לראות פעם בשבוע לאן הלך הכסף, בלי להקליד כל קנייה ביד.
 
 ## תכונות ל-MVP
 
-1. שיחות קוליות קצרות במצבים יומיומיים: בקופת חולים, בחנות, בראיון עבודה.
-2. משוב מיידי על הגייה ועל אוצר מילים, בעדינות ובלי ציונים.
-3. מעקב התקדמות שבועי למורה.
+1. ייבוא של קובץ התנועות מהבנק, ומיון אוטומטי לקטגוריות: מזון, חינוך, רכב, בית.
+2. סיכום שבועי קצר: כמה הוצאנו בכל קטגוריה לעומת השבוע הקודם.
+3. יעד חיסכון אחד, עם פס התקדמות.
 
 ## לא ב-MVP
 
-משחקים, לוח מובילים והתראות. קודם לוודא שהתלמידים חוזרים לאפליקציה בלי עידוד חיצוני.
+חיבור ישיר לבנק, שיתוף בין כמה משתמשים, והתראות. קודם לוודא שהסיכום השבועי באמת נקרא.
 """)
 
-add("courses/first-grade-math-ideas.md", "md", text="""# רעיונות לשיעורי חשבון בכיתה א'
+add("courses/guitar-practice-ideas.md", "md", text="""# רעיונות לתרגול גיטרה למתחילים
 
-## מנייה עד 20
+## חימום של חמש דקות
 
-- חרוזים על חוט: כל תלמיד מקבל 20 חרוזים בשני צבעים, עשרה מכל צבע. מונים בקבוצות של 10.
-- "מי מסתתר?": מכסים מספר על ישר המספרים והילדים מנחשים לפי השכנים.
+- סולם כרומטי לאט על כל המיתרים, ארבע אצבעות, עם מטרונום על 60.
+- מתיחות קלות לאצבעות של יד שמאל לפני שמתחילים.
 
-## חיבור עד 10
+## אקורדים פתוחים
 
-- משחק קלפים "משלימים לעשר": כל זוג קלפים שסכומו 10 נלקח.
-- סיפורים מספריים מהחיים של הילדים: "היו לי 6 תמרים וקיבלתי עוד 3".
+- להחליף בין שני אקורדים (למשל לה מינור ומי מינור) דקה שלמה בלי לעצור. סופרים כמה החלפות.
+- שיר אחד פשוט בשלושה אקורדים בכל שבוע, עד שהוא יוצא בלי להסתכל על היד.
 
-## צורות
+## קצב
 
-סיור בחצר בית הספר וחיפוש עיגולים, משולשים ומלבנים. כל ילד מצלם צורה אחת ומציג לכיתה.
+פריטה בסיסית למטה-למטה-למעלה, קודם בלי אקורדים, רק על מיתרים מושתקים. רק כשהקצב יציב מוסיפים אקורדים.
 """)
 
 add("courses/node-backend-cheatsheet.md", "md", text="""# Node.js backend cheat sheet
@@ -511,49 +511,49 @@ add("recipes/pita-bread.html", "html", lang="en", text="""<!doctype html><html l
 </body></html>""")
 
 # ----------------------------------------------------------------- travel
-add("travel/tbilisi-hotel-booking-2026-08.pdf", "pdf", dir="ltr", title="Hotel booking confirmation", pages=[
-    """<h1>Booking confirmation - Old Town Rooms, Tbilisi</h1>
-<p>Guest: David Ben-Ami, 2 adults and 2 children. Confirmation number: OTR-58213.</p>
+add("travel/rome-hotel-booking-2026-08.pdf", "pdf", dir="ltr", title="Hotel booking confirmation", pages=[
+    """<h1>Booking confirmation - Old Town Rooms, Rome</h1>
+<p>Guest: Yonatan Shani, 2 adults and 2 children. Confirmation number: OTR-58213.</p>
 <p>Arrival: 3 August 2026. Departure: 7 August 2026 (4 nights). Family room with a balcony.</p>
 <h2>Check-in and check-out</h2>
 <p>Check-in from 14:00. Check-out until 11:00. Late check-out until 14:00 costs 20 USD, subject to availability.</p>
 <h2>Cancellation policy</h2>
 <p>Free cancellation until 48 hours before arrival. After that, the first night is charged.</p>""",
     """<h2>Parking and transfers</h2>
-<p>Private parking near the hotel: 15 GEL per night, reservation needed.</p>
-<p>Airport transfer: 60 GEL each way for up to 4 passengers. Book at least one day in advance by email.</p>
+<p>Private parking near the hotel: 15 EUR per night, reservation needed.</p>
+<p>Airport transfer: 60 EUR each way for up to 4 passengers. Book at least one day in advance by email.</p>
 <h2>Payment</h2>
 <p>Total price: 420 USD, paid at the property in cash or by card. City tax is included.</p>""",
 ])
 
-add("travel/flight-eticket-tlv-tbs-2026-08.html", "html", lang="en", text="""<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Your e-ticket - QZ7K2P</title></head>
+add("travel/flight-eticket-tlv-fco-2026-08.html", "html", lang="en", text="""<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Your e-ticket - QZ7K2P</title></head>
 <body><header>FlyEast - Manage booking</header><main>
 <h1>E-ticket receipt</h1>
 <p>Booking reference: QZ7K2P. Passengers: 4 (2 adults, 2 children).</p>
-<p>Outbound: 3 August 2026, Tel Aviv (TLV) 06:10 to Tbilisi (TBS) 09:05, flight FE 701.</p>
-<p>Return: 14 August 2026, Tbilisi (TBS) 22:40 to Tel Aviv (TLV) 00:55 (+1), flight FE 702.</p>
+<p>Outbound: 3 August 2026, Tel Aviv (TLV) 06:10 to Rome (FCO) 09:05, flight FE 701.</p>
+<p>Return: 14 August 2026, Rome (FCO) 22:40 to Tel Aviv (TLV) 00:55 (+1), flight FE 702.</p>
 <p>Baggage allowance per passenger: one checked bag of 23 kg and one cabin bag of 8 kg.</p>
 <p>Online check-in opens 24 hours before departure.</p>
 </main><footer>FlyEast | Conditions of carriage</footer></body></html>""")
 
-add("travel/car-rental-georgia-voucher.pdf", "pdf", dir="ltr", title="Car rental voucher", pages=[
-    """<h1>Car rental voucher - Kavkaz Cars</h1>
-<p>Driver: David Ben-Ami. Voucher number: KC-2026-0815.</p>
-<p>Pick-up: Tbilisi Airport, 3 August 2026, 10:00. Return: Tbilisi Airport, 14 August 2026, 19:00.</p>
+add("travel/car-rental-italy-voucher.pdf", "pdf", dir="ltr", title="Car rental voucher", pages=[
+    """<h1>Car rental voucher - Roma Auto</h1>
+<p>Driver: Yonatan Shani. Voucher number: KC-2026-0815.</p>
+<p>Pick-up: Rome Fiumicino Airport, 3 August 2026, 10:00. Return: Rome Fiumicino Airport, 14 August 2026, 19:00.</p>
 <p>Car: Toyota RAV4 4x4 or similar, automatic. Unlimited mileage.</p>
 <h2>Deposit and insurance</h2>
 <p>A security deposit of 300 USD is blocked on the driver's credit card at pick-up and released within 14 days after return.</p>
-<p>Insurance: CDW included, with an excess of 500 USD. Driving on unpaved mountain roads is not covered.</p>"""])
+<p>Insurance: CDW included, with an excess of 500 USD. Driving on unpaved country roads is not covered.</p>"""])
 
-add("travel/packing-list-georgia.md", "md", text="""# רשימת ציוד לגאורגיה, אוגוסט 2026
+add("travel/packing-list-italy.md", "md", text="""# רשימת ציוד לאיטליה, אוגוסט 2026
 
 - דרכונים לכל המשפחה (לבדוק תוקף של לפחות 6 חודשים)
 - רישיון נהיגה בינלאומי
-- מעילים קלים: בהרים קר בערב גם באוגוסט
+- מעילים קלים: בדולומיטים קר בערב גם באוגוסט
 - כיסאות בטיחות? לבדוק מול חברת ההשכרה
-- מתאם חשמל: בגאורגיה שקע מסוג C/F
+- מתאם חשמל: באיטליה שקע מסוג F/L
 - תרופות קבועות ופלסטרים
-- כסף מזומן בלארי לכפרים בהרים
+- כסף מזומן ביורו לכפרים הקטנים
 """)
 
 add("travel/eilat-weekend-ideas.md", "md", text="""# סוף שבוע באילת - רעיונות

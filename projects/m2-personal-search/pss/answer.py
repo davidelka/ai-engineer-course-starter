@@ -19,16 +19,15 @@ import re
 import time
 from dataclasses import dataclass, field
 from typing import Any, Optional
-from xml.sax.saxutils import escape, quoteattr
 
 import httpx
 
 from llmkit import ChatRequest, ChatResult, Message, Usage
-from ragkit.rag import NOT_FOUND, parse_citations
+from ragkit.rag import NOT_FOUND
 from ragkit.types import Hit
 
 from . import hooks
-from .privacy import EgressLog, PrivacyError, make_record, protected
+from .privacy import EgressLog, PrivacyError, make_record
 
 SYSTEM = f"""You answer questions about the user's OWN personal documents (receipts, contracts, letters from school, notes, bookings), using ONLY the numbered sources in the user message.
 
@@ -43,20 +42,10 @@ Rules:
 NOT_FOUND_HE = "לא מצאתי את זה במסמכים."
 
 
-def format_source(n: int, hit: Hit, max_chars: Optional[int] = None) -> str:
-    c = hit.chunk
-    attrs = {"file": c.doc_id, "page": str(c.meta.get("page") or ""), "date": c.meta.get("date") or "",
-             "title": c.title.split(" | ")[0]}
-    a = " ".join(f"{k}={quoteattr(v)}" for k, v in attrs.items() if v)
-    body = c.text if not max_chars or len(c.text) <= max_chars else c.text[:max_chars] + " …"
-    return f'<source id="{n}" {a}>\n{escape(body)}\n</source>'
-
-
-def build_request(question: str, hits: list[Hit], *, max_chars: Optional[int] = None,
-                  max_tokens: int = 400) -> ChatRequest:
-    sources = "\n".join(format_source(i + 1, h, max_chars) for i, h in enumerate(hits)) or "(no sources found)"
-    user = f"<sources>\n{sources}\n</sources>\n\n<question>{escape(question)}</question>"
-    return ChatRequest(messages=[Message("user", user)], system=SYSTEM, max_tokens=max_tokens)
+def build_request(*args, **kwargs):
+    """Milestone 7: runs your mine.build_request (see pss/hooks.py)."""
+    from . import hooks
+    return hooks.get("build_request")(*args, **kwargs)
 
 
 # ------------------------------------------------------------------ local model: Ollama
@@ -187,12 +176,10 @@ class Answer:
                             for i, h in enumerate(self.hits)]}
 
 
-def _citations(text: str, hits: list[Hit]) -> tuple[list[Citation], list[int]]:
-    nums = parse_citations(text)
-    good = [Citation(n, hits[n - 1].chunk.doc_id, hits[n - 1].chunk.meta.get("page"),
-                     hits[n - 1].chunk.title.split(" | ")[0], hits[n - 1].chunk.text)
-            for n in nums if 1 <= n <= len(hits)]
-    return good, [n for n in nums if not 1 <= n <= len(hits)]
+def resolve_citations(*args, **kwargs):
+    """Milestone 7: runs your mine.resolve_citations (see pss/hooks.py)."""
+    from . import hooks
+    return hooks.get("resolve_citations")(*args, **kwargs)
 
 
 def ask(index, question: str, *, llm: Any = None, cloud: bool = False, dry_run: bool = False,
@@ -207,7 +194,7 @@ def ask(index, question: str, *, llm: Any = None, cloud: bool = False, dry_run: 
         req = build_request(q_text, hits)
         t0 = time.perf_counter()
         res = llm.complete(req)
-        cites, bad = _citations(res.text, hits)
+        cites, bad = resolve_citations(res.text, hits)
         return Answer(question=question, text=res.text.strip(), where="local", model=getattr(res, "model", "?"),
                       hits=hits, citations=cites, invalid_citations=bad, latency_s=time.perf_counter() - t0)
 
@@ -216,8 +203,7 @@ def ask(index, question: str, *, llm: Any = None, cloud: bool = False, dry_run: 
     if not c.enabled:
         raise PrivacyError("cloud answers are disabled: set cloud.enabled: true in your config "
                            "(and read what will be sent with --dry-run first)")
-    withheld = [h.chunk.doc_id for h in hits if protected(h.chunk.doc_id, c.never_send)]
-    send = [h for h in hits if not protected(h.chunk.doc_id, c.never_send)][: c.max_sources]
+    send, withheld = hooks.get("select_for_cloud")(hits, c.never_send, c.max_sources)
     req = build_request(q_text, send, max_chars=c.max_chars_per_source)
     redact = hooks.get("redact_for_cloud")
     system, user, q_red, counts = req.system_text, req.messages[0].text, q_text, {}
@@ -252,7 +238,7 @@ def ask(index, question: str, *, llm: Any = None, cloud: bool = False, dry_run: 
     log.after_send(rec.id, ok=True, input_tokens=res.usage.input_tokens, output_tokens=res.usage.output_tokens,
                    cost_usd=float(res.cost_usd or 0.0))
     ans.text = res.text.strip()
-    ans.citations, ans.invalid_citations = _citations(res.text, send)
+    ans.citations, ans.invalid_citations = resolve_citations(res.text, send)
     ans.cost_usd = float(res.cost_usd or 0.0)
     ans.latency_s = time.perf_counter() - t0
     return ans

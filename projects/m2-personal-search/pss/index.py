@@ -29,7 +29,7 @@ from ragkit.dense import DenseRetriever
 from ragkit.embed import make_embedder
 from ragkit.hybrid import HybridRetriever
 from ragkit.retrieval import BM25Index
-from ragkit.types import Chunk, Document, Hit
+from ragkit.types import Chunk, Hit
 from ragkit.vectors import NumpyVectorStore
 
 from . import hooks
@@ -214,21 +214,7 @@ class PersonalIndex:
         return entries, total
 
     def to_chunks(self, ex: Extracted, entry: FileEntry) -> list[Chunk]:
-        out: list[Chunk] = []
-        title = f"{ex.title} | {ex.id}"
-        for u in ex.units:
-            if not u.text.strip():
-                continue
-            doc = Document(id=ex.id, text=u.text, meta={"title": title, "language": ex.language,
-                                                         "format": ex.format, "source_path": str(entry.path)})
-            for c in self.chunker.split(doc):
-                n = len(out)
-                c.id = f"{ex.id}#p{u.page}.{c.index}" if u.page else f"{ex.id}#{c.index}"
-                c.index = n
-                c.meta.update({"file": ex.id, "folder": entry.folder, "date": ex.date, "page": u.page,
-                               "format": ex.format, "language": ex.language})
-                out.append(c)
-        return out
+        return hooks.get("file_to_chunks")(ex, entry, self.chunker)      # milestone 3 (mine.py)
 
     def _remove_file(self, fid: str) -> None:
         ids = [cid for cid, c in self.chunks.items() if c.doc_id == fid]
@@ -284,7 +270,11 @@ class PersonalIndex:
             self.bm25.add(new_chunks)
             self.store.add(new_chunks, vecs)
         if plan.to_index or plan.removed or rebuilt:
-            self.dups = hooks.get("near_duplicate_groups")(self.doc_texts())
+            try:
+                self.dups = hooks.get("near_duplicate_groups")(self.doc_texts())
+            except hooks.MilestoneTodo:                 # milestone 6 not written yet: no folding, say so
+                self.dups = []
+                hooks.note("duplicates are not detected yet (milestone 6: mine.near_duplicate_groups)")
         self.save()
         return SyncReport(plan=plan, scan=rep, seconds=time.perf_counter() - t0,
                           chunks_added=len(new_chunks), warnings=warnings, rebuilt=rebuilt)
@@ -323,7 +313,11 @@ class PersonalIndex:
     # ------------------------------------------------------------------ search
     def search_hits(self, query: str, *, mode: str = "hybrid", k: int = 10, filters: Optional[dict] = None
                     ) -> tuple[ParsedQuery, list[Hit], float]:
-        pq = hooks.get("parse_query")(query)
+        try:
+            pq = hooks.get("parse_query")(query)
+        except hooks.MilestoneTodo:                     # milestone 5 not written yet: plain text, no filters
+            pq = ParsedQuery(text=query)
+            hooks.note("filters in the query are not parsed yet (milestone 5: mine.parse_query)")
         f = {**pq.filters, **(filters or {})}
         pq.filters = f
         where = where_from(f)

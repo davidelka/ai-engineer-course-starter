@@ -19,7 +19,6 @@ import hashlib
 import json
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Callable
 
 
 def file_hash(path: Path) -> str:
@@ -48,25 +47,10 @@ class SyncPlan:
                 f"unchanged {len(self.unchanged)}, removed {len(self.removed)}, hashed {len(self.hashes)}")
 
 
-def plan_sync(manifest: dict[str, dict], current: dict[str, dict],
-              hash_fn: Callable[[str], str]) -> SyncPlan:
-    """Reference implementation (see mine.plan_sync for the contract)."""
-    plan = SyncPlan()
-    for fid in sorted(current):
-        st = current[fid]
-        old = manifest.get(fid)
-        if old is None:
-            plan.hashes[fid] = hash_fn(fid)
-            plan.added.append(fid)
-            continue
-        if old.get("size") == st.get("size") and old.get("mtime") == st.get("mtime"):
-            plan.unchanged.append(fid)
-            continue
-        h = hash_fn(fid)
-        plan.hashes[fid] = h
-        (plan.touched if h == old.get("hash") else plan.changed).append(fid)
-    plan.removed = sorted(fid for fid in manifest if fid not in current)
-    return plan
+def plan_sync(*args, **kwargs):
+    """Milestone 3: runs your mine.plan_sync (see pss/hooks.py)."""
+    from . import hooks
+    return hooks.get("plan_sync")(*args, **kwargs)
 
 
 @dataclass

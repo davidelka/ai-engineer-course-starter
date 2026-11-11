@@ -32,7 +32,6 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Optional
 
-from guardkit.redact import redact_pii
 
 IBAN_RE = re.compile(r"\bIL\d{2}(?:[ -]?\d{4}){4}[ -]?\d{3}\b", re.I)
 CARD_RE = re.compile(r"(?<![\d-])(?:\d[ -]?){12,18}\d(?![\d-])")
@@ -53,34 +52,10 @@ def luhn_ok(digits: str) -> bool:
     return total % 10 == 0
 
 
-def redact_for_cloud(text: str) -> tuple[str, dict[str, int]]:
-    """Reference implementation (see mine.redact_for_cloud for the contract)."""
-    counts = {k: 0 for k in LABELS}
-
-    def sub_iban(m: re.Match) -> str:
-        counts["IBAN"] += 1
-        return "[IBAN]"
-
-    def sub_card(m: re.Match) -> str:
-        digits = re.sub(r"\D", "", m.group(0))
-        if 13 <= len(digits) <= 19 and luhn_ok(digits):
-            counts["CARD"] += 1
-            return "[CARD]"
-        return m.group(0)
-
-    text = IBAN_RE.sub(sub_iban, text)
-    text = CARD_RE.sub(sub_card, text)
-    before = {k: text.count(f"[{k}]") for k in ("IL_ID", "EMAIL", "PHONE")}
-    text = redact_pii(text)
-    for k in ("IL_ID", "EMAIL", "PHONE"):
-        counts[k] += text.count(f"[{k}]") - before[k]
-
-    def sub_acct(m: re.Match) -> str:
-        counts["BANK_ACCOUNT"] += 1
-        return "[BANK_ACCOUNT]"
-
-    text = BANK_ACCOUNT_RE.sub(sub_acct, text)
-    return text, {k: v for k, v in counts.items() if v}
+def redact_for_cloud(*args, **kwargs):
+    """Milestone 8: runs your mine.redact_for_cloud (see pss/hooks.py)."""
+    from . import hooks
+    return hooks.get("redact_for_cloud")(*args, **kwargs)
 
 
 def protected(file_id: str, never_send: list[str]) -> Optional[str]:

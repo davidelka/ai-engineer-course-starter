@@ -1,9 +1,9 @@
 Smile Dental Clinic - appointment reminder
 
-Patient: David Ben-Ami
+Patient: Yonatan Shani
 Appointment: routine check-up and cleaning
 Date: 2026-12-03 at 16:15, with Dr. Maya Kaplan
-Address: 8 Rager Blvd, Beer Sheva, 1st floor
+Address: 8 Emek Ayalon Blvd, Modiin, 1st floor
 
 Price with your dental plan: 180 NIS.
 Please cancel at least 24 hours in advance to avoid a 100 NIS no-show fee.

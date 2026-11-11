@@ -2,7 +2,7 @@
 
 הקובץ הזה הוא למקרה שנתקעת. כדאי קודם לנסות לבד לפי ה-docstring ב-`mine.py` ולפי הטסטים. אם נתקעת, קרא רק את **רמז 1** של הפונקציה, ונסה שוב. אם עדיין לא הולך, עבור ל-**רמז 2**, ורק בסוף ל-**רמז 3**, שמתאר את האלגוריתם המלא במילים. כל רמת רמז נמצאת תחת כותרת משלה, כך שאפשר לעצור אחרי כל אחת.
 
-מימושי הייחוס נמצאים ב-`pss/` (`scan.py`, `manifest.py`, `query.py`, `dedup.py`, `privacy.py`). כדאי להשוות אליהם רק אחרי שהטסטים שלך עוברים (`python -m pytest -q projects/m2-personal-search/tests`).
+מימושי הייחוס נמצאים בענף `solutions` של הריפו, בקובץ `projects/m2-personal-search/pss/_reference.py`. כדאי להשוות אליהם רק אחרי שהטסטים שלך עוברים (`python -m pytest -q projects/m2-personal-search/tests`). אפשר לראות את הקובץ בלי לעבור ענף: `git show origin/solutions:projects/m2-personal-search/pss/_reference.py`.
 
 ## is_excluded
 
@@ -38,6 +38,42 @@
 3. `plan.hashes = {id: hash}` לכל מזהה שחישבת לו hash (ה-indexer שומר אותם).
 4. כל הרשימות ב-SyncPlan ממוינות (`sorted`). `hash_fn` איטי בתיקייה גדולה: קריאה רק כשצריך, ולכל היותר פעם אחת לכל מזהה.
 
+## file_to_chunks
+
+### רמז 1: כיוון
+את החיתוך עצמו עושה ה-chunker של ragkit (שיעור 9). העבודה שלך היא מה שקורה **סביבו**: לחתוך כל עמוד בנפרד, כדי שקטע לא יחצה גבול של עמוד, ולתת לכל קטע id ומטא-דאטה שאומרים מאיזה קובץ ומאיזה עמוד הוא בא. המלכודת: ה-chunker מתחיל את המספור מאפס בכל עמוד, אבל `c.index` צריך לרוץ ברצף לאורך כל הקובץ. ה-id משתמש במספור **שבתוך** העמוד, וה-index הסופי במספור הרציף.
+
+### רמז 2: מבנה
+רשימת תוצאה אחת לכל הקובץ. עבור על `ex.units` לפי הסדר, ודלג על יחידה ריקה. לכל יחידה בנה Document אחד, פצל אותו, ולכל קטע שיצא: קבע את ה-id (לפני שאתה משנה את ה-index), קבע את ה-index לפי האורך הנוכחי של רשימת התוצאה, הוסף את שדות המטא-דאטה, והוסף לרשימה.
+
+### רמז 3: האלגוריתם המלא
+1. `out = []`; `title = f"{ex.title} | {ex.id}"`.
+2. לכל `u` ב-`ex.units`: אם `u.text.strip()` ריק, דלג.
+3. `doc = Document(id=ex.id, text=u.text, meta={"title": title, "language": ex.language, "format": ex.format, "source_path": str(entry.path)})`.
+4. לכל `c` ב-`chunker.split(doc)`:
+   - `n = len(out)`;
+   - `c.id = f"{ex.id}#p{u.page}.{c.index}"` אם `u.page`, אחרת `f"{ex.id}#{c.index}"`;
+   - `c.index = n`;
+   - `c.meta.update({"file": ex.id, "folder": entry.folder, "date": ex.date, "page": u.page, "format": ex.format, "language": ex.language})`;
+   - `out.append(c)`.
+5. החזר את `out`.
+
+## retrieval_row
+
+### רמז 1: כיוון
+אלה המדדים של שיעור 13, לשאלה אחת. recall@k הוא **איזה חלק** מהקבצים הנכונים הופיע ב-k הראשונים, ו-reciprocal rank מסתכל רק על **הראשון** שנמצא. המלכודת היא `page_ok`: הוא לא שואל אם העמוד הנכון הופיע איפשהו, אלא אם הקובץ **הראשון** ברשימה שיש לו עמודים בשאלה הגיע עם אחד העמודים הנכונים.
+
+### רמז 2: מבנה
+הוצא מ-`ranked` רשימת מזהים בלבד, והפוך את `q["relevant"]` לקבוצה. מצא את המיקום הראשון של קובץ נכון (או שאין). חשב את שלושת ה-recall בלולאה על 1, 5 ו-10. אחר כך `page_ok`: אם אין `pages` בשאלה, `None`; אחרת מצא את הזוג הראשון ב-`ranked` שהקובץ שלו מופיע ב-`pages`, ובדוק את העמוד שלו. בסוף, החיתוך של `must_not` עם הרשימה.
+
+### רמז 3: האלגוריתם המלא
+1. `ids = [f for f, _ in ranked]`; `rel = set(q["relevant"])`.
+2. `first` = האינדקס (מ-0) של הקובץ הראשון ב-`ids` שנמצא ב-`rel`, או `None`. `rr = 1 / (first + 1)`, או `0.0` כש-`first` הוא `None`.
+3. לכל `k` ב-1, 5, 10: `r{k} = len(rel & set(ids[:k])) / len(rel)`, ו-`0.0` כש-`rel` ריק.
+4. `page_ok = None` כשאין `q.get("pages")`. אחרת `pf` = הזוג `(f, p)` הראשון ב-`ranked` עם `f in q["pages"]`, ו-`page_ok = bool(pf and pf[1] in q["pages"][pf[0]])`.
+5. `must_not_hit = sorted(set(q.get("must_not", [])) & set(ids))`.
+6. החזר dict עם `r1`, `r5`, `r10`, `rr`, `page_ok`, `must_not_hit`.
+
 ## parse_query
 
 ### רמז 1: כיוון
@@ -72,6 +108,36 @@
 3. חבר זוגות דומים ב-union-find (או BFS על גרף הדמיון), כך שהקבוצות טרנזיטיביות: A~B ו-B~C נותנים קבוצה אחת גם אם A ו-C לא דומים מספיק בעצמם.
 4. החזר רק קבוצות עם 2 חברים או יותר; כל קבוצה ממוינת; הרשימה ממוינת לפי המזהה הראשון של כל קבוצה.
 
+## build_request
+
+### רמז 1: כיוון
+זה הפרומפט של הכלי, והפורמט שלו נבדק עד התו. שני דברים חשובים בו: כל מקור נושא **קובץ ועמוד**, כדי שהתשובה תוכל לצטט אותם, וה-escaping מונע ממסמך שמכיל `</source>` לסגור את התגית (שיעור 24). שים לב ש-`escape` כאן מגיע מ-`xml.sax.saxutils`: הוא מטפל ב-`&`, `<` ו-`>`, ולא נוגע במרכאות. התחל מהטסט `test_exact_prompt`.
+
+### רמז 2: מבנה
+פונקציית עזר לתגית של מקור אחד: בנה את המאפיינים לפי הסדר, דלג על ריקים, צטט כל ערך, וחתוך את הטקסט אם צריך. אחר כך ב-`build_request`: חבר את המקורות בשורה חדשה (או הטקסט החלופי), עטוף אותם ואת השאלה, ובנה את ה-`ChatRequest`, עם `SYSTEM` כמחרוזת.
+
+### רמז 3: האלגוריתם המלא
+1. מקור מספר n: `c = hit.chunk`. המאפיינים לפי הסדר: `file=c.doc_id`, `page=str(c.meta.get("page") or "")`, `date=c.meta.get("date") or ""`, `title=c.title.split(" | ")[0]`. מדלגים על ריקים, וכל ערך עובר `quoteattr`.
+2. `body = c.text`, ואם `max_chars` מוגדר והטקסט ארוך ממנו: `c.text[:max_chars] + " …"`.
+3. התגית: `f'<source id="{n}" {attrs}>\n{escape(body)}\n</source>'`.
+4. `sources = "\n".join(...)`, או `"(no sources found)"` כשאין מקורות.
+5. `user = f"<sources>\n{sources}\n</sources>\n\n<question>{escape(question)}</question>"`.
+6. `ChatRequest(messages=[Message("user", user)], system=SYSTEM, max_tokens=max_tokens)`.
+
+## resolve_citations
+
+### רמז 1: כיוון
+את הפענוח של "[1, 3]" ו-"[1][3]" כבר עושה `parse_citations` של ragkit, והוא גם שומר על סדר ההופעה הראשונה בלי חזרות. מה שנשאר לך הוא להחליט על כל מספר אם הוא בטווח, ולבנות ממנו Citation עם קובץ ועמוד. זכור שהמספור מתחיל ב-1.
+
+### רמז 2: מבנה
+קבל את רשימת המספרים פעם אחת. עבור עליה פעמיים, או פעם אחת עם שתי רשימות: מספר בטווח הופך ל-Citation מתוך ה-chunk המתאים, ומספר מחוץ לטווח נכנס לרשימת הלא תקינים. החזר את שתי הרשימות כזוג.
+
+### רמז 3: האלגוריתם המלא
+1. `nums = parse_citations(text)`.
+2. `good = [Citation(n, c.doc_id, c.meta.get("page"), c.title.split(" | ")[0], c.text) for n in nums if 1 <= n <= len(hits)]`, כאשר `c = hits[n - 1].chunk`.
+3. `bad = [n for n in nums if not 1 <= n <= len(hits)]`.
+4. החזר `(good, bad)`.
+
 ## redact_for_cloud
 
 ### רמז 1: כיוון
@@ -89,3 +155,16 @@
 5. החזר `(text, counts)` כאשר ב-counts רק תוויות שהספירה שלהן גדולה מ-0.
 
 למה הסדר הזה: IBAN מכיל רצף ספרות שנראה כמו כרטיס, וכרטיס מכיל ספרות שעלולות להיראות כמו טלפון; הדפוס הספציפי יותר חייב לנצח.
+
+## select_for_cloud
+
+### רמז 1: כיוון
+זו השכבה הראשונה של ההגנה במסלול לענן, והיא חזקה יותר מ-redaction: קובץ מתיקייה מוגנת לא נשלח **בכלל**, אפילו לא חלק ממנו. אין צורך להמציא כאן תבניות חדשות: `never_send` כתוב באותו פורמט כמו ה-excludes, ולכן `is_excluded` שכתבת באבן דרך 2 כבר יודע להחליט. המלכודת: הסדר. קודם מוציאים את המוגנים, ורק אחר כך חותכים ל-`max_sources`, כדי שמקור מוגן לא יתפוס מקום.
+
+### רמז 2: מבנה
+עבור על ה-hits פעם אחת, וחלק אותם לשתי קבוצות לפי `is_excluded(h.chunk.doc_id, never_send)`. לרשימת המוגנים שמור רק את מזהי הקבצים, בלי חזרות וממוינים. את השאר שמור לפי הסדר המקורי, וחתוך בסוף.
+
+### רמז 3: האלגוריתם המלא
+1. `withheld = sorted({h.chunk.doc_id for h in hits if is_excluded(h.chunk.doc_id, never_send) is not None})`.
+2. `send = [h for h in hits if h.chunk.doc_id not in withheld][:max_sources]`.
+3. החזר `(send, withheld)`.

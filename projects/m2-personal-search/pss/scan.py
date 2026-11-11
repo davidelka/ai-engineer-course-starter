@@ -17,65 +17,19 @@ Matching is case-insensitive (a folder named "Private" is private too).
 from __future__ import annotations
 
 import os
-import re
 from dataclasses import dataclass, field
-from fnmatch import fnmatchcase
 from pathlib import Path
-from typing import Iterator, Optional
+from typing import Iterator
 
 TEXT_EXT = {".md", ".markdown", ".txt", ".html", ".htm", ".pdf", ".docx"}
 IMAGE_EXT = {".png", ".jpg", ".jpeg", ".tif", ".tiff", ".webp", ".bmp"}
 SUPPORTED = TEXT_EXT | IMAGE_EXT
 
 
-def _glob_regex(pattern: str) -> re.Pattern:
-    """Translate a path pattern with ** into a regex over the whole relative path."""
-    i, out = 0, []
-    while i < len(pattern):
-        if pattern.startswith("**/", i):
-            out.append(r"(?:[^/]*/)*")
-            i += 3
-        elif pattern.startswith("**", i):
-            out.append(r".*")
-            i += 2
-        elif pattern[i] == "*":
-            out.append(r"[^/]*")
-            i += 1
-        elif pattern[i] == "?":
-            out.append(r"[^/]")
-            i += 1
-        else:
-            out.append(re.escape(pattern[i]))
-            i += 1
-    return re.compile("".join(out) + r"\Z")
-
-
-def is_excluded(rel_path: str, patterns: list[str]) -> Optional[str]:
-    """Reference implementation. Returns the FIRST pattern (in list order) that excludes
-    rel_path, or None. See the module docstring for the semantics."""
-    path = rel_path.replace("\\", "/").lower()
-    while path.startswith("./"):
-        path = path[2:]
-    path = path.strip("/")
-    parts = path.split("/")
-    dirs, name = parts[:-1], parts[-1]
-    for raw in patterns:
-        pat = raw.strip().lower()
-        if not pat or pat.startswith("#"):
-            continue
-        if pat.endswith("/"):
-            body = pat.rstrip("/")
-            if "/" in body:
-                if any(_glob_regex(body).match("/".join(dirs[: i + 1])) for i in range(len(dirs))):
-                    return raw
-            elif any(fnmatchcase(d, body) for d in dirs):
-                return raw
-        elif "/" in pat:
-            if _glob_regex(pat.lstrip("/")).match(path):
-                return raw
-        elif any(fnmatchcase(c, pat) for c in dirs + [name]):
-            return raw
-    return None
+def is_excluded(*args, **kwargs):
+    """Milestone 2: runs your mine.is_excluded (see pss/hooks.py)."""
+    from . import hooks
+    return hooks.get("is_excluded")(*args, **kwargs)
 
 
 @dataclass

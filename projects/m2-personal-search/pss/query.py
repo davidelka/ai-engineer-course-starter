@@ -43,49 +43,10 @@ def norm_date(value: str) -> Optional[str]:
     return f"{y:04d}-{mo:02d}-{d:02d}"
 
 
-def parse_query(q: str) -> ParsedQuery:
-    """Reference implementation (see mine.parse_query for the contract)."""
-    filters: dict = {}
-    warnings: list[str] = []
-    keep: list[str] = []
-    pos = 0
-    for m in TOKEN.finditer(q):
-        key = KEYS.get(m.group(1).lower())
-        if key is None:
-            continue
-        keep.append(q[pos:m.start()])
-        pos = m.end()
-        value = m.group(2) if m.group(2) is not None else m.group(3)
-        if key == "type":
-            for v in value.split(","):
-                t = TYPES.get(v.strip().lower())
-                if t:
-                    filters.setdefault("type", [])
-                    if t not in filters["type"]:
-                        filters["type"].append(t)
-                else:
-                    warnings.append(f"unknown type {v!r}")
-        elif key == "folder":
-            for v in value.split(","):
-                v = v.strip().strip("/").lower()
-                if v:
-                    filters.setdefault("folder", []).append(v)
-        elif key in ("after", "before"):
-            d = norm_date(value)
-            if d:
-                filters[key] = d
-            else:
-                warnings.append(f"bad date {value!r} (use YYYY, YYYY-MM or YYYY-MM-DD)")
-                keep.append(m.group(0))
-        elif key == "lang":
-            lang = LANGS.get(value.strip().lower())
-            if lang:
-                filters["lang"] = lang
-            else:
-                warnings.append(f"unknown language {value!r}")
-    keep.append(q[pos:])
-    text = " ".join("".join(keep).split())
-    return ParsedQuery(text=text, filters=filters, warnings=warnings)
+def parse_query(*args, **kwargs):
+    """Milestone 5: runs your mine.parse_query (see pss/hooks.py)."""
+    from . import hooks
+    return hooks.get("parse_query")(*args, **kwargs)
 
 
 def where_from(filters: dict) -> Optional[Callable]:

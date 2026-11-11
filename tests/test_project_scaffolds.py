@@ -35,13 +35,27 @@ def test_m1_scaffold(tmp_path):
     job = IngestJob(Settings(index_dir=tmp_path / "idx"))
     rep = job.run()
     assert rep.chunks_added == 404 and not rep.errors        # ingestion is ready-made
-    _all_todo(hooks)
+    _all_todo(hooks, importlib.import_module("mine"))
 
 
-def _all_todo(hooks):
-    mine = importlib.import_module("mine")
+def _all_todo(hooks, mine):
     for name, milestone in hooks.MILESTONES.items():
         params = inspect.signature(getattr(mine, name)).parameters.values()
         args = [None for p in params if p.default is p.empty and p.kind == p.POSITIONAL_OR_KEYWORD]
         with pytest.raises(hooks.MilestoneTodo, match=f"milestone {milestone}: mine.{name}"):
             hooks.call(name, *args)
+
+
+def test_m2_scaffold():
+    hooks = _project("m2-personal-search", "pss")
+    if hooks.has_reference():
+        pytest.skip("solutions branch: the reference implementations are here")
+    from pss.config import SAMPLE
+    from pss.extract import extract
+    from pss.scan import FileEntry
+    path = SAMPLE / "home" / "lease-2026.pdf"
+    entry = FileEntry(id="home/lease-2026.pdf", path=path, root=SAMPLE, size=path.stat().st_size,
+                      mtime=path.stat().st_mtime, ext=".pdf")
+    ex = extract(entry, ocr="off")                            # reading files is ready-made
+    assert ex.pages >= 2 and any(u.page == 2 for u in ex.units)
+    _all_todo(hooks, hooks.load_mine())
