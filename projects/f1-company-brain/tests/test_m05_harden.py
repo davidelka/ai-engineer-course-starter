@@ -1,4 +1,4 @@
-"""Milestone 6: harden_route, suspicious request text never auto-approves (mine.harden_route)."""
+"""Milestone 5: harden_route, suspicious request text never auto-approves (mine.harden_route)."""
 import copy
 
 from _impl import mine

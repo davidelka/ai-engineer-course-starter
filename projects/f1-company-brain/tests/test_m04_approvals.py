@@ -1,4 +1,4 @@
-"""Milestone 5: approvals_for, the approvals inbox (mine.approvals_for)."""
+"""Milestone 4: approvals_for, the approvals inbox (mine.approvals_for)."""
 import copy
 
 from cbrain.auth import Principal

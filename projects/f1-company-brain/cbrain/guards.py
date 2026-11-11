@@ -23,8 +23,8 @@ Least privilege: the knowledge path has NO tools at all (an injected "send an em
 call). The workflow path has the toolkit tools, and its only side effects are filing a request and
 recording a decision, both behind deterministic code and human gates.
 
-Also here: request_classification (milestone 7, for the gateway policy) and harden_route
-(milestone 6, suspicious request text never auto-approves).
+Also here: request_classification (milestone 6, for the gateway policy) and harden_route
+(milestone 5, suspicious request text never auto-approves).
 """
 
 from __future__ import annotations
@@ -32,13 +32,12 @@ from __future__ import annotations
 import re
 import secrets
 from dataclasses import dataclass, field, replace
-from typing import Any, Iterator, Optional
+from typing import Any, Iterator
 
 from guardkit.answerer import CANARY
 from guardkit.defenses import HIERARCHY_TEXT
 from guardkit.detectors import HeuristicDetector
 from guardkit.models import DATAMARK
-from guardkit.validate import check_output
 from llmkit.types import Block, ChatRequest, ChatResult, Message, StreamEvent, content_text
 
 LEVELS = ("public", "internal", "confidential", "restricted")
@@ -58,37 +57,18 @@ REFUSAL_OUTPUT = ("I can't show that answer: it failed an automatic safety check
                   "documents directly{cites}, or ask in #ask-security.")
 
 
-# ---------------------------------------------------------------- milestone 7 (reference)
-def request_classification(chunks_meta: list[dict], floor: Optional[str] = "internal") -> str:
-    """Reference for mine.request_classification (see its docstring)."""
-    def level(v: Any) -> int:
-        s = str(v or "").strip().lower()
-        if not s:
-            return LEVELS.index("internal")
-        return LEVELS.index(s) if s in LEVELS else LEVELS.index("restricted")
-    best = level(floor or "internal")
-    for m in chunks_meta or []:
-        best = max(best, level((m or {}).get("classification")))
-    return LEVELS[best]
+# ---------------------------------------------------------------- milestone 6 (mine.request_classification)
+def request_classification(*args, **kwargs):
+    """Milestone 6: runs your mine.request_classification (see cbrain/hooks.py)."""
+    from .hooks import call
+    return call("request_classification", *args, **kwargs)
 
 
-# ---------------------------------------------------------------- milestone 6 (reference)
-def harden_route(policy: dict, flags: list[str]) -> dict:
-    """Reference for mine.harden_route (see its docstring)."""
-    out = dict(policy)
-    reasons = list(policy.get("reasons") or [])
-    route = policy.get("route")
-    if route not in ("auto_approve", "needs_manager", "needs_security"):
-        out.update(route="needs_security", reasons=reasons + [f"unknown route {route!r}: failing closed"],
-                   hardened=True)
-        return out
-    if not flags:
-        out["hardened"] = False
-        out["reasons"] = reasons
-        return out
-    note = f"suspicious request text ({', '.join(flags)}): never auto-approved"
-    out.update(route="needs_manager" if route == "auto_approve" else route, reasons=reasons + [note], hardened=True)
-    return out
+# ---------------------------------------------------------------- milestone 5 (mine.harden_route)
+def harden_route(*args, **kwargs):
+    """Milestone 5: runs your mine.harden_route (see cbrain/hooks.py)."""
+    from .hooks import call
+    return call("harden_route", *args, **kwargs)
 
 
 # ---------------------------------------------------------------- 1 + 2: screens
@@ -114,23 +94,15 @@ class Screens:
         return ScreenResult(v.flagged, v.score, list(v.reasons))
 
     def filter_hits(self, hits: list) -> tuple[list, list[dict]]:
-        """(kept hits renumbered 1..n, dropped [{doc_id, chunk_id, reasons}])."""
-        kept, dropped = [], []
-        for h in hits:
-            r = self.chunk(h.chunk.text)
-            if r.flagged:
-                dropped.append({"doc_id": h.chunk.doc_id, "chunk_id": h.chunk.id, "reasons": r.reasons})
-            else:
-                kept.append(h)
-        return [replace(h, rank=i + 1) for i, h in enumerate(kept)], dropped
+        """(kept hits renumbered 1..n, dropped [{doc_id, chunk_id, reasons}]): milestone 5, mine.screen_hits."""
+        from .hooks import call
+        return call("screen_hits", hits, self.chunk)
 
 
-def validate_output(text: str) -> list[dict]:
-    """guardkit's output validator + the canary. [] = clean."""
-    out = [{"kind": f.kind, "detail": f.detail} for f in check_output(text or "")]
-    if CANARY in (text or ""):
-        out.append({"kind": "secret_leak", "detail": "system prompt canary"})
-    return out
+def validate_output(*args, **kwargs):
+    """Milestone 5: runs your mine.validate_output (see cbrain/hooks.py)."""
+    from .hooks import call
+    return call("validate_output", *args, **kwargs)
 
 
 def output_replacement(findings: list[dict], doc_ids: list[str]) -> str:
@@ -143,15 +115,10 @@ def output_replacement(findings: list[dict], doc_ids: list[str]) -> str:
 _SOURCE_RE = re.compile(r"(<source\b[^>]*>\n)(.*?)(\n</source>)", re.S)
 
 
-def spotlight_sources(user: str, nonce: str) -> str:
-    """Wrap the body of every acmeqa <source ...> block in nonce markers and datamark it."""
-    def one(m: re.Match) -> str:
-        sid = re.search(r'\bid="?(\d+)', m.group(1))
-        body = re.sub(r"[ \t]+", DATAMARK, m.group(2))
-        tag = sid.group(1) if sid else "?"
-        return (f"{m.group(1)}<<untrusted id={tag} nonce={nonce}>>\n{body}\n<</untrusted nonce={nonce}>>"
-                f"{m.group(3)}")
-    return _SOURCE_RE.sub(one, user)
+def spotlight_sources(*args, **kwargs):
+    """Milestone 5: runs your mine.spotlight_sources (see cbrain/hooks.py)."""
+    from .hooks import call
+    return call("spotlight_sources", *args, **kwargs)
 
 
 def _with_guard_system(system: Any) -> Any:

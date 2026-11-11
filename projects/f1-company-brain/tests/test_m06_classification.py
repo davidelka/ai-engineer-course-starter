@@ -1,4 +1,4 @@
-"""Milestone 7: request_classification, the label the gateway enforces (mine.request_classification)."""
+"""Milestone 6: request_classification, the label the gateway enforces (mine.request_classification)."""
 from _impl import mine
 
 

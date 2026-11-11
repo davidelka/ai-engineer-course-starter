@@ -13,11 +13,11 @@ this module adds for a multi-user service:
 - identity: the requester and the approver are the AUTHENTICATED principal (an email), never a
   value from the request body or the text. flowkit then checks authority against the directory.
 - one extension through flowkit's own seam (build_graph(impl=...)): policy_node runs the reference
-  check_policy, then harden_route (milestone 6): text that guardkit's detector flags is never
+  check_policy, then harden_route (milestone 5): text that guardkit's detector flags is never
   auto-approved, and the approver sees why.
 - an index of threads (brain_threads in requests.db): who filed what, when. LangGraph's
   checkpointer knows threads, not users.
-- the approvals inbox (approvals_for, milestone 5) and visibility rules for status/audit.
+- the approvals inbox (approvals_for, milestone 4) and visibility rules for status/audit.
 - traces: the workflow's LLM calls (InstrumentedLLM) and tool calls (tool spans) under the
   request's root span. Tools run in toolkit's thread pool, which does not carry the OpenTelemetry
   context, so TracedRegistry captures the context when flowkit looks the tool up.
@@ -55,19 +55,11 @@ def utc_now() -> str:
     return datetime.now(timezone.utc).replace(microsecond=0).isoformat()
 
 
-# ---------------------------------------------------------------- milestone 5 (reference)
-def approvals_for(principal, items: list[dict]) -> list[dict]:
-    """Reference for mine.approvals_for (see its docstring)."""
-    me = getattr(principal, "employee_id", None)
-    if not me:
-        return []
-    out = []
-    for it in items:
-        if me in (it.get("employee_id"), it.get("requester_id")):
-            continue
-        if getattr(principal, "is_security", False) or (it.get("gate") == "manager" and it.get("manager_id") == me):
-            out.append(it)
-    return sorted(out, key=lambda it: it.get("created_at") or "")
+# ---------------------------------------------------------------- milestone 4 (mine.approvals_for)
+def approvals_for(*args, **kwargs):
+    """Milestone 4: runs your mine.approvals_for (see cbrain/hooks.py)."""
+    from .hooks import call
+    return call("approvals_for", *args, **kwargs)
 
 
 # ---------------------------------------------------------------- tracing helpers

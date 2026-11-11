@@ -37,7 +37,7 @@ from . import ROOT
 from .auth import Principal
 from .brain import Brain, principal_for_role
 from .config import DATA, BrainSettings
-from .router import INTENTS, IntentRouter
+from .router import IntentRouter
 
 PARTS = ("knowledge", "routing", "workflow", "security", "cost")
 FLOW_SAMPLES = ROOT / "labs" / "16-workflows" / "data" / "requests.jsonl"
@@ -138,22 +138,10 @@ def eval_knowledge(base: BrainSettings, *, judge: bool = True, limit: Optional[i
 
 
 # ---------------------------------------------------------------- 2. routing
-def _route_metrics(rows: list[dict]) -> dict:
-    n = len(rows)
-    ok = sum(r["pred"] == r["label"] for r in rows)
-    per = {}
-    for c in INTENTS:
-        tp = sum(1 for r in rows if r["pred"] == c and r["label"] == c)
-        pp = sum(1 for r in rows if r["pred"] == c)
-        ap = sum(1 for r in rows if r["label"] == c)
-        per[c] = {"precision": tp / pp if pp else None, "recall": tp / ap if ap else None, "n": ap}
-    conf = Counter(f"{r['label']}->{r['pred']}" for r in rows if r["pred"] != r["label"])
-    return {"n": n, "accuracy": ok / n if n else 0.0, "ci95": _wilson(ok, n), "per_class": per,
-            "llm_calls": sum(1 for r in rows if r["source"] == "llm" or r.get("llm_called")),
-            "llm_rate": sum(1 for r in rows if r.get("llm_called")) / n if n else 0.0,
-            "errors_by_direction": dict(conf), "cost_usd": round(sum(r["cost"] for r in rows), 6),
-            "errors": [{"id": r["id"], "label": r["label"], "pred": r["pred"], "source": r["source"]}
-                       for r in rows if r["pred"] != r["label"]]}
+def _route_metrics(*args, **kwargs):
+    """Milestone 3: runs your mine.route_metrics (see cbrain/hooks.py)."""
+    from .hooks import call
+    return call("route_metrics", *args, **kwargs)
 
 
 def eval_routing(base: BrainSettings, brain: Optional[Brain] = None) -> dict:

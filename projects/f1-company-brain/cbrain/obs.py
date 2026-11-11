@@ -18,10 +18,8 @@ SLOs (targets for a 200-person internal tool; the numbers are a starting point, 
 from __future__ import annotations
 
 from contextlib import contextmanager, nullcontext
-from typing import Any, Iterable, Optional
+from typing import Any
 
-from obskit.analyze import percentile, span_cost
-from obskit.exporters import by_trace, root_of
 
 LATENCY_MS = {"ask": 8000.0, "request": 5000.0, "decide": 3000.0}
 COST_USD = {"ask": 0.005, "request": 0.003, "decide": 0.001}
@@ -49,43 +47,16 @@ def child_span(tracer: Any, name: str, **attrs: Any):
         yield sp
 
 
-def request_rows(spans: Iterable[dict]) -> list[dict]:
-    """One row per brain request: type, start, duration, error, cost (sum over the trace), LLM calls."""
-    rows = []
-    for tid, ss in by_trace(list(spans)).items():
-        root = root_of(ss)
-        a = root.get("attributes", {})
-        kind = a.get("brain.request_type")
-        if not kind:
-            continue
-        llm_calls = sum(1 for s in ss if s.get("attributes", {}).get("gen_ai.operation.name") in ("chat", "text_completion"))
-        rows.append({"trace_id": tid, "type": kind, "t_ms": root["start_ms"], "duration_ms": root["duration_ms"],
-                     "error": root.get("status") == "ERROR", "cost_usd": sum(span_cost(s) for s in ss),
-                     "llm_calls": llm_calls, "intent": a.get("brain.intent"), "spans": len(ss)})
-    return sorted(rows, key=lambda r: r["t_ms"])
+def request_rows(*args, **kwargs):
+    """Milestone 9: runs your mine.request_rows (see cbrain/hooks.py)."""
+    from .hooks import call
+    return call("request_rows", *args, **kwargs)
 
 
-def slo_report(spans: Iterable[dict]) -> dict:
-    rows = request_rows(spans)
-    out: dict = {"requests": len(rows), "by_type": {}}
-    for kind in sorted({r["type"] for r in rows}):
-        rs = [r for r in rows if r["type"] == kind]
-        ok = [r for r in rs if not r["error"]]
-        d = [r["duration_ms"] for r in ok]
-        c = [r["cost_usd"] for r in rs]
-        lat_t, cost_t = LATENCY_MS.get(kind, 8000.0), COST_USD.get(kind, 0.005)
-        avail = len(ok) / len(rs) if rs else 1.0
-        lat_good = sum(1 for x in d if x <= lat_t) / len(d) if d else 1.0
-        out["by_type"][kind] = {
-            "n": len(rs), "errors": len(rs) - len(ok), "availability": avail, "availability_ok": avail >= AVAILABILITY,
-            "p50_ms": percentile(d, 50) if d else 0.0, "p95_ms": percentile(d, 95) if d else 0.0,
-            "latency_target_ms": lat_t, "latency_sli": lat_good, "latency_ok": (percentile(d, 95) if d else 0) <= lat_t,
-            "cost_mean_usd": sum(c) / len(c) if c else 0.0, "cost_p95_usd": percentile(c, 95) if c else 0.0,
-            "cost_total_usd": sum(c), "cost_target_usd": cost_t,
-            "cost_ok": (sum(c) / len(c) if c else 0.0) <= cost_t,
-            "llm_calls_mean": sum(r["llm_calls"] for r in rs) / len(rs) if rs else 0.0,
-        }
-    return out
+def slo_report(*args, **kwargs):
+    """Milestone 9: runs your mine.slo_report (see cbrain/hooks.py)."""
+    from .hooks import call
+    return call("slo_report", *args, **kwargs)
 
 
 def format_slo(rep: dict) -> str:
