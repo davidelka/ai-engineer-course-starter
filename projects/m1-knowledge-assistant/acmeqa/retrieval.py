@@ -19,13 +19,10 @@ assistant, the ablation and the evaluation. The order matters:
 
 from __future__ import annotations
 
-from typing import Any, Optional
+from typing import Any
 
 from ragkit.types import Chunk
 from ragkit.vectors.filters import ROLES, acl_where, as_callable, matches_ext
-from ragkit.versions import VersionAwareRetriever, supersedes_map
-
-from .config import Settings
 
 ROLE_LABELS = {
     "employee": "עובד/ת (ללא מחלקה)",
@@ -52,25 +49,10 @@ def visible_docs(role: str, docs: dict) -> list[str]:
     return sorted(d for d, sd in docs.items() if doc_visible(role, sd.meta))
 
 
-def build_retriever(job, s: Optional[Settings] = None, *, upto: str = "full") -> Any:
-    """upto: "bm25" | "dense" | "hybrid" | "versions" | "full" (versions + rerank if configured)."""
-    s = s or job.s
-    if upto == "bm25":
-        return job.bm25
-    if upto == "dense":
-        return job.dense
-    r: Any = job.index
-    if upto == "hybrid":
-        return r
-    if s.version_mode != "off":
-        sup = supersedes_map(job.all_chunks()) if s.version_mode == "corpus" else None
-        r = VersionAwareRetriever(r, mode=s.version_mode, superseded_by=sup, fetch_k=50)
-    if upto == "versions":
-        return r
-    if s.rerank:
-        from ragkit.rerank import RerankingRetriever, make_reranker
-        r = RerankingRetriever(r, make_reranker(s.rerank), fetch_k=30)
-    return r
+def build_retriever(*args, **kwargs):
+    """Milestone 3: runs your mine.build_retriever (see acmeqa/hooks.py)."""
+    from .hooks import call
+    return call("build_retriever", *args, **kwargs)
 
 
 __all__ = ["ROLES", "ROLE_LABELS", "acl_filter", "doc_visible", "visible_docs", "build_retriever"]

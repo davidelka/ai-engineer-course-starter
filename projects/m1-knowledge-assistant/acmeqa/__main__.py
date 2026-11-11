@@ -210,7 +210,7 @@ def main(argv=None) -> None:
     ap.add_argument("--rerank")
     ap.add_argument("--index")
     ap.add_argument("--replay")
-    ap.add_argument("--reference", action="store_true", help="use the reference functions, not mine.py")
+    ap.add_argument("--reference", action="store_true", help="use the reference functions, not mine.py (solutions branch only)")
     sub = ap.add_subparsers(dest="cmd", required=True)
     p = sub.add_parser("ingest")
     p.add_argument("--dry-run", action="store_true")
@@ -237,8 +237,12 @@ def main(argv=None) -> None:
     p.add_argument("--record", action="store_true")
     args = ap.parse_args(argv)
     s = _settings(args)
-    {"ingest": cmd_ingest, "stats": cmd_stats, "acl": cmd_acl, "ask": cmd_ask, "demo": cmd_demo,
-     "cache-check": cmd_cache_check, "serve": cmd_serve, "eval": cmd_eval}[args.cmd](args, s)
+    from .hooks import MilestoneTodo
+    try:
+        {"ingest": cmd_ingest, "stats": cmd_stats, "acl": cmd_acl, "ask": cmd_ask, "demo": cmd_demo,
+         "cache-check": cmd_cache_check, "serve": cmd_serve, "eval": cmd_eval}[args.cmd](args, s)
+    except MilestoneTodo as e:
+        sys.exit(f"\n{e}")
 
 
 if __name__ == "__main__":

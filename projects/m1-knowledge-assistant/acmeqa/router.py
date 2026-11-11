@@ -22,14 +22,13 @@ The data path is datakit (lesson 8): semantic layer for the role -> SQLPlan (str
 from __future__ import annotations
 
 import json
-import re
 from dataclasses import dataclass, field
 from functools import lru_cache
 from typing import Any, Optional
 
 from .config import DATA_QUESTIONS
 
-# ------------------------------------------------------------------ the router (reference)
+# ------------------------------------------------------------------ the router (milestone 6: mine.py)
 AGG_CUES = [r"\bhow many\b", r"\bnumber of\b", r"\bcount\b", r"\btotal\b", r"\baverage\b", r"\bbreach rate\b",
             r"\blist (?:the|all)\b", r"\btop \d+\b", r"\bmost\b", r"\bper (?:month|plan|priority|team|office)\b",
             r"כמה", r"מספר ה", r"סך הכל", r"סה\"כ", r"ממוצע", r"רשימת"]
@@ -51,24 +50,10 @@ class Route:
         return {"kind": self.kind, "reason": self.reason, "matched": self.matched}
 
 
-def _found(patterns: list[str], text: str) -> list[str]:
-    out = []
-    for p in patterns:
-        m = re.search(p, text)
-        if m:
-            out.append(m.group(0))
-    return out
-
-
-def route_question(question: str) -> Route:
-    q = " ".join(question.lower().split())
-    doc = _found(DOC_CUES, q)
-    if doc:
-        return Route("docs", "policy/process wording", doc)
-    agg, ent = _found(AGG_CUES, q), _found(ENTITY_CUES, q)
-    if agg and ent:
-        return Route("data", "aggregate over a table entity", agg + ent)
-    return Route("docs", "no aggregate + table entity", agg + ent)
+def route_question(*args, **kwargs):
+    """Milestone 6: runs your mine.route_question (see acmeqa/hooks.py)."""
+    from .hooks import call
+    return call("route_question", *args, **kwargs)
 
 
 # ------------------------------------------------------------------ the data path

@@ -11,43 +11,14 @@ take the first k:
 - size: chunks vary from 30 to 450 tokens. A token budget, not a count, controls cost and
   keeps the evidence out of the "middle of a long context" (lesson 13, lost_in_middle).
 
-pack_context is milestone 4 of the project (mine.py). This is the reference.
+pack_context is milestone 4 of the project: you write it in mine.py.
 """
 
 from __future__ import annotations
 
-from dataclasses import replace
-from typing import Callable, Optional, Sequence
-
-from ragkit.clean import collapse_ws, normalize
-from ragkit.tokens import get_tokenizer
-from ragkit.types import Hit
 
 
-def _key(text: str) -> str:
-    return collapse_ws(normalize(text)).lower()
-
-
-def pack_context(hits: Sequence[Hit], *, max_chunks: int = 6, max_tokens: int = 1800, max_per_doc: int = 2,
-                 count: Optional[Callable[[str], int]] = None) -> list[Hit]:
-    count = count or get_tokenizer("approx").count
-    chosen: list[Hit] = []
-    seen: set[str] = set()
-    per_doc: dict[str, int] = {}
-    used = 0
-    for h in hits:
-        if len(chosen) >= max_chunks:
-            break
-        key = _key(h.chunk.text)
-        if key in seen:
-            continue
-        if per_doc.get(h.chunk.doc_id, 0) >= max_per_doc:
-            continue
-        n = count(h.chunk.text)
-        if chosen and used + n > max_tokens:
-            continue
-        chosen.append(h)
-        seen.add(key)
-        per_doc[h.chunk.doc_id] = per_doc.get(h.chunk.doc_id, 0) + 1
-        used += n
-    return [replace(h, rank=i, scores=dict(h.scores)) for i, h in enumerate(chosen, start=1)]
+def pack_context(*args, **kwargs):
+    """Milestone 4: runs your mine.pack_context (see acmeqa/hooks.py)."""
+    from .hooks import call
+    return call("pack_context", *args, **kwargs)

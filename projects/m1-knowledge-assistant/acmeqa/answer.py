@@ -31,14 +31,11 @@ from __future__ import annotations
 import hashlib
 import json
 from dataclasses import dataclass, field
-from html import escape
 from pathlib import Path
-from typing import Any, Iterator, Optional, Sequence, Union
-from xml.sax.saxutils import quoteattr
+from typing import Any, Iterator, Optional, Union
 
-from llmkit import ChatRequest, ChatResult, Message, Usage
-from llmkit.types import Block, StreamEvent
-from ragkit.types import Hit
+from llmkit import ChatRequest, ChatResult, Usage
+from llmkit.types import StreamEvent
 
 NOT_FOUND = "not in the documents"
 PROMPT_VERSION = "m1-answer-v1"
@@ -99,21 +96,10 @@ Answer: {NOT_FOUND}"""
 
 
 # ------------------------------------------------------------------ the request
-def format_source(n: int, hit: Hit) -> str:
-    c = hit.chunk
-    attrs = {"id": str(n), "doc": c.doc_id, "title": c.title, "section": c.section,
-             "effective_date": c.effective_date, "version": c.version}
-    a = " ".join(f"{k}={quoteattr(v)}" for k, v in attrs.items() if v)
-    return f"<source {a}>\n{escape(c.text, quote=False)}\n</source>"
-
-
-def build_request(question: str, context: Sequence[Hit], *, max_tokens: int = 500, cache: bool = True) -> ChatRequest:
-    """ragkit's source format (so ragkit's ExtractiveAnswerer and diagnose tools read it), with
-    the system prompt as one cached Block."""
-    sources = "\n".join(format_source(i + 1, h) for i, h in enumerate(context)) or "(no sources found)"
-    user = f"<sources>\n{sources}\n</sources>\n\n<question>{escape(question, quote=False)}</question>"
-    system: Union[str, list] = [Block(SYSTEM, cache="5m")] if cache else SYSTEM
-    return ChatRequest(messages=[Message("user", user)], system=system, max_tokens=max_tokens)
+def build_request(*args, **kwargs):
+    """Milestone 5: runs your mine.build_request (see acmeqa/hooks.py)."""
+    from .hooks import call
+    return call("build_request", *args, **kwargs)
 
 
 def is_refusal(text: str) -> bool:

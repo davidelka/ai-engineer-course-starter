@@ -41,7 +41,7 @@ from typing import Any, Callable, Optional
 from ragkit.acme import acme_qa
 
 from .assistant import Assistant
-from .retrieval import ROLES, acl_filter, build_retriever, visible_docs
+from .retrieval import ROLES, acl_filter, visible_docs
 from .router import DATA_ROLE, data_questions
 
 TYPES = ("single_hop", "multi_hop", "numeric", "version_conflict", "acronym", "hebrew", "unanswerable")
@@ -66,7 +66,7 @@ def stale_of(q: dict) -> list[str]:
 # ------------------------------------------------------------------ 1+2: answers and diagnosis
 def evaluate_answers(a: Assistant, qa: list[dict], *, role: str = "security", judge: bool = True,
                      progress: Optional[Callable[[int, int], None]] = None) -> list[dict]:
-    from evalkit.metrics import citation_scores, fact_coverage
+    from evalkit.metrics import fact_coverage
     from ragkit.diagnose import Case, classify, quote_locations, quote_status_map
     from ragkit.evaluate import norm
     from ragkit.tokens import get_tokenizer
@@ -89,7 +89,7 @@ def evaluate_answers(a: Assistant, qa: list[dict], *, role: str = "security", ju
             g = check_claims(res.text, ctx_texts, judge_llm)
             grounded, gscore, gcost = g.grounded, g.score, g.cost_usd
         fc = fact_coverage(res.text, q.get("answer_facts") or []) if srcs else None
-        cs = citation_scores(cited, srcs, stale_of(q))
+        m = a.hooks.answer_metrics(q, ctx_docs, cited, res.refused)
         case = Case(qid=q["id"], qtype=q.get("type", ""), question=q["question"], source_ids=srcs,
                     quote_status=list(coverage.get(q["id"], ["covered"] * len(quotes))), stale_ids=stale_of(q),
                     candidates=[h.chunk.doc_id for h in res.candidates], context=ctx_docs,
@@ -104,11 +104,8 @@ def evaluate_answers(a: Assistant, qa: list[dict], *, role: str = "security", ju
             "answer": res.text, "refused": res.refused, "source_ids": srcs, "context_docs": ctx_docs,
             "candidate_docs": list(dict.fromkeys(h.chunk.doc_id for h in res.candidates)),
             "cited": cited, "invalid_citations": res.invalid_citations,
-            "context_recall": (len(set(srcs) & set(ctx_docs)) / len(srcs)) if srcs else None,
-            "fact_coverage": fc, "citation_precision": cs["precision"] if srcs else None,
-            "citation_recall": cs["recall"] if srcs else None, "stale_cited": cs["stale"],
-            "grounded": grounded, "groundedness": gscore,
-            "abstain_ok": res.refused if not srcs else not res.refused,
+            **{k: m[k] for k in ("context_recall", "citation_precision", "citation_recall", "stale_cited")},
+            "fact_coverage": fc, "grounded": grounded, "groundedness": gscore, "abstain_ok": m["abstain_ok"],
             "answer_ok": d.ok, "stage": d.stage, "flags": d.flags, "path": d.path,
             "cost_usd": res.cost_usd + gcost, "answer_cost_usd": res.cost_usd, "latency_ms": res.latency_ms,
             "ttft_ms": res.ttft_ms, "usage": res.usage, "error": res.error,
@@ -230,9 +227,9 @@ def evaluate_acl(a: Assistant, qa: list[dict]) -> dict:
 def evaluate_ablation(a: Assistant, qa: list[dict]) -> list[dict]:
     from ragkit.ablation import evaluate_stage
     from ragkit.rerank import RerankingRetriever, make_reranker
-    stages = [("bm25", build_retriever(a.job, upto="bm25")), ("dense", build_retriever(a.job, upto="dense")),
-              ("hybrid (RRF)", build_retriever(a.job, upto="hybrid")),
-              ("+ versions", build_retriever(a.job, upto="versions"))]
+    stages = [("bm25", a.hooks.build_retriever(a.job, upto="bm25")), ("dense", a.hooks.build_retriever(a.job, upto="dense")),
+              ("hybrid (RRF)", a.hooks.build_retriever(a.job, upto="hybrid")),
+              ("+ versions", a.hooks.build_retriever(a.job, upto="versions"))]
     stages.append(("+ rerank (fake)", RerankingRetriever(stages[-1][1], make_reranker("fake"), fetch_k=30)))
     out = []
     for name, r in stages:

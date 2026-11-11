@@ -28,11 +28,11 @@ from typing import Any, Iterator, Optional
 
 from ragkit.types import Hit
 
-from .answer import PROMPT_VERSION, build_request, is_refusal, usage_dict
+from .answer import PROMPT_VERSION, is_refusal, usage_dict
 from .config import Settings
 from .hooks import pick_hooks
 from .ingest import IngestJob
-from .retrieval import ROLES, acl_filter, build_retriever
+from .retrieval import ROLES, acl_filter
 from .router import DataAnswerer
 
 
@@ -75,8 +75,8 @@ class Assistant:
         self.s = settings or Settings.from_env()
         self.job = job or IngestJob(self.s)
         self.job.ensure()
-        self.retriever = build_retriever(self.job, self.s)
         self.hooks = pick_hooks(self.s.reference)
+        self.retriever = self.hooks.build_retriever(self.job, self.s)
         raw_llm = llm if llm is not None else self.s.make_llm()
         self.data = DataAnswerer(data_llm if data_llm is not None else self.s.make_data_llm())
         self.tracing = None
@@ -179,7 +179,7 @@ class Assistant:
                     _sink["candidates"], _sink["context"] = cands, ctx
                 yield {"event": "sources", "data": {"context": [_ctx_row(h) for h in ctx], "candidates": len(cands)}}
                 # 3. generate (streaming)
-                req = build_request(question, ctx)
+                req = self.hooks.build_request(question, ctx)
                 t = time.perf_counter()
                 parts: list[str] = []
                 result = None

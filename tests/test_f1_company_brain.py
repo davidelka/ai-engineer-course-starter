@@ -15,6 +15,8 @@ import pytest
 ROOT = Path(__file__).resolve().parents[1]
 PROJECT = ROOT / "projects" / "f1-company-brain"
 sys.path[:0] = [str(ROOT), str(PROJECT)]
+sys.path.insert(1, str(ROOT / "projects" / "m1-knowledge-assistant"))
+pytest.importorskip("acmeqa._reference", reason="F1 runs on M1: the reference implementations live on the solutions branch")
 
 pytest.importorskip("langgraph")
 pytest.importorskip("fastapi")

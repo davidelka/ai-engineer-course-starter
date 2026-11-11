@@ -661,7 +661,8 @@ function refreshRail() {
 
 function richText(t) { return /<\/?(code|b|i|em|strong|br|a)\b/.test(t || "") ? t : esc(t); }
 function stGoal(L, c) {
-  c.append(h(`<div class="card"><h3>בסוף השיעור תדע</h3><ol class="clean">${L.goals.map((g) => `<li>${g}</li>`).join("")}</ol></div>`));
+  if (L.about) c.append(h(`<div class="card about"><div class="eyebrow">About this project</div><h3>על הפרויקט</h3>${L.about}</div>`));
+  c.append(h(`<div class="card"><h3>${L.about ? "בסוף הפרויקט תדע" : "בסוף השיעור תדע"}</h3><ol class="clean">${L.goals.map((g) => `<li>${g}</li>`).join("")}</ol></div>`));
   c.append(h(`<div class="callout">${L.connects}</div>`));
   c.append(h(`<p class="muted" style="margin:0">זמן: ${esc(L.hours)}.</p>`));
 }

@@ -1,5 +1,9 @@
 """Environment tests for midterm project M1 (projects/m1-knowledge-assistant): the reference
-package `acmeqa`, offline. No network, no keys, no paid calls (mockllm runs in a thread)."""
+package `acmeqa`, offline. No network, no keys, no paid calls (mockllm runs in a thread).
+
+They need the reference implementations (acmeqa/_reference.py), which exist only on the repo's
+`solutions` branch; on `main` this module is skipped (tests/test_project_scaffolds.py checks what
+main has)."""
 
 from __future__ import annotations
 
@@ -13,6 +17,7 @@ import pytest
 ROOT = Path(__file__).resolve().parents[1]
 PROJECT = ROOT / "projects" / "m1-knowledge-assistant"
 sys.path[:0] = [str(ROOT), str(PROJECT)]
+pytest.importorskip("acmeqa._reference", reason="reference implementations live on the solutions branch")
 
 from acmeqa.answer import (NOT_FOUND, SYSTEM, OfflineAnswerer, Recorder, ReplayAnswerer, build_request,  # noqa: E402
                            is_refusal, prompt_key, system_tokens)
@@ -232,4 +237,6 @@ def test_tracing_and_redaction(assistant):
 def test_hooks_fall_back_to_reference():
     h = pick_hooks(reference=False)
     assert h.route_question("How many tickets are still open?").kind == "data"   # mine.py TODO -> reference
-    assert pick_hooks(reference=True).using["pack_context"] == "reference"
+    ref = pick_hooks(reference=True)
+    ref.pack_context([])
+    assert ref.using["pack_context"] == "reference"
