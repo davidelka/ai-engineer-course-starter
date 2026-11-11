@@ -1,4 +1,4 @@
-"""M5: sm2_update and update_level (mine.py): the learner model."""
+"""M6: sm2_update and update_level (mine.py): the learner model."""
 
 from datetime import date
 

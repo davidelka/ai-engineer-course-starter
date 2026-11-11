@@ -54,49 +54,20 @@ class ReplyStreamer:
     """Decodes the value of "reply_he" out of a JSON object that arrives in pieces."""
 
     def __init__(self, field_name: str = "reply_he"):
-        self.key = f'"{field_name}"'
-        self.buf, self.out, self.pos, self.done = "", "", None, False
+        self.field_name = field_name
+        self.buf, self.out, self.done = "", "", False
 
     def feed(self, piece: str) -> str:
-        """Add raw JSON text; return the NEW decoded characters of the field."""
+        """Add raw JSON text; return the NEW decoded characters of the field (milestone 4:
+        mine.partial_json_field decodes the field from everything received so far)."""
+        from .hooks import call
         self.buf += piece
         if self.done:
             return ""
-        if self.pos is None:
-            k = self.buf.find(self.key)
-            if k < 0:
-                return ""
-            q = self.buf.find('"', self.buf.find(":", k + len(self.key)) + 1)
-            if q < 0 or self.buf.find(":", k + len(self.key)) < 0:
-                return ""
-            self.pos = q + 1
-        new = []
-        i = self.pos
-        while i < len(self.buf):
-            c = self.buf[i]
-            if c == "\\":
-                if i + 1 >= len(self.buf):
-                    break
-                n = self.buf[i + 1]
-                if n == "u":
-                    if i + 6 > len(self.buf):
-                        break
-                    new.append(chr(int(self.buf[i + 2:i + 6], 16)))
-                    i += 6
-                    continue
-                new.append({"n": "\n", "t": "\t", "r": "", "b": "", "f": ""}.get(n, n))
-                i += 2
-                continue
-            if c == '"':
-                self.done = True
-                i += 1
-                break
-            new.append(c)
-            i += 1
-        self.pos = i
-        s = "".join(new)
-        self.out += s
-        return s
+        value, self.done = call("partial_json_field", self.buf, self.field_name)
+        new = value[len(self.out):]
+        self.out = value
+        return new
 
 
 class Tutor:

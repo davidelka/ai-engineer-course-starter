@@ -3,8 +3,8 @@
     python data/make_content.py          # rewrites both files (deterministic)
 
 Everything here was written for the course by hand (Hebrew practice content, Arabic glosses,
-Arabic-script transliteration). It is a DRAFT for the owner's team: a native Arabic speaker from
-the Negev should review every gloss and transliteration before students see it.
+Arabic-script transliteration). It is a DRAFT: in a real product, a native Arabic speaker from
+the community the app serves should review every gloss and transliteration before students see it.
 
 Transliteration scheme (Hebrew sounds in Arabic letters, so a student can read the word aloud):
     פּ = پ (the /p/ sound Arabic does not have; it is the most common Arabic-speaker error)

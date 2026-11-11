@@ -5,10 +5,10 @@ window.LESSONS["32"] = {
   label: "F2",
   title: "Final: Spoken Hebrew Tutor",
   he: "פרויקט סיום: מורה קולי לעברית מדוברת, רב-מודאלי",
-  hours: "כשעתיים וחצי קריאה, כ-14 עד 18 שעות בנייה בעשר אבני דרך (בתשלום: כ-5 סנט של טוקנים ודיבור, ו-AWS אופציונלי)",
+  hours: "כשעתיים וחצי קריאה, כ-14 עד 18 שעות בנייה באחת עשרה אבני דרך (בתשלום: כ-5 סנט של טוקנים ודיבור, ו-AWS אופציונלי)",
 
   goals: [
-    "לבנות את <b>ה-backend של ה-AI</b> לאפליקציה שתכננת לתלמידים בדואים: API שאפליקציית ה-React שלך תקרא לו, עם קודי כיתה, רמות CEFR, נקודות, ממשק בערבית ותוכן תרגול בעברית.",
+    "לבנות את <b>ה-backend של ה-AI</b> לאפליקציה לתלמידים דוברי ערבית שמתרגלים עברית מדוברת: API שאפליקציית React תקרא לו, עם קודי כיתה, רמות CEFR, נקודות, ממשק בערבית ותוכן תרגול בעברית.",
     "לתכנן <b>טוטור שיחה</b> לפי תרחישים (קופת חולים, תחנה מרכזית, ראיון עבודה ועוד), שמדבר עברית פשוטה לפי הרמה, מתקן תיקון אחד בעדינות, ומסביר בערבית קצרה כשהתלמיד נתקע.",
     "להשתמש ב-<b>llmkit.structured</b> להערכה של כל תור (תשובה, תיקון, מילים חדשות, רמה, דגל בטיחות), ולדעת מה הסכמה לא מבטיחה ולכן נבדק בקוד.",
     "לבנות <b>לולאת קול</b>: אודיו של התלמיד, STT בעברית, טוטור מוזרם, TTS, עם תקציב השהיה, ולהבין למה ה-streaming מוריד את הצליל הראשון מ-4 שניות לפחות מ-1.5.",
@@ -17,7 +17,28 @@ window.LESSONS["32"] = {
     "להגן על <b>קטינים</b>: סינון קלט ופלט, redaction לפני המודל ולפני השמירה, מסווג LLM כחוות דעת שנייה, תשובות שמתאימות לבני נוער, נראות למורה, ומדיניות שמירת נתונים.",
     "להעריך את המערכת על <b>50 משפטים מתויגים</b> (precision ו-recall של תיקונים, דיוק דגלי בטיחות, התאמה לרמה עם שופט, השהיה לשלב), עם רווחי סמך ושער רגרסיה, ולהגיש עם Docker, AWS ו<b>הצגה של 5 דקות</b>.",
   ],
-  connects: "זה הפרויקט שבו הקורס פוגש את התוכנית שלך עצמך: אפליקציה לעברית מדוברת לתלמידי תיכון בדואים בנגב. <b>שיעורים 2-3</b> נותנים את <code>llmkit</code> ואת <code>llmkit.structured</code> להערכה של כל תור. <b>שיעור 4</b> מסביר למה הפרומפט הקבוע נכתב קודם (cache). <b>שיעור 9</b> נותן את <code>ragkit</code> ואת BM25 העברי לאחזור משפטים לפי תרחיש ורמה. <b>שיעור 21</b> נותן את <code>voicekit</code>: ה-ports של STT ו-TTS, ה-fakes, ה-WER העברי, ומה שגילינו על סגירת מודלי הקול של OpenAI. <b>שיעור 22</b> נותן את <code>obskit</code>, <b>שיעור 23</b> את <code>evalkit</code> (רווחי Wilson, kappa), <b>שיעור 24</b> את <code>guardkit</code>, <b>שיעור 26</b> את צורת ה-API ו-problem+json, ו<b>שיעור 27</b> את ה-Dockerfile וה-Terraform. ההבדל מ-F3 (סוכן המשרות): שם המשתמש הוא אתה והקלט הוא של זרים; כאן המשתמשים הם קטינים, הקלט הוא קול, והמערכת מדברת איתם בזמן אמת. שלושת ההבדלים האלה מעצבים את רוב ההחלטות.",
+  about: `<p><b>מה המערכת עושה.</b> עמותה חינוכית (בדיונית, בשביל הפרויקט) מתכננת אפליקציה לתלמידי תיכון בנגב ששפת האם שלהם ערבית, כדי שיתרגלו עברית מדוברת יומיומית: בקופת חולים, בתחנה המרכזית, במכולת, בראיון לעבודת קיץ. הם יודעים לא מעט עברית מהכיתה, אבל חסר להם מקום לדבר בלי פחד לטעות. האפליקציה עצמה (מפה, אווטאר, נקודות) היא עבודת frontend. בפרויקט הזה בונים את <b>המוח שלה, ה-backend של ה-AI</b>: טוטור שמדבר עם התלמיד בתוך תרחיש, מקשיב בטקסט או בקול, מתקן טעות אחת בעדינות עם הסבר קצר בערבית, זוכר אילו מילים התלמיד כבר יודע, ושומר עליו.</p>
+<p><b>דוגמה.</b> סאלם, ברמה A1, בתחנה המרכזית, אומר "אני מחכה האוטובוס". הטוטור עונה בעברית פשוטה ומשלב בתשובה את הצורה הנכונה: "אתה מחכה <b>ל</b>אוטובוס? לאיזה קו?". מתחת מופיע הסבר של משפט אחד בערבית על מילת היחס. "אוטובוס" נכנסת לכרטיסיות החזרה של סאלם, והציון שלו ברמה מתעדכן.</p>
+<p><b>שתי הדרישות שהופכות את זה לבעיה אמיתית:</b></p>
+<ul class="clean">
+<li><b>המשתמשים קטינים:</b> מצוקה, תוכן לא מתאים ופרטים אישיים לא מגיעים למודל בכלל. פרטים אישיים מושחרים לפני כל שמירה וכל trace, וכל משפט של הטוטור נבדק לפני שהתלמיד רואה או שומע אותו.</li>
+<li><b>זה צריך להרגיש כמו שיחה:</b> בקול, הצליל הראשון תוך כשנייה וחצי. לכן התשובה מוזרמת ונאמרת משפט אחרי משפט, עוד לפני שהמודל סיים לכתוב.</li>
+</ul>
+<p><b>המטרה בקורס.</b> זה פרויקט סיום שמחבר כמעט את כל הספריות: structured outputs, context engineering ו-caching, אחזור, קול, ניטור, eval, אבטחה לקטינים, API ופריסה.</p>
+<p><b>מה אתה בונה:</b> אחת עשרה פונקציות ב-<code>mine.py</code>.</p>
+<ul class="clean">
+<li><b>בטיחות לקטינים, לפני הכול</b> (<code>screen_text</code>, <code>screen_output</code>, <code>redact_for_log</code>, שיעור 24).</li>
+<li><b>אחזור</b> (<code>retrieve_phrases</code>, שיעור 9).</li>
+<li><b>הפרומפט וההזרמה</b> (<code>build_request</code>, <code>partial_json_field</code>, שיעורים 2, 3 ו-4).</li>
+<li><b>ולידציה</b> (<code>validate_assessment</code>, שיעור 3).</li>
+<li><b>מודל הלומד</b> (<code>sm2_update</code>, <code>update_level</code>).</li>
+<li><b>משוב דיבור</b> (<code>word_feedback</code>, שיעור 21).</li>
+<li><b>מדדי ה-eval</b> (<code>correction_metrics</code>, שיעור 23).</li>
+</ul>
+<p><b>מה מקבלים מוכן:</b> ה-API ודף ההדגמה, האחסון ב-SQLite, המתאמים של זיהוי דיבור והקראה, מנוע הכללים שמחליף מודל בחינם, תוכן התרחישים, וקובצי הפריסה.</p>
+<p><b>התוצר בסוף:</b> API שאפליקציית frontend יכולה לקרוא לו (קוד כיתה, תלמידים, לוח למורה, תוכן של מורים עם אישור), דף הדגמה עם מיקרופון, eval על 50 משפטים מתויגים עם שער רגרסיה, ופריסה ב-Docker ובאופן אופציונלי ב-AWS.</p>
+<p><b>איך עובדים.</b> לכל פונקציה יש חוזה ב-<code>mine.py</code>, בדיקות ב-<code>tests/</code>, ושלוש רמות רמז ב-<code>HINTS.md</code>. אבני הדרך 2 עד 6 הן הקוד של תור אחד, ובאבן דרך 7 הטוטור כבר מדבר על הקוד שלך. קוד הייחוס נמצא בענף <code>solutions</code>.</p>`,
+  connects: "זה הפרויקט שבו הקורס פוגש מוצר עם משתמשים רגישים: אפליקציה לעברית מדוברת לתלמידי תיכון בנגב ששפת האם שלהם ערבית. <b>שיעורים 2-3</b> נותנים את <code>llmkit</code> ואת <code>llmkit.structured</code> להערכה של כל תור. <b>שיעור 4</b> מסביר למה הפרומפט הקבוע נכתב קודם (cache). <b>שיעור 9</b> נותן את <code>ragkit</code> ואת BM25 העברי לאחזור משפטים לפי תרחיש ורמה. <b>שיעור 21</b> נותן את <code>voicekit</code>: ה-ports של STT ו-TTS, ה-fakes, ה-WER העברי, ומה שגילינו על סגירת מודלי הקול של OpenAI. <b>שיעור 22</b> נותן את <code>obskit</code>, <b>שיעור 23</b> את <code>evalkit</code> (רווחי Wilson, kappa), <b>שיעור 24</b> את <code>guardkit</code>, <b>שיעור 26</b> את צורת ה-API ו-problem+json, ו<b>שיעור 27</b> את ה-Dockerfile וה-Terraform. ההבדל מ-F3 (סוכן המשרות): שם המשתמש הוא אתה והקלט הוא של זרים; כאן המשתמשים הם קטינים, הקלט הוא קול, והמערכת מדברת איתם בזמן אמת. שלושת ההבדלים האלה מעצבים את רוב ההחלטות.",
 
   intro: {
     animation: "l32turn",
@@ -30,7 +51,7 @@ window.LESSONS["32"] = {
 <li>לחץ <b>הפעל</b>, או <b>צעד הבא</b> כדי לעבור בקצב שלך. בתיבה שמתחת מוסבר מה השלב עושה ולמה.</li>
 <li>שים לב לפער בין <b>הצליל הראשון</b> (כ-1.25 שניות) לבין <b>סוף ה-JSON</b> (כ-4 שניות): זה מה שה-streaming קונה.</li>
 </ol>
-<p>המספרים הופקו מהקוד של הפרויקט עם ה-fakes של <code>voicekit</code> והשהיות מדומות של שירותים אמיתיים (STT 0.25 שניות, מודל עם 0.5 שניות עד הטוקן הראשון ו-60 טוקנים לשנייה, TTS 0.25 שניות עד הבייט הראשון). את המספרים האמיתיים תמדוד באבן דרך 7.</p>`,
+<p>המספרים הופקו מהקוד של הפרויקט עם ה-fakes של <code>voicekit</code> והשהיות מדומות של שירותים אמיתיים (STT 0.25 שניות, מודל עם 0.5 שניות עד הטוקן הראשון ו-60 טוקנים לשנייה, TTS 0.25 שניות עד הבייט הראשון). את המספרים האמיתיים תמדוד באבני דרך 7 ו-8.</p>`,
     videos: [
       {
         title: "Building Voice AI Agents That Don't Suck",
@@ -60,7 +81,7 @@ window.LESSONS["32"] = {
         url: "https://www.coe.int/en/web/common-european-framework-reference-languages/level-descriptions",
         required: true,
         kind: "תיעוד",
-        why: "המקור לרמות A1, A2 ו-B1 שהטוטור מתאים אליהן את השפה שלו, ושהאפיון שלך מציג בפרופיל של התלמיד.",
+        why: "המקור לרמות A1, A2 ו-B1 שהטוטור מתאים אליהן את השפה שלו, ושהאפיון של האפליקציה מציג בפרופיל של התלמיד.",
       },
       {
         title: "Speech to text",
@@ -88,9 +109,9 @@ window.LESSONS["32"] = {
   slides: [
     {
       kicker: "פתיחה",
-      title: "מה בונים: המוח של האפליקציה שתכננת",
-      html: `<p class="big">באפיון של ה-MVP שכתבת יש עולם וירטואלי של מפת מדבר, אווטאר עם נקודות ורמת CEFR, וצ'אטבוט שמלמד עברית. ה-React, המפה והאווטאר הם עבודת frontend שאתה כבר יודע לעשות עם Claude Code. החלק שהקורס הזה מכין אותך אליו הוא <b>הצ'אטבוט עצמו</b>: טוטור שמדבר, מקשיב, מתקן, זוכר מה התלמיד יודע, ושומר על בני נוער.</p>
-<p>לכן הפרויקט בונה את ה-<b>backend של ה-AI</b> בתור API, ודף הדגמה אחד בלבד. ה-PWA שלך יקרא לאותם endpoints בדיוק: <code>/scenarios</code> כדי לצייר את המקומות על המפה (לכל תרחיש יש שדה <code>map</code> עם מיקום ואייקון), <code>/sessions</code> כדי להתחיל שיחה כשהתלמיד נכנס למקום, <code>/turns/stream</code> לשיחה בטקסט ו-<code>/turns/audio</code> לשיחה בקול, <code>/progress</code> לאווטאר, ו-<code>/teacher/...</code> ללוח של המורה.</p>
+      title: "מה בונים: המוח של האפליקציה",
+      html: `<p class="big">באפיון של ה-MVP שהעמותה כתבה יש עולם וירטואלי של מפת מדבר, אווטאר עם נקודות ורמת CEFR, וצ'אטבוט שמלמד עברית. ה-React, המפה והאווטאר הם עבודת frontend רגילה. החלק שהקורס הזה מכין אותך אליו הוא <b>הצ'אטבוט עצמו</b>: טוטור שמדבר, מקשיב, מתקן, זוכר מה התלמיד יודע, ושומר על בני נוער.</p>
+<p>לכן הפרויקט בונה את ה-<b>backend של ה-AI</b> בתור API, ודף הדגמה אחד בלבד. ה-PWA יקרא לאותם endpoints בדיוק: <code>/scenarios</code> כדי לצייר את המקומות על המפה (לכל תרחיש יש שדה <code>map</code> עם מיקום ואייקון), <code>/sessions</code> כדי להתחיל שיחה כשהתלמיד נכנס למקום, <code>/turns/stream</code> לשיחה בטקסט ו-<code>/turns/audio</code> לשיחה בקול, <code>/progress</code> לאווטאר, ו-<code>/teacher/...</code> ללוח של המורה.</p>
 <div class="example"><b>מה התלמיד מקבל בתור אחד (תשובת ה-API, מקוצרת)</b><pre dir="ltr">{"assessment": {
    "reply_he": "כמעט! אומרים: «מחכה לאוטובוס». באיזו שעה אתה צריך להגיע?",
    "correction": {"original": "מחכה האוטובוס", "corrected": "מחכה לאוטובוס",
@@ -104,8 +125,8 @@ window.LESSONS["32"] = {
     },
     {
       kicker: "נקודת המוצא",
-      title: "ההחלטות מהאפיון שלך, ואיך הן נכנסות לקוד",
-      html: `<p>לפני שכותבים שורה, כדאי לעבור על ההחלטות שכבר קיבלת ולוודא שה-backend לא סותר אף אחת מהן. זו עבודה של ארכיטקט: הקוד צריך להתאים למוצר, ולא להפך.</p>
+      title: "ההחלטות מהאפיון, ואיך הן נכנסות לקוד",
+      html: `<p>לפני שכותבים שורה, כדאי לעבור על ההחלטות שהעמותה כבר קיבלה ולוודא שה-backend לא סותר אף אחת מהן. זו עבודה של ארכיטקט: הקוד צריך להתאים למוצר, ולא להפך.</p>
 <ol class="ladder">
 <li><b>ממשק בערבית, תוכן תרגול בעברית.</b><span>כל מחרוזת שתלמיד קורא כהסבר (מטרת התרחיש, ההסבר לתיקון, העזרה כשהוא נתקע) היא בערבית. כל מה שהוא מתרגל (התשובה של הטוטור, המשפטים, המילים) בעברית. הסכמה אוכפת את זה לפי שדה: <code>reply_he</code>, <code>explanation_ar</code>, <code>help_ar</code>, והוולידטור בודק את השפה של כל שדה.</span></li>
 <li><b>הצטרפות עם קוד כיתה.</b><span>תלמיד מצטרף עם קוד של 6 תווים (בלי 0/O ו-1/I, כי הקוד נקרא בקול בכיתה) ועם כינוי של מילה אחת. אין שם מלא, טלפון, מייל או תאריך לידה. זה גם עיקרון פרטיות וגם פשטות: אין סיסמאות לשכוח.</span></li>
@@ -113,7 +134,7 @@ window.LESSONS["32"] = {
 <li><b>תוכן של הצוות, של AI ושל מורים, עם אישור אדמין.</b><span>תוכן של מורה עובר בדיקות אוטומטיות (עברית בלי ניקוד, תרגום בערבית, רמה ותרחיש קיימים, אין פרטים אישיים או תוכן לא מתאים). אם בדיקה חוסמת, הוא נדחה מיד. אחרת הוא מחכה ב-pending עד שאדמין מאשר, ואז נכנס לאחזור.</span></li>
 <li><b>עצמאות ממשרד החינוך, מימון מתקציבי בתי ספר.</b><span>לכן העלות לכיתה חשובה, ולכן יש נתיב מקומי חינמי לדיבור (faster-whisper ו-Piper), ו-deployment מקומי ב-Docker כברירת מחדל.</span></li>
 </ol>
-<p>ויש החלטה אחת שהאפיון לא אמר במפורש, והעברית מכריחה: <b>הפנייה לתלמיד בזכר או בנקבה</b>. "אתה מרגיש" או "את מרגישה" הם לא עניין של סגנון, והטוטור חייב לדעת. התלמיד בוחר את זה בהצטרפות, וזה המידע היחיד שנשמר עליו מעבר לכינוי. בתוכן כתבתי את זה כתבנית: <code>{ספר|ספרי} לי</code>.</p>`,
+<p>ויש החלטה אחת שהאפיון לא אמר במפורש, והעברית מכריחה: <b>הפנייה לתלמיד בזכר או בנקבה</b>. "אתה מרגיש" או "את מרגישה" הם לא עניין של סגנון, והטוטור חייב לדעת. התלמיד בוחר את זה בהצטרפות, וזה המידע היחיד שנשמר עליו מעבר לכינוי. בתוכן זה כתוב כתבנית: <code>{ספר|ספרי} לי</code>.</p>`,
     },
     {
       kicker: "ארכיטקטורה",
@@ -173,7 +194,7 @@ ports:   STT      FakeSTT | OpenAITranscriber (gpt-transcribe) | FasterWhisperST
     {
       kicker: "ולידציה",
       title: "הקוד בודק את המודל: grounding, שפה, אורך ודגלים",
-      html: `<p>אבן דרך 4 היא <code>validate_assessment</code>. היא מקבלת את ה-Assessment שעבר את הסכמה, את המשפט של התלמיד (אחרי redaction), את הרמה, המצב (טקסט או קול) ואת הדגל של סינון הקלט, ומחזירה עותק נקי ורשימת <code>Finding</code>, כל אחד עם קוד וחומרה. כלום לא נזרק: כל שינוי נספר, ב-eval וב-traces.</p>
+      html: `<p>אבן דרך 5 היא <code>validate_assessment</code>. היא מקבלת את ה-Assessment שעבר את הסכמה, את המשפט של התלמיד (אחרי redaction), את הרמה, המצב (טקסט או קול) ואת הדגל של סינון הקלט, ומחזירה עותק נקי ורשימת <code>Finding</code>, כל אחד עם קוד וחומרה. כלום לא נזרק: כל שינוי נספר, ב-eval וב-traces.</p>
 <ol class="ladder">
 <li><b>correction_not_grounded (חוסם).</b><span>המקור של התיקון חייב להופיע במשפט של התלמיד, אחרי <code>normalize_hebrew</code> משני הצדדים (ניקוד, פיסוק, אותיות סופיות). מודל שממציא טעות שלא נאמרה הוא הדבר הכי מזיק לתלמיד, ובדיקה של שורה אחת עוצרת אותו.</span></li>
 <li><b>correction_noop ו-spelling_in_voice.</b><span>תיקון שמחליף מילה בעצמה נמחק. תיקון כתיב במצב קולי נמחק, כי הכתיב של מזהה הדיבור.</span></li>
@@ -209,14 +230,14 @@ assessment = Assessment.model_validate_json(extract_json(raw))   # then validate
 0.98  first sentence ready   (LLM first token at 0.57 s, then reply_he decoded)
 1.26  FIRST AUDIO            <- what the student feels; budget 1.5 s
 4.18  done                   (the JSON with correction and vocabulary finished at ~4.2 s)</pre></div>
-<p>בלי streaming, הצליל הראשון היה מגיע אחרי סוף ה-JSON, כלומר אחרי יותר מ-4 שניות בסימולציה. עם streaming הוא מגיע אחרי המשפט הראשון. המספרים האלה מסימולציה (60 טוקנים לשנייה); מודל אמיתי מהיר יותר בכתיבה, ו-STT ו-TTS בענן איטיים יותר בגלל הרשת. את המספרים שלך תמדוד באבן דרך 7.</p>
+<p>בלי streaming, הצליל הראשון היה מגיע אחרי סוף ה-JSON, כלומר אחרי יותר מ-4 שניות בסימולציה. עם streaming הוא מגיע אחרי המשפט הראשון. המספרים האלה מסימולציה (60 טוקנים לשנייה); מודל אמיתי מהיר יותר בכתיבה, ו-STT ו-TTS בענן איטיים יותר בגלל הרשת. את המספרים שלך תמדוד באבן דרך 8.</p>
 <p>שלוש עובדות משיעור 21 שהפרויקט בנוי סביבן, ביושר: <b>gpt-4o-mini-tts</b> (וגם tts-1) נסגרים ב-<b>6 בינואר 2027</b>, והמחליף שמוצע עובד רק דרך ה-Realtime API. <b>whisper-1 ו-gpt-4o-transcribe</b> נסגרים ב-26 בפברואר 2027. ו-<b>gpt-transcribe</b>, המודל המומלץ, לא מחזיר word timestamps. לכן הנתיב המקומי (FasterWhisperSTT עם ivrit-ai/whisper-large-v3-turbo-ct2, ו-PiperTTS עם הקול העברי היחיד) הוא לא רק חיסכון: הוא ביטוח.</p>
 <div class="callout">תמיד מעבירים <code>language="he"</code>. מזהה דיבור שמזהה שפה לבד עלול להחליט שמשפט עברי במבטא ערבי הוא ערבית. ובנוסף ה-STT מקבל <code>prompt</code> עם משפטים מהתרחיש, כרמז לאוצר המילים.</div>`,
     },
     {
       kicker: "משוב דיבור",
       title: "מובנות דרך זיהוי דיבור, לא ציון הגייה",
-      html: `<p>במצב "תגיד את המשפט הזה", התלמיד מקבל משפט מהתרחיש (<code>POST /sessions/{id}/practice</code>), אומר אותו, והמערכת משווה את מה שהמזהה שמע למשפט הצפוי, מילה מילה. זו אבן דרך 7, <code>word_feedback</code>.</p>
+      html: `<p>במצב "תגיד את המשפט הזה", התלמיד מקבל משפט מהתרחיש (<code>POST /sessions/{id}/practice</code>), אומר אותו, והמערכת משווה את מה שהמזהה שמע למשפט הצפוי, מילה מילה. זו אבן דרך 8, <code>word_feedback</code>.</p>
 <div class="example"><b>צפוי: "כמה פעמים ביום לקחת?"  נשמע: "כמה בעמים ביום לקחת"</b><pre dir="ltr">כמה    ok
 פעמים  close   heard בעמים   CER 0.20   hint p_b    (/p/ said as /b/)
 ביום   ok
@@ -228,7 +249,7 @@ assessment = Assessment.model_validate_json(extract_json(raw))   # then validate
     {
       kicker: "מודל הלומד",
       title: "נקודות, רמה שזזה לאט, ומילים שחוזרות בזמן הנכון",
-      html: `<p>אבן דרך 5 היא שתי פונקציות קטנות שמחליטות דברים שהתלמיד מרגיש כל יום: מתי הרמה שלו משתנה, ומתי מילה חוזרת אליו.</p>
+      html: `<p>אבן דרך 6 היא שתי פונקציות קטנות שמחליטות דברים שהתלמיד מרגיש כל יום: מתי הרמה שלו משתנה, ומתי מילה חוזרת אליו.</p>
 <p><b>הערכת CEFR.</b> הרמה היא מספר בין 1.0 ל-3.99: A1 הוא [1, 2), A2 הוא [2, 3), B1 הוא [3, 4). כל תור מושך את המספר לכיוון האמצע של הרצועה שה-<code>level_signal</code> שלו אמר, בממוצע נע עם α=0.15. כך משפט B1 אחד של תלמיד A1 מזיז אותו מ-1.5 ל-1.8, ולא מעלה אותו רמה. והרמה <b>המוצגת</b> משתנה רק כשהמספר חוצה את גבול הרצועה במרווח של 0.15 (היסטרזיס). בלי זה, תלמיד שהמספר שלו 1.98 היה קופץ בין A1 ל-A2 בכל תור, והטוטור היה משנה איתו את השפה שלו. "unclear" (משפט קצר מדי, ערבית, מקרה בטיחות) לא מזיז כלום.</p>
 <div class="example"><b>SM-2 על מילה חדשה שעונים עליה "טוב" (4) שלוש פעמים</b><pre dir="ltr">reps 1  interval  1 day    EF 2.5
 reps 2  interval  6 days   EF 2.5
@@ -255,7 +276,7 @@ answer 2 (failed): reps 0, interval 1 day, lapses +1, EF 2.18</pre></div>
       title: "חמש שכבות, ומה כל אחת לא עושה",
       html: `<ol class="ladder">
 <li><b>סינון קלט (regex, מיקרו-שניות).</b><span><code>screen_text</code>: דפוסים בעברית, ערבית ואנגלית למצוקה, תוכן לא בטוח ופרטים אישיים, וה-<code>HeuristicDetector</code> של guardkit להזרקות. כל סימן נושא משקל, והקטגוריה החמורה ביותר שעוברת את הסף מנצחת. לא תופס פרפרזות ואיות יצירתי.</span></li>
-<li><b>Redaction לפני הכול.</b><span><code>redact_for_log</code> (אבן דרך 6) מחליף טלפון, מייל, קישור, תעודת זהות תקינה (ספרת ביקורת), כתובת ושם מלא בסימנים כמו <code>[טלפון]</code>. רץ לפני המודל, לפני השמירה, ועל כל span של הניטור. שם פרטי לבד נשאר: "קוראים לי סאלם" זה בדיוק מה שתרגול היכרות צריך.</span></li>
+<li><b>Redaction לפני הכול.</b><span><code>redact_for_log</code> (אבן דרך 2) מחליף טלפון, מייל, קישור, תעודת זהות תקינה (ספרת ביקורת), כתובת ושם מלא בסימנים כמו <code>[טלפון]</code>. רץ לפני המודל, לפני השמירה, ועל כל span של הניטור. שם פרטי לבד נשאר: "קוראים לי סאלם" זה בדיוק מה שתרגול היכרות צריך.</span></li>
 <li><b>עצירה לפני המודל.</b><span>מצוקה, תוכן לא בטוח ופרטים אישיים לא מגיעים למודל בכלל: תשובה קבועה, טובה, בעברית ובערבית, ואירוע בטיחות למורה. זה גם חוסך כסף, וגם מבטיח שהתשובה למצוקה תמיד זהה ונבדקה.</span></li>
 <li><b>חוות דעת שנייה.</b><span>קלט עם סימן כלשהו מתחת לסף (borderline) עובר למסווג LLM קטן (<code>SafetyClassifier</code>, סכמת <code>SafetyVerdict</code>). שאר הקלטים לא, כי הדגל של הטוטור עצמו כבר נותן סיווג LLM בלי קריאה נוספת. והוולידטור לא מרשה למודל להוריד דגל.</span></li>
 <li><b>סינון פלט לכל משפט.</b><span>לפני שמשפט מוזרם או נאמר: בלי קישורים, בלי בקשה לפרטים או לתמונה, בלי מילים חסומות, רק עברית.</span></li>
@@ -291,7 +312,7 @@ help_ar:  يبدو أنك تمرّ بوقت صعب، وهذا مهم. تحدّث
 <div class="example"><b>קו הבסיס של הכללים (python -m hebtutor eval)</b><pre dir="ltr">corrections  precision 1.0 [0.898, 1.0] (34/34)   recall 0.971 [0.855, 0.995] (34/35)
 safety       accuracy 1.0 [0.929, 1.0] (50/50)    unsafe+distress recall 1.0 [0.439, 1.0] (3/3)
 level        heuristic judge: appropriate 0.929 [0.81, 0.975] (39/42)</pre></div>
-<div class="callout"><b>אל תתרשם מהמספרים האלה.</b> מנוע הכללים נכתב יחד עם סט ה-eval, על ידי אותו אדם, ולכן הוא כמעט מושלם עליו. הוא מוכיח שהצנרת עובדת, ונותן רצפה למודל. וראה את רווח הסמך של הבטיחות: 3 מתוך 3 הם "לפחות 44%". המספרים שמעניינים הם של Haiku, ואותם תמדוד ותקליט באבן דרך 8.</div>
+<div class="callout"><b>אל תתרשם מהמספרים האלה.</b> מנוע הכללים נכתב יחד עם סט ה-eval, על ידי אותו אדם, ולכן הוא כמעט מושלם עליו. הוא מוכיח שהצנרת עובדת, ונותן רצפה למודל. וראה את רווח הסמך של הבטיחות: 3 מתוך 3 הם "לפחות 44%". המספרים שמעניינים הם של Haiku, ואותם תמדוד ותקליט באבן דרך 9.</div>
 <p>השער (<code>tests/test_m9_regression_gate.py</code>) רץ על קו הבסיס בחינם, ועם הקלטה של Haiku (<code>ReplayLLM</code>) גם על המודל, בלי לשלם שוב. כל שינוי בפרומפט, בתוכן או בקוד שמוריד מספר מתחת לרצפה מפיל את pytest.</p>`,
     },
     {
@@ -312,7 +333,7 @@ POST /sessions/{id}/turns/stream {"text":"כואב לי הבתן"}
     {
       kicker: "יושר",
       title: "מה נבדק, מה עוד לא, ומה הלאה",
-      html: `<p>הפרויקט נבדק offline: 30 בדיקות הסביבה, 39 בדיקות אבני הדרך מול קוד הייחוס, ה-demo, ה-eval עם קו הבסיס, ה-API דרך TestClient (כולל SSE, העלאת אודיו ותמונה), והבודק הסטטי של שיעור 27 על ה-Dockerfile וה-Terraform. אף קריאה בתשלום לא נעשתה בסביבת הבנייה.</p>
+      html: `<p>הפרויקט נבדק offline: 30 בדיקות הסביבה, בדיקות אבני הדרך מול קוד הייחוס (שנמצא בענף <code>solutions</code>), ה-demo, ה-eval עם קו הבסיס, ה-API דרך TestClient (כולל SSE, העלאת אודיו ותמונה), והבודק הסטטי של שיעור 27 על ה-Dockerfile וה-Terraform. אף קריאה בתשלום לא נעשתה בסביבת הבנייה.</p>
 <p><b>מה צריך לבדוק אצלך</b>, וכל אחד מהם יכול להפתיע: האם Haiku 5.5 נותן תיקון אחד ומעוגן, ממחזר אותו בתשובה, ושומר על אורך הרמה; מה ה-precision וה-recall שלו מול 50 המשפטים; כמה זמן באמת עד הצליל הראשון עם OpenAI; האם <code>gpt-transcribe</code> עם <code>languages=["he"]</code> מתמלל נכון מבטא ערבי, ומה מודל ה-ivrit.ai עושה מקומית; האם הקלטה מ-Safari (mp4) עוברת; והאם ה-image נבנה וה-plan של Terraform עובר מול חשבון.</p>
 <p><b>מה הלאה</b>, לפי סדר התועלת לאפליקציה שלך:</p>
 <ol class="ladder">
@@ -351,83 +372,34 @@ POST /sessions/{id}/turns/stream {"text":"כואב לי הבתן"}
 
   lab: {
     repoPath: "projects/f2-hebrew-tutor",
-    intro: "הפרויקט בתיקייה <b>projects/f2-hebrew-tutor</b>. החבילה <code>hebtutor/</code> היא קוד הייחוס המלא, ו-<code>mine.py</code> מכיל ארבעה חלקי קוד שלך (אבני דרך 4, 5, 6 ו-7). כל פקודה של <code>python -m hebtutor</code> וה-API משתמשים בפונקציות שלך ברגע שהן ממומשות, ובגרסת הייחוס עד אז. אבני הדרך האחרות מחברות חלקים: תוכן, מודל אמיתי, קול, eval, API ופריסה. <b>הכול חינם חוץ מאבני דרך 3, 7 ו-8</b> (יחד כ-5 סנט), ו-AWS באבן דרך 10 אופציונלי.",
+    intro: "הפרויקט בתיקייה <b>projects/f2-hebrew-tutor</b>. החבילה <code>hebtutor/</code> מכילה את מה שמקבלים מוכן (API, דף הדגמה, אחסון, מתאמי קול, מנוע כללים, תוכן, פריסה), ו-<code>mine.py</code> מכיל את אחת עשרה הפונקציות שאתה כותב, באבני הדרך 2 עד 6, 8 ו-9, כל אחת עם חוזה, בדיקות ושלוש רמות רמז ב-<code>HINTS.md</code>. קוד הייחוס נמצא בענף <code>solutions</code>. כל פקודה של <code>python -m hebtutor</code> וה-API משתמשים בפונקציות שלך, ופקודה שצריכה פונקציה שעוד לא כתבת עוצרת ואומרת איזו. אבני הדרך האחרות מחברות חלקים: תוכן, מודל אמיתי, קול, eval, API ופריסה. <b>הכול חינם חוץ מאבני דרך 7, 8 ו-9</b> (יחד כ-5 סנט), ו-AWS באבן דרך 11 אופציונלי.",
     setup: [
       "cd ~/ai-engineer-course-starter && source .venv/bin/activate",
       "uv pip install -r projects/f2-hebrew-tutor/requirements.txt   # fastapi, uvicorn, python-multipart, opentelemetry-sdk, pillow, python-hcl2",
       "python -m pytest -q                                            # environment tests, incl. tests/test_f2_hebrew_tutor.py",
       "cd projects/f2-hebrew-tutor",
       "python -m pytest -q tests                                      # your milestones: most fail at first, that is expected",
-      "python -m hebtutor demo                                        # a scripted session, text and voice, offline and free",
+      "python -m hebtutor demo                                        # stops at milestone 2: safety comes first",
     ],
     tools: [
       "<b>hebtutor/:</b> התוכן והאחזור (<code>content.py</code>), הפרומפט (<code>prompts.py</code>), התור והזרמה (<code>tutor.py</code>), הבטיחות (<code>safety.py</code>), קו הבסיס והמודלים המזויפים (<code>rules.py</code>, <code>fakes.py</code>), הקול (<code>voice.py</code>, <code>speaking.py</code>), הלומד (<code>learner.py</code>), ה-store, ה-service, ה-API, ה-eval וההגדרות.",
-      "<b>python -m hebtutor:</b> <code>demo</code>, <code>chat</code> (עם <code>--stream</code>), <code>content --query</code>, <code>voice</code>, <code>eval</code> (עם <code>--misses</code>, <code>--llm-judge</code>, <code>--json</code>), <code>traces</code>, <code>serve --demo-class</code>, <code>purge</code>, <code>cost</code>. <code>--reference</code> לפני הפקודה מכריח את גרסאות הייחוס.",
+      "<b>python -m hebtutor:</b> <code>demo</code>, <code>chat</code> (עם <code>--stream</code>), <code>content --query</code>, <code>voice</code>, <code>eval</code> (עם <code>--misses</code>, <code>--llm-judge</code>, <code>--json</code>), <code>traces</code>, <code>serve --demo-class</code>, <code>purge</code>, <code>cost</code>. <code>--reference</code> לפני הפקודה (רק בענף solutions) מכריח את גרסאות הייחוס.",
       "<b>משתני סביבה:</b> <code>TUTOR</code> (rule, llm, replay), <code>RECORD</code> ו-<code>REPLAY</code>, <code>STT</code> (fake, openai, local), <code>TTS</code> (fake, openai, piper), <code>FAKE_DELAYS=1</code>, <code>ADMIN_TOKEN</code>, <code>RETENTION_DAYS</code>.",
       "<b>data/:</b> <code>make_content.py</code> (10 תרחישים, 94 משפטים, 160 מילים), <code>make_evalset.py</code> (50 משפטים מתויגים), ו-<code>recorded/</code> (הקלטות של Haiku).",
       "<b>deploy/ ו-compose.yaml:</b> Dockerfile עם requirements.lock, ו-Terraform ל-ECS Fargate, ALB, EFS ו-Secrets Manager.",
     ],
     exercises: [
-      {
-        id: "ex1",
-        title: "אבן דרך 1: הרצה ראשונה (חינם)",
-        text: "הרץ את ה-demo וקרא אותו לאט: סאלם מתרגל בקופת חולים ברמה A1. בכל תור רואים תיקון, הסבר בערבית, מילים חדשות, רמה, דגל בטיחות, נקודות ועלות. אחר כך הרם את השרת ופתח את דף ההדגמה עם קוד הכיתה שהודפס. בדיקת קבלה: בתור עם הטלפון מודפס <code>redacted before the model: ['phone']</code>, הדגל הוא personal_info, והעלות 0 (המודל לא נקרא). בתור הקולי \"פעמים\" מסומנת close. ענה: למה תור \"ما فهمت\" קיבל יותר נקודות מתור עם תיקון? האם זה נכון פדגוגית?",
-        cmd: "python -m hebtutor demo\nADMIN_TOKEN=dev python -m hebtutor serve --demo-class\nxdg-open http://127.0.0.1:8080/",
-      },
-      {
-        id: "ex2",
-        title: "אבן דרך 2: התוכן, האחזור, ותוכן של מורים (חינם)",
-        text: "הרץ אחזור על אותה שאילתה ברמה A1 וברמה B1, וראה שהסינון לפי תרחיש ורמה רץ לפני הדירוג. אחר כך, עם השרת מאבן דרך 1: צור כיתה כאדמין, שלח מילה כמורה (פעם עם תרגום בערבית ופעם באנגלית), ואשר את הטובה. בדיקת קבלה: המילה עם התרגום באנגלית נדחית מיד (arabic_gloss_missing), התקינה מחכה ב-pending, ואחרי האישור היא נמצאת באחזור. ענה: למה הבדיקות האוטומטיות רק דוחות, ולא מאשרות לבד?",
-        cmd: "python -m hebtutor content --scenario clinic --level A1 --query \"כואב לי הבטן\"\npython -m hebtutor content --scenario clinic --level B1 --query \"כואב לי הבטן\"\ncurl -s -X POST localhost:8080/admin/classes -H \"X-Admin-Token: dev\" -H 'content-type: application/json' -d '{\"name\":\"test\"}'\ncurl -s -X POST localhost:8080/teacher/content -H \"X-Teacher-Token: <teacher_token>\" -H 'content-type: application/json' -d '{\"kind\":\"vocab\",\"scenario\":\"clinic\",\"level\":\"A2\",\"he\":\"מזרק\",\"ar\":\"حقنة\",\"transliteration\":\"مَزريك\"}'\ncurl -s -X POST localhost:8080/teacher/content/<id>/approve -H \"X-Admin-Token: dev\" -H 'content-type: application/json' -d '{\"note\":\"ok\"}'",
-      },
-      {
-        id: "ex3",
-        title: "אבן דרך 3: הטוטור עם Haiku 5.5 (בתשלום: פחות מסנט)",
-        text: "קרא את STATIC_RULES ב-prompts.py ואת Assessment ב-models.py. דבר עם הטוטור בטרמינל, פעם בלי streaming ופעם איתו ובפנייה בנקבה. נסה טעויות מסט ה-eval (\"אני מחכה האוטובוס\", \"לא יש לי כרטיס\"), משפט בערבית, ושאלה על כדורגל. בדיקת קבלה: אין שגיאות structured, העלות לתור נמוכה מ-0.001$, והפנייה בנקבה נכונה. ענה: האם המודל ממחזר את התיקון בתשובה? האם ההסבר בערבית קצר ופשוט? כמה זמן עד המשפט הראשון עם --stream?",
-        cmd: "TUTOR=llm python -m hebtutor chat --scenario bus_station --level A2\nTUTOR=llm python -m hebtutor chat --scenario clinic --level A1 --addressing f --stream",
-      },
-      {
-        id: "ex4",
-        title: "אבן דרך 4: ולידציה של הפלט (קוד)",
-        text: "ממש את validate_assessment ב-mine.py לפי ה-docstring: grounding של התיקון אחרי normalize_hebrew, תיקון ריק, כתיב במצב קולי, הסבר שאינו בערבית או ארוך, תשובה שאינה בעברית או ארוכה מהרמה, עזרה, ניקוי של המילים, והאיסור להוריד דגל בטיחות. אחרי שהבדיקות עוברות, הרץ את ה-eval: עכשיו הפונקציה שלך בשימוש, וה-findings נספרים בסוף הדוח. ענה: למה במצב קולי מוחקים תיקון כתיב אבל לא תיקון הגייה?",
-        cmd: "python -m pytest -q tests/test_m4_validate.py\npython -m hebtutor eval",
-      },
-      {
-        id: "ex5",
-        title: "אבן דרך 5: מודל הלומד (קוד)",
-        text: "ממש את sm2_update (SM-2: מרווחים 1, 6, ואז interval כפול EF מעוגל למעלה, EF לא יורד מ-1.3, כישלון מאפס) ואת update_level (ממוצע נע עם α=0.15, הצמדה ל-[1.0, 3.99], והיסטרזיס של 0.15). הרץ את ה-demo וראה את הנקודות, ציון הרמה והכרטיסים שמגיעים מחר. ענה: כמה משפטי B1 ברצף צריך תלמיד A1 כדי לעלות ל-A2? מה היה קורה לתלמיד עם ציון 1.98 בלי היסטרזיס?",
-        cmd: "python -m pytest -q tests/test_m5_learner.py\npython -m hebtutor demo | tail -5",
-      },
-      {
-        id: "ex6",
-        title: "אבן דרך 6: בטיחות לקטינים (קוד)",
-        text: "ממש את redact_for_log: קישור, מייל, טלפון ישראלי, תעודת זהות שעוברת ספרת ביקורת, כתובת, ושם מלא אחרי \"קוראים לי\" או \"اسمي\" (אבל לא שם פרטי לבד). אחר כך קרא את safety.py מתחילתו, הרץ את ה-eval על מקרי הבטיחות, ונסה עם Haiku שם מלא ושאלה off-topic. ענה: למה מצוקה, תוכן לא בטוח ופרטים אישיים לא מגיעים למודל, אבל off-topic והזרקה כן? למה התשובה למצוקה מפנה לאדם ולא מנסה לייעץ?",
-        cmd: "python -m pytest -q tests/test_m6_redact.py\npython -m hebtutor eval --misses\nTUTOR=llm python -m hebtutor chat --scenario new_friend",
-      },
-      {
-        id: "ex7",
-        title: "אבן דרך 7: לולאת הקול ומשוב הדיבור (קוד; החלק החי בתשלום: פחות מ-2 סנט)",
-        text: "ממש את word_feedback: יישור מילים, homophone, close לפי CER עד 0.34, wrong, missing, מילים עודפות, ורמזים p_b ו-v_f. אחר כך מדוד את תקציב ההשהיה offline עם השהיות מדומות, ואז עם OpenAI STT ו-TTS ו-Haiku. אופציונלי וחינמי: הנתיב המקומי עם faster-whisper (ivrit.ai) ו-Piper. בדיקת קבלה offline: הצליל הראשון בערך אחרי 1.3 שניות, בתוך התקציב. ענה עם המספרים החיים: מה השלב היקר ביותר, וכמה זמן חסך ה-streaming? וזכור: מובנות דרך זיהוי דיבור, לא ציון הגייה.",
-        cmd: "python -m pytest -q tests/test_m7_speaking.py\nFAKE_DELAYS=1 python -m hebtutor voice --turns 3 --no-traces\nSTT=openai TTS=openai TUTOR=llm python -m hebtutor voice --turns 3\nSTT=local TTS=piper PIPER_MODEL=~/models/he_IL-saspeech-medium.onnx TUTOR=llm python -m hebtutor voice --turns 3",
-      },
-      {
-        id: "ex8",
-        title: "אבן דרך 8: eval מלא ושער רגרסיה (בתשלום: כ-2 סנט)",
-        text: "הרץ את ה-eval עם קו הבסיס, ואז עם Haiku, הקלט אותו, והוסף את שופט ה-LLM לרמה. ההקלטה מפעילה את הבדיקה השנייה בשער, כך שכל שינוי בפרומפט נמדד מול המודל האמיתי בחינם. ענה: מה ה-precision וה-recall של Haiku, ובאילו סוגים הוא נכשל? מה ה-kappa בין שני השופטים? עם 8 מקרי בטיחות, מה באמת אומר 100%? ולמה אסור להסיק משהו על תלמידים מהמספרים של קו הבסיס?",
-        cmd: "python -m hebtutor eval --misses\nTUTOR=llm RECORD=data/recorded/claude-haiku-5-5.jsonl python -m hebtutor eval --misses --llm-judge --json results/eval_llm.json\npython -m pytest -q tests/test_m9_regression_gate.py",
-      },
-      {
-        id: "ex9",
-        title: "אבן דרך 9: API, SSE, דף ההדגמה וניטור",
-        text: "הרם את השרת עם Haiku ו-OpenAI, תרגל בדף ההדגמה עם המיקרופון (localhost מותר), נסה את ה-SSE עם curl, וקרא את ה-traces: p50 ו-p95 לכל span, ותצוגת המפל של obskit. בדיקת קבלה: ב-SSE מגיעים קודם event: sentence ורק אחר כך event: assessment, /healthz מחזיר 200, /teacher/dashboard עם token של תלמיד מחזיר 401, ואין מספר טלפון באף span. ענה: למה capture_content כבוי למרות שה-redactor רץ?",
-        cmd: "TUTOR=llm STT=openai TTS=openai ADMIN_TOKEN=dev python -m hebtutor serve --demo-class\ncurl -N -X POST localhost:8080/sessions/<id>/turns/stream -H \"X-Student-Token: <token>\" -H 'content-type: application/json' -d '{\"text\":\"אני מחכה האוטובוס\"}'\npython -m hebtutor traces\npython -m obskit.viewer results/traces.jsonl -o results/traces.html\ngrep -c \"050-\" results/traces.jsonl",
-      },
-      {
-        id: "ex10",
-        title: "אבן דרך 10: Docker ו-AWS",
-        text: "הרם את המערכת ב-compose, והרץ purge בתוך הקונטיינר. אחר כך (אופציונלי) Terraform: קרא קודם את efs.tf (SQLite על EFS, משימה אחת, פריסה שעוצרת את הישנה קודם) ואת alb.tf (HTTPS חובה בשביל המיקרופון). בדיקת קבלה: compose מראה healthy, ו-terraform plan מציג כ-30 משאבים כולל access point של EFS ושלושה סודות. אם עשית apply: הכנס את הסודות עם ה-CLI, דחוף image, בדוק /healthz, ו-terraform destroy בסוף.",
-        cmd: "ADMIN_TOKEN=dev docker compose up --build -d && docker compose logs api | grep \"demo class code\"\ndocker compose exec api python -m hebtutor purge\ncd deploy/terraform && cp terraform.tfvars.example terraform.tfvars\nterraform init && terraform fmt -check && terraform validate && terraform plan -out=tfplan\npython ../../../../labs/27-deployment/checks.py .",
-      },
+      { id: "ex1", title: "אבן דרך 1: סיור בתוכן, בסכמה ובבדיקות (חינם)", text: "לפני שכותבים קוד, מכירים את מה שמקבלים מוכן: תוכן התרחישים, הסכמה של תור אחד ב-hebtutor/models.py (Assessment: reply_he, correction, help_ar, new_vocabulary, level_signal, safety_flag), וסט ה-eval. הדמו עוצר כבר בצעד הראשון, כי עוד אין סינון בטיחות, ובאפליקציה לקטינים שום דבר לא רץ בלעדיו. ענה: למה השדה reply_he מופיע ראשון בסכמה? מה היה קורה להזרמה של התשובה אם הוא היה האחרון?", cmd: "python -m hebtutor cost\nhead -c 1500 data/scenarios.json; echo\nhead -3 data/evalset.jsonl\npython -m pytest -q tests\npython -m hebtutor demo        # stops at milestone 2" },
+      { id: "ex2", title: "אבן דרך 2: בטיחות לקטינים, לפני הכול (קוד)", text: "שלוש פונקציות ב-mine.py. screen_text: ציון לכל קטגוריה (מצוקה, תוכן לא בטוח, פרטים אישיים) מהאותות ב-safety.py, מספר זהות נספר רק אם הוא עובר ספרת ביקורת, הזרקה מהגלאי של guardkit (סף 3.0), ו-off-topic; הדגל הוא הקטגוריה החמורה הראשונה שמגיעה לסף, ואם אין, none עם borderline כשיש סימן כלשהו. screen_output: קישור או בקשה לפרטים אישיים, אחריהם תוכן לא בטוח או מצוקה, ואחריהם משפט שאינו בעברית או בערבית. redact_for_log: קישור, מייל, טלפון ישראלי, תעודת זהות שעוברת ספרת ביקורת, כתובת, ושם מלא אחרי 'קוראים לי' או 'اسمي' (אבל לא שם פרטי לבד). אחר כך קרא את safety.py מתחילתו: חמש השכבות, ומה כל אחת לא עושה. ענה: למה מצוקה, תוכן לא בטוח ופרטים אישיים לא מגיעים למודל, אבל off-topic והזרקה כן? למה התשובה למצוקה מפנה לאדם ולא מנסה לייעץ?", cmd: "python -m pytest -q tests/test_m2_screens.py tests/test_m2_redact.py" },
+      { id: "ex3", title: "אבן דרך 3: האחזור, ותוכן של מורים (קוד)", text: "ממש את retrieve_phrases: חיפוש BM25 על content.index עם where של התרחיש והרמות עד רמת התלמיד (levels_up_to), שאילתה ריקה לא מחפשת, וכשחוזרים פחות משלושה, השלמה ממשפטי התרחיש בלי כפילויות. הרץ אחזור על אותה שאילתה ברמה A1 וברמה B1, וראה שהסינון לפי תרחיש ורמה רץ לפני הדירוג. אחר כך הרם את השרת (נקודות הקצה של מורה ואדמין לא צריכות מודל): צור כיתה כאדמין, שלח מילה כמורה (פעם עם תרגום בערבית ופעם באנגלית), ואשר את הטובה. בדיקת קבלה: המילה עם התרגום באנגלית נדחית מיד (arabic_gloss_missing), התקינה מחכה ב-pending, ואחרי האישור היא נמצאת באחזור. ענה: למה הבדיקות האוטומטיות רק דוחות, ולא מאשרות לבד?", cmd: "python -m pytest -q tests/test_m3_retrieve.py\npython -m hebtutor content --scenario clinic --level A1 --query \"כואב לי הבטן\"\npython -m hebtutor content --scenario clinic --level B1 --query \"כואב לי הבטן\"\nADMIN_TOKEN=dev python -m hebtutor serve &\ncurl -s -X POST localhost:8080/admin/classes -H \"X-Admin-Token: dev\" -H 'content-type: application/json' -d '{\"name\":\"test\"}'\ncurl -s -X POST localhost:8080/teacher/content -H \"X-Teacher-Token: <teacher_token>\" -H 'content-type: application/json' -d '{\"kind\":\"vocab\",\"scenario\":\"clinic\",\"level\":\"A2\",\"he\":\"מזרק\",\"ar\":\"حقنة\",\"transliteration\":\"مَزريك\"}'\ncurl -s -X POST localhost:8080/teacher/content/<id>/approve -H \"X-Admin-Token: dev\" -H 'content-type: application/json' -d '{\"note\":\"ok\"}'" },
+      { id: "ex4", title: "אבן דרך 4: הפרומפט וההזרמה (קוד)", text: "build_request: שני בלוקים ב-system, STATIC_RULES עם cache ואחריו בלוק הסשן (session_block); אחריהם שמונה התורות האחרונים מההיסטוריה (student הופך ל-user והשאר ל-assistant), והתור החדש עם user_turn. partial_json_field: פענוח של reply_he מתוך JSON שעוד לא נגמר: מחפשים את המפתח, את הנקודתיים ואת המרכאות הפותחות, קוראים עד המרכאות הסוגרות, מפענחים escapes, ולא נוגעים ב-escape שנחתך בסוף. ענה: למה בלוק הסשן בא אחרי נקודת ה-cache? מה קורה ל-cache אם מכניסים את רמת התלמיד לחלק הקבוע? ולמה escape חתוך מחכה לקריאה הבאה?", cmd: "python -m pytest -q tests/test_m4_prompt.py" },
+      { id: "ex5", title: "אבן דרך 5: ולידציה של הפלט (קוד)", text: "ממש את validate_assessment ב-mine.py לפי ה-docstring: grounding של התיקון אחרי normalize_hebrew, תיקון ריק, כתיב במצב קולי, הסבר שאינו בערבית או ארוך, תשובה שאינה בעברית או ארוכה מהרמה, עזרה, ניקוי של המילים, והאיסור להוריד דגל בטיחות. את ה-findings תראה בדוח של ה-eval באבן דרך 7. ענה: למה במצב קולי מוחקים תיקון כתיב אבל לא תיקון הגייה?", cmd: "python -m pytest -q tests/test_m5_validate.py" },
+      { id: "ex6", title: "אבן דרך 6: מודל הלומד (קוד)", text: "ממש את sm2_update (SM-2: מרווחים 1, 6, ואז interval כפול EF מעוגל למעלה, EF לא יורד מ-1.3, כישלון מאפס) ואת update_level (ממוצע נע עם α=0.15, הצמדה ל-[1.0, 3.99], והיסטרזיס של 0.15). ענה: כמה משפטי B1 ברצף צריך תלמיד A1 כדי לעלות ל-A2? מה היה קורה לתלמיד עם ציון 1.98 בלי היסטרזיס?", cmd: "python -m pytest -q tests/test_m6_learner.py" },
+      { id: "ex7", title: "אבן דרך 7: הטוטור מדבר: ההדגמה, ו-Haiku 5.5 אמיתי (בתשלום: פחות מסנט)", text: "עכשיו תור שלם רץ על הקוד שלך. הרץ את ה-demo וקרא אותו לאט: סאלם מתרגל בקופת חולים ברמה A1, ובכל תור רואים תיקון, הסבר בערבית, מילים חדשות, רמה, דגל בטיחות, נקודות ועלות. הרץ את ה-eval עם קו הבסיס, וראה את ה-findings של הוולידציה שלך בסוף הדוח. אחר כך קרא את STATIC_RULES ב-prompts.py, ודבר עם הטוטור האמיתי בטרמינל, פעם בלי streaming ופעם איתו ובפנייה בנקבה. נסה טעויות מסט ה-eval, משפט בערבית, שאלה על כדורגל, ושם מלא. בדיקת קבלה: בתור עם הטלפון מודפס redacted before the model: ['phone'], הדגל personal_info, והעלות 0; עם Haiku אין שגיאות structured, העלות לתור נמוכה מ-0.001$, והפנייה בנקבה נכונה. ענה: למה תור 'ما فهمت' קיבל יותר נקודות מתור עם תיקון? האם המודל ממחזר את התיקון בתשובה? כמה זמן עד המשפט הראשון עם --stream?", cmd: "python -m hebtutor demo\npython -m hebtutor demo | tail -5\npython -m hebtutor eval\nTUTOR=llm python -m hebtutor chat --scenario bus_station --level A2\nTUTOR=llm python -m hebtutor chat --scenario clinic --level A1 --addressing f --stream\nTUTOR=llm python -m hebtutor chat --scenario new_friend" },
+      { id: "ex8", title: "אבן דרך 8: לולאת הקול ומשוב הדיבור (קוד; החלק החי בתשלום: פחות מ-2 סנט)", text: "ממש את word_feedback: יישור מילים, homophone, close לפי CER עד 0.34, wrong, missing, מילים עודפות, ורמזים p_b ו-v_f. אחר כך מדוד את תקציב ההשהיה offline עם השהיות מדומות, ואז עם OpenAI STT ו-TTS ו-Haiku. אופציונלי וחינמי: הנתיב המקומי עם faster-whisper (ivrit.ai) ו-Piper. בדיקת קבלה offline: הצליל הראשון בערך אחרי 1.3 שניות, בתוך התקציב. ענה עם המספרים החיים: מה השלב היקר ביותר, וכמה זמן חסך ה-streaming? וזכור: מובנות דרך זיהוי דיבור, לא ציון הגייה.", cmd: "python -m pytest -q tests/test_m8_speaking.py\nFAKE_DELAYS=1 python -m hebtutor voice --turns 3 --no-traces\nSTT=openai TTS=openai TUTOR=llm python -m hebtutor voice --turns 3\nSTT=local TTS=piper PIPER_MODEL=~/models/he_IL-saspeech-medium.onnx TUTOR=llm python -m hebtutor voice --turns 3" },
+      { id: "ex9", title: "אבן דרך 9: eval מלא ושער רגרסיה (קוד; בתשלום: כ-2 סנט)", text: "ממש את correction_metrics: פגיעה כשסוג הטעות נכון והתיקון מכיל את must_contain של התווית; ספירה של חיזויים, טעויות בתוויות, תיקונים של משפטים נכונים, ופילוח לפי סוג. הרץ את ה-eval עם קו הבסיס, ואז עם Haiku, הקלט אותו, והוסף את שופט ה-LLM לרמה. ההקלטה מפעילה את הבדיקה השנייה בשער, כך שכל שינוי בפרומפט נמדד מול המודל האמיתי בחינם. ענה: מה ה-precision וה-recall של Haiku, ובאילו סוגים הוא נכשל? מה ה-kappa בין שני השופטים? עם 8 מקרי בטיחות, מה באמת אומר 100%? ולמה אסור להסיק משהו על תלמידים מהמספרים של קו הבסיס?", cmd: "python -m pytest -q tests/test_m9_metrics.py\npython -m hebtutor eval --misses\nTUTOR=llm RECORD=data/recorded/claude-haiku-5-5.jsonl python -m hebtutor eval --misses --llm-judge --json results/eval_llm.json\npython -m pytest -q tests/test_m9_regression_gate.py" },
+      { id: "ex10", title: "אבן דרך 10: API, SSE, דף ההדגמה וניטור", text: "הרם את השרת עם Haiku ו-OpenAI, תרגל בדף ההדגמה עם המיקרופון (localhost מותר), נסה את ה-SSE עם curl, וקרא את ה-traces: p50 ו-p95 לכל span, ותצוגת המפל של obskit. בדיקת קבלה: ב-SSE מגיעים קודם event: sentence ורק אחר כך event: assessment, /healthz מחזיר 200, /teacher/dashboard עם token של תלמיד מחזיר 401, ואין מספר טלפון באף span. ענה: למה capture_content כבוי למרות שה-redactor רץ?", cmd: "TUTOR=llm STT=openai TTS=openai ADMIN_TOKEN=dev python -m hebtutor serve --demo-class\ncurl -N -X POST localhost:8080/sessions/<id>/turns/stream -H \"X-Student-Token: <token>\" -H 'content-type: application/json' -d '{\"text\":\"אני מחכה האוטובוס\"}'\npython -m hebtutor traces\npython -m obskit.viewer results/traces.jsonl -o results/traces.html\ngrep -c \"050-\" results/traces.jsonl" },
+      { id: "ex11", title: "אבן דרך 11: Docker ו-AWS", text: "הרם את המערכת ב-compose, והרץ purge בתוך הקונטיינר. אחר כך (אופציונלי) Terraform: קרא קודם את efs.tf (SQLite על EFS, משימה אחת, פריסה שעוצרת את הישנה קודם) ואת alb.tf (HTTPS חובה בשביל המיקרופון). בדיקת קבלה: compose מראה healthy, ו-terraform plan מציג כ-30 משאבים כולל access point של EFS ושלושה סודות. אם עשית apply: הכנס את הסודות עם ה-CLI, דחוף image, בדוק /healthz, ו-terraform destroy בסוף.", cmd: "ADMIN_TOKEN=dev docker compose up --build -d && docker compose logs api | grep \"demo class code\"\ndocker compose exec api python -m hebtutor purge\ncd deploy/terraform && cp terraform.tfvars.example terraform.tfvars\nterraform init && terraform fmt -check && terraform validate && terraform plan -out=tfplan\npython ../../../../labs/27-deployment/checks.py ." },
     ],
   },
 
@@ -553,7 +525,7 @@ POST /sessions/{id}/turns/stream {"text":"כואב לי הבתן"}
       { t: "המספרים שצריך לדעת בעל פה", b: "10 תרחישים, 94 משפטים, 160 מילים, 3 רמות. 50 משפטי eval: 35 טעויות, 7 נכונים, 8 בטיחות, 15 קוליים. קו הבסיס: precision 1.0 (רווח 0.90-1.0), recall 0.97 (0.86-0.99), שופט רמה 0.93. צליל ראשון offline כ-1.26 שניות מול תקציב 1.5, וסוף ה-JSON כ-4.2. תור אחד כ-0.00026$, או 0.00016$ עם cache. ואת המספרים של Haiku ושל OpenAI מודדים לפני ההצגה, ומחליפים בהם את ההערכות." },
       { t: "רשימת בדיקה ל-README של התיק", b: "פסקה אחת על הבעיה בשפה של מורה. תרשים של התור. הרצה בדקה אחת בלי מפתח (demo). מה המודל עושה ומה הקוד עושה. הסכמה, ולמה reply_he ראשון. תוצאות ה-eval עם רווחי סמך, כולל מה לא עובד ולמה קו הבסיס אופטימי. מודל האיום וחמש השכבות. מדיניות הנתונים (מה נשמר, כמה זמן, מי רואה). עלות לכיתה עם החישוב. פריסה מקומית ובענן, כולל HTTPS. מגבלות כנות: משוב דיבור אינו ציון הגייה, ותאריכי הסגירה של מודלי הקול. ושורה שהתוכן טיוטה שצריכה סקירה של דובר ערבית." },
       { t: "ההחלטות שכדאי שתדע להגן עליהן", b: "למה cascade ולא speech-to-speech: טוטור צריך תמליל לתיקון, למשוב ול-eval. למה Haiku: התור הוא משימה קצרה ומובנית, וה-eval מודד אם זה מספיק. למה BM25 ולא embeddings: 250 פריטים, חינם וניתן להסבר. למה SQLite: כותב אחד וכיתות ספורות. למה תעתיק בערבית: התלמיד קורא אותו מיד, ו-پ מלמדת את /p/ בעצמה. למה מצוקה לא מגיעה למודל: תשובה קבועה שנבדקה ומפנה לאנשים." },
-      { t: "מה עוד לא נבדק, ושואלים עליו", b: "הפרויקט נבדק offline: הצנרת, ה-API, ה-eval והשער ירוקים מול קוד הייחוס, וה-Dockerfile וה-Terraform עברו את הבודק של שיעור 27. לפני שמציגים: להריץ את Haiku ואת OpenAI ולעדכן מספרים, לנסות את הנתיב המקומי עם מודל ה-ivrit.ai, להקליט מ-Chrome ומ-Safari, לבנות את ה-image ולהריץ plan. ולפני תלמידים אמיתיים: סקירת תוכן, נוסחי בטיחות עם יועצת, וייעוץ פרטיות." },
+      { t: "מה עוד לא נבדק, ושואלים עליו", b: "הפרויקט נבדק offline: הצנרת, ה-API, ה-eval והשער ירוקים מול קוד הייחוס (בענף <code>solutions</code>), וה-Dockerfile וה-Terraform עברו את הבודק של שיעור 27. לפני שמציגים: להריץ את Haiku ואת OpenAI ולעדכן מספרים, לנסות את הנתיב המקומי עם מודל ה-ivrit.ai, להקליט מ-Chrome ומ-Safari, לבנות את ה-image ולהריץ plan. ולפני תלמידים אמיתיים: סקירת תוכן, נוסחי בטיחות עם יועצת, וייעוץ פרטיות." },
     ],
     glossary: [
       ["Cascade", "שיחה קולית משלושה רכיבים נפרדים: STT, מודל טקסט ו-TTS. נותנת תמליל לבדוק, ומאפשרת לבחור כל רכיב לחוד."],

@@ -28,12 +28,9 @@ from __future__ import annotations
 
 import re
 from dataclasses import dataclass, field
-from typing import Optional
 
 from guardkit.detectors import HeuristicDetector
-from guardkit.redact import is_valid_israeli_id
 
-from .content import ARB, HEB, share
 from .models import SafetyVerdict
 
 # ---------------------------------------------------------------- patterns (weight, name, regex)
@@ -80,29 +77,10 @@ class Screen:
         return self.flag in ("distress", "unsafe", "personal_info")
 
 
-def screen_text(text: str, *, threshold: float = 2.0) -> Screen:
-    """The cheap input screen. Highest-severity category whose score reaches the threshold wins."""
-    text = text or ""
-    found: dict[str, tuple[float, list[str]]] = {}
-    for cat, signals in (("distress", DISTRESS), ("unsafe", UNSAFE), ("personal_info", PII)):
-        score, reasons = 0.0, []
-        for w, name, rx in signals:
-            if rx.search(text):
-                if name == "id_number" and not any(is_valid_israeli_id(m) for m in re.findall(r"(?<!\d)\d{9}(?!\d)", text)):
-                    continue
-                score += w
-                reasons.append(name)
-        found[cat] = (score, reasons)
-    inj = INJECTION.detect(text, kind="user message")
-    found["injection"] = (inj.score, list(inj.reasons))
-    if OFF_TOPIC.search(text):
-        found["off_topic"] = (2.0, ["off_topic_topic"])
-    for cat in FLAG_ORDER[:-1]:
-        score, reasons = found.get(cat, (0.0, []))
-        if score >= (3.0 if cat == "injection" else threshold):
-            return Screen(cat, reasons, score)
-    top = max(found.values(), key=lambda x: x[0])
-    return Screen("none", top[1], top[0], borderline=top[0] > 0)
+def screen_text(*args, **kwargs):
+    """Milestone 2: runs your mine.screen_text (see hebtutor/hooks.py)."""
+    from .hooks import call
+    return call("screen_text", *args, **kwargs)
 
 
 # ---------------------------------------------------------------- redaction (reference of milestone 6)
@@ -114,35 +92,10 @@ _NAME = re.compile(r"((?:קוראים לי|שמי|השם שלי|اسمي|انا 
 _STOP_AFTER_NAME = {"ואני", "אני", "وانا", "انا", "ו", "و", "בן", "בת", "عمري", "وعمري", "גר", "גרה", "מ", "من"}
 
 
-def redact_for_log(text: str) -> tuple[str, list[str]]:
-    """Reference version of milestone 6 (mine.redact_for_log). See the docstring there."""
-    kinds: set[str] = set()
-
-    def sub(rx, label, kind, s):
-        def f(m):
-            kinds.add(kind)
-            return label
-        return rx.sub(f, s)
-
-    text = sub(_URL, "[קישור]", "url", text)
-    text = sub(_EMAIL, "[מייל]", "email", text)
-    text = sub(_PHONE, "[טלפון]", "phone", text)
-
-    def ids(m):
-        if is_valid_israeli_id(m.group(0)):
-            kinds.add("id_number")
-            return "[ת״ז]"
-        return m.group(0)
-    text = re.sub(r"(?<!\d)\d{9}(?!\d)", ids, text)
-    text = sub(_ADDRESS, "[כתובת]", "address", text)
-
-    def name(m):
-        if m.group(3).split()[-1] in _STOP_AFTER_NAME:
-            return m.group(0)
-        kinds.add("full_name")
-        return m.group(1) + "[שם]"
-    text = _NAME.sub(name, text)
-    return text, sorted(kinds)
+def redact_for_log(*args, **kwargs):
+    """Milestone 2: runs your mine.redact_for_log (see hebtutor/hooks.py)."""
+    from .hooks import call
+    return call("redact_for_log", *args, **kwargs)
 
 
 # ---------------------------------------------------------------- output screen
@@ -150,16 +103,10 @@ OUT_BLOCK = re.compile(r"https?://|www\.|@\w|מה (?:הכתובת|מספר הט�
                        r"(?:תשלח|תשלחי|שלח|שלחי) (?:לי )?תמונה|איפה את[הי]? גר|ما (?:عنوانك|رقم هاتفك)")
 
 
-def screen_output(sentence: str) -> Optional[str]:
-    """None when the sentence may be shown; else the reason it was dropped."""
-    if OUT_BLOCK.search(sentence):
-        return "asks_for_personal_info_or_link"
-    s = screen_text(sentence)
-    if s.flag in ("unsafe", "distress"):
-        return f"output_{s.flag}"
-    if sentence.strip() and share(HEB, sentence) < 0.6 and share(ARB, sentence) < 0.6:
-        return "not_hebrew"
-    return None
+def screen_output(*args, **kwargs):
+    """Milestone 2: runs your mine.screen_output (see hebtutor/hooks.py)."""
+    from .hooks import call
+    return call("screen_output", *args, **kwargs)
 
 
 # ---------------------------------------------------------------- what the student sees

@@ -70,3 +70,12 @@ def test_f1_scaffold():
     from cbrain.config import DATA
     assert len(load_users(DATA / "users.json")) >= 3          # identity and keys are ready-made
     _all_todo(hooks, hooks.load_mine())
+
+
+def test_f2_scaffold():
+    hooks = _project("f2-hebrew-tutor", "hebtutor")
+    if hooks.has_reference():
+        pytest.skip("solutions branch: the reference implementations are here")
+    from hebtutor.content import Content
+    assert len(Content().scenarios) >= 5                      # the content corpus is ready-made
+    _all_todo(hooks, hooks.load_mine())

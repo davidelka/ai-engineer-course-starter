@@ -69,7 +69,7 @@ class Scenario:
         return [p for p in self.phrases if p["level"] in allowed]
 
     def public(self, level: Optional[str] = None) -> dict:
-        """The shape the API returns (and the owner's React app reads)."""
+        """The shape the API returns (and the client's React app reads)."""
         d = {"id": self.id, "title_he": self.title_he, "title_ar": self.title_ar, "levels": self.levels,
              "map": self.map, "goal_ar": self.goal_ar}
         if level:
@@ -120,19 +120,9 @@ class Content:
             self.index.add([self._vocab_chunk(item)])
 
     def retrieve(self, scenario_id: str, level: str, query: str, k: int = 6) -> list[dict]:
-        """Phrases and words of this scenario, at or below the level, relevant to what the student said.
-        Falls back to the scenario's own phrases when nothing matches (a short "כן" matches nothing)."""
-        where = {"scenario": scenario_id, "level": levels_up_to(level)}
-        hits = self.index.search(query, k=k, where=where) if query.strip() else []
-        out = [{"id": h.chunk.id, "he": h.chunk.text, "ar": h.chunk.meta["ar"], "kind": h.chunk.meta["kind"],
-                "level": h.chunk.meta["level"], "score": round(h.score, 3)} for h in hits]
-        if len(out) < 3:
-            seen = {o["he"] for o in out}
-            for p in self.scenarios[scenario_id].phrases_for(level):
-                if p["he"] not in seen and len(out) < 3:
-                    out.append({"id": None, "he": p["he"], "ar": p["ar"], "kind": "phrase", "level": p["level"],
-                                "score": 0.0})
-        return out
+        """Phrases and words of this scenario, at or below the level (milestone 3: mine.retrieve_phrases)."""
+        from .hooks import call
+        return call("retrieve_phrases", self, scenario_id, level, query, k)
 
     # ------------------------------------------------------------ lexicon (used by the rule tutor)
     def lexicon(self) -> set[str]:

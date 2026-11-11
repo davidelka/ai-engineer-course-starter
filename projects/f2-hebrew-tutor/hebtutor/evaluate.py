@@ -131,8 +131,6 @@ def evaluate(tutor: Tutor, rows: Optional[list[dict]] = None, *, judge=None, sec
     rows = rows[:limit] if limit else rows
     content: Content = tutor.content
     rep = EvalReport(n=len(rows))
-    tp = pred = gold_err = fp_correct = 0
-    per_type: dict[str, list[int]] = {}
     safety_ok, crit_k, crit_n = 0, 0, 0
     judged, j1, j2 = 0, [], []
     lat: dict[str, list[float]] = {}
@@ -151,19 +149,6 @@ def evaluate(tutor: Tutor, rows: Optional[list[dict]] = None, *, judge=None, sec
             rep.errors.append(f"{r['id']}: {out.error}")
         a, g = out.assessment, r["gold"]
         c = a.correction
-        hit = bool(c and g["error_type"] and c.error_type == g["error_type"]
-                   and (g["must_contain"] or "") in (c.corrected or ""))
-        if c:
-            pred += 1
-        if g["error_type"]:
-            gold_err += 1
-            per_type.setdefault(g["error_type"], [0, 0])
-            per_type[g["error_type"]][1] += 1
-            if hit:
-                per_type[g["error_type"]][0] += 1
-        elif c:
-            fp_correct += 1
-        tp += hit
         s_ok = a.safety_flag == g["safety_flag"]
         safety_ok += s_ok
         if g["safety_flag"] in ("unsafe", "distress"):
@@ -184,14 +169,19 @@ def evaluate(tutor: Tutor, rows: Optional[list[dict]] = None, *, judge=None, sec
             rep.findings[f.code] = rep.findings.get(f.code, 0) + 1
         rep.cost_usd += out.cost_usd
         rep.rows.append({"id": r["id"], "text": r["text"], "mode": r["mode"], "level": lv, "scenario": r["scenario"],
-                         "gold": g, "pred": c.model_dump() if c else None, "hit": hit,
+                         "gold": g, "pred": c.model_dump() if c else None, "hit": None,
                          "safety": a.safety_flag, "safety_ok": s_ok, "reply_he": a.reply_he,
                          "level_ok": ok1, "level_why": why1, "level_signal": a.level_signal,
                          "findings": [f.code for f in out.findings]})
+    from .hooks import call
+    m = call("correction_metrics", [{"pred": x["pred"], "gold": x["gold"]} for x in rep.rows])   # milestone 9
+    for x, hit in zip(rep.rows, m["hits"]):
+        x["hit"] = hit
+    tp, pred, gold_err = m["tp"], m["predicted"], m["gold_errors"]
     rep.correction = {"precision": ci(tp, pred), "recall": ci(tp, gold_err), "tp": tp, "predicted": pred,
                       "gold_errors": gold_err}
-    rep.per_type_recall = {k: f"{v[0]}/{v[1]}" for k, v in sorted(per_type.items())}
-    rep.false_positive_on_correct = fp_correct
+    rep.per_type_recall = {k: f"{v[0]}/{v[1]}" for k, v in m["per_type"].items()}
+    rep.false_positive_on_correct = m["false_positive_on_correct"]
     rep.safety = {"accuracy": ci(safety_ok, len(rows)), "critical_recall": ci(crit_k, crit_n)}
     rep.level = {"judge": judge.name, "appropriate": ci(sum(j1), judged)}
     if second_judge is not None and j2:

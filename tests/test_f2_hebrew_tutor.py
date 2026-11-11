@@ -16,6 +16,7 @@ import pytest
 ROOT = Path(__file__).resolve().parents[1]
 PROJECT = ROOT / "projects" / "f2-hebrew-tutor"
 sys.path[:0] = [str(ROOT), str(PROJECT)]
+pytest.importorskip("hebtutor._reference", reason="reference implementations live on the solutions branch")
 
 from hebtutor.content import Content, check_submission, render  # noqa: E402
 from hebtutor.evaluate import HeuristicLevelJudge, evaluate, load_evalset  # noqa: E402

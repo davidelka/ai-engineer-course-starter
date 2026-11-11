@@ -80,16 +80,10 @@ def user_turn(text: str, retrieved: list[dict]) -> str:
             f"<student_utterance>\n{text}\n</student_utterance>")
 
 
-def build_request(content: Content, st: SessionState, text: str, retrieved: list[dict], *, mode: str = "text",
-                  max_tokens: int = 700, cache: bool = True, images=None):
-    from llmkit.types import Block, ChatRequest, Message
-
-    sc = content.scenarios[st.scenario_id]
-    system = [Block(STATIC_RULES, cache="5m" if cache else None), Block(session_block(sc, st, mode))]
-    msgs = [Message("user" if role == "student" else "assistant", t) for role, t in st.history[-8:]]
-    body = user_turn(text, retrieved)
-    msgs.append(Message.user_with(*images, body) if images else Message("user", body))
-    return ChatRequest(messages=msgs, system=system, max_tokens=max_tokens)
+def build_request(*args, **kwargs):
+    """Milestone 4: runs your mine.build_request (see hebtutor/hooks.py)."""
+    from .hooks import call
+    return call("build_request", *args, **kwargs)
 
 
 def opening(content: Content, st: SessionState) -> str:

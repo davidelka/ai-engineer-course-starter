@@ -1,4 +1,4 @@
-"""M6: redact_for_log (mine.py). Students are minors: PII never reaches the model or the store."""
+"""M2: redact_for_log (mine.py). Students are minors: PII never reaches the model or the store."""
 
 import pytest
 
