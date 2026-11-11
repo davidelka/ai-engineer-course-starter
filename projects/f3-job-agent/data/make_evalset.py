@@ -55,7 +55,7 @@ def P(pid, ts, source, channel, text, jobs=(), *, job_post=True, injection=False
                   "tags": list(tags)})
 
 
-S5, M3, BS = "Referally Senior 5+", "Referally Mid 3-4", "קהילת הייטק באר שבע והסביבה"
+S5, M3, BS = "Tech Referrals Senior 5+", "Tech Referrals Mid 3-4", "קהילת הייטק דרום"
 AT = "New Jobs"
 
 # ============================================================ slot 1: 21:00 (Oct 31) -> 08:30

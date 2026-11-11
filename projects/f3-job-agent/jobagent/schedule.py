@@ -19,7 +19,7 @@ late (a laptop that was asleep) works for the latest slot that is due.
 from __future__ import annotations
 
 from datetime import datetime, time, timedelta
-from typing import Iterable, Optional
+
 from zoneinfo import ZoneInfo
 
 TZ_NAME = "Asia/Jerusalem"
@@ -51,23 +51,10 @@ def previous_slot(slot: datetime) -> datetime:
     return latest_slot(slot.astimezone(TZ) - timedelta(minutes=1))
 
 
-def due_slot(now: datetime, done: Iterable[str], *, max_late: timedelta = timedelta(hours=6)) -> Optional[str]:
-    """Reference version of milestone 7. The slot key to run now, or None.
-
-    - the candidate is latest_slot(now)
-    - None if that slot is already in `done`
-    - None if it is more than `max_late` in the past (the next slot will pick up the posts;
-      catching up a 12-hour-old digest helps nobody)
-    Missed older slots are never run separately: posts are filtered by "since the last done
-    run", so the next run covers them.
-    """
-    s = latest_slot(now)
-    key = slot_key(s)
-    if key in set(done):
-        return None
-    if now.astimezone(TZ) - s > max_late:
-        return None
-    return key
+def due_slot(*args, **kwargs):
+    """Milestone 7: runs your mine.due_slot (see jobagent/hooks.py)."""
+    from .hooks import call
+    return call("due_slot", *args, **kwargs)
 
 
 def is_morning(key: str) -> bool:

@@ -79,3 +79,12 @@ def test_f2_scaffold():
     from hebtutor.content import Content
     assert len(Content().scenarios) >= 5                      # the content corpus is ready-made
     _all_todo(hooks, hooks.load_mine())
+
+
+def test_f3_scaffold():
+    hooks = _project("f3-job-agent", "jobagent")
+    if hooks.has_reference():
+        pytest.skip("solutions branch: the reference implementations are here")
+    from jobagent.sources import WhatsAppExportSource
+    assert len(WhatsAppExportSource(ROOT / "projects" / "f3-job-agent" / "data" / "whatsapp").fetch()) == 64  # sources are ready-made
+    _all_todo(hooks, hooks.load_mine())

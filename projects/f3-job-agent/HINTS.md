@@ -2,7 +2,22 @@
 
 הקובץ הזה הוא למקרה שנתקעת. כדאי קודם לנסות לבד לפי ה-docstring ב-`mine.py` ולפי הטסטים. אם נתקעת, קרא רק את **רמז 1** של הפונקציה, ונסה שוב. אם עדיין לא הולך, עבור ל-**רמז 2**, ורק בסוף ל-**רמז 3**, שמתאר את האלגוריתם המלא במילים. כל רמת רמז נמצאת תחת כותרת משלה, כך שאפשר לעצור אחרי כל אחת.
 
-מימושי הייחוס נמצאים ב-`jobagent/` (`dedup.py`, `safety.py`, `match.py`, `schedule.py`). כדאי להשוות אליהם רק אחרי שהטסטים שלך עוברים (`python -m pytest -q projects/f3-job-agent/tests`).
+מימושי הייחוס נמצאים רק ב-branch בשם `solutions` של הריפו, בקובץ `jobagent/_reference.py`. כדאי להשוות אליהם רק אחרי שהטסטים שלך עוברים (`python -m pytest -q projects/f3-job-agent/tests`).
+
+## find_repost
+
+### רמז 1: כיוון
+הפונקציה `shingles(text)` מ-`jobagent.dedup` כבר מפרקת טקסט לקבוצה של רצפים של חמישה תווים (אחרי הסרת אימוג'י וסימנים), ו-`jaccard` מחשבת דמיון בין שתי קבוצות. נשאר רק לעבור על הפוסטים הקודמים ולזכור את הדומה ביותר. המלכודת: להחזיר את הראשון שעובר את הסף, במקום את הדומה ביותר.
+
+### רמז 2: מבנה
+חשב את ה-shingles של `text` פעם אחת, לפני הלולאה. בלולאה על הזוגות `(key, other)` חשב דמיון, ושמור את הדמיון הגבוה ביותר ואת המפתח שלו. אחרי הלולאה בדוק את הסף פעם אחת.
+
+### רמז 3: האלגוריתם המלא
+1. `sh = shingles(text)`; `best, best_key = 0.0, None`.
+2. לכל `(key, other)` ב-`previous`: ‏`sim = jaccard(sh, shingles(other))`; אם `sim > best`, עדכן את `best` ואת `best_key`.
+3. החזר `best_key` אם `best >= threshold`, אחרת `None`. כשאין פוסטים קודמים, `best` נשאר 0 ומוחזר `None`.
+
+הערה למחשבה: זו השוואה של כל פוסט מול כל הפוסטים הקודמים, וזה בסדר למאות פוסטים ביום. במיליוני פוסטים משתמשים ב-MinHash עם LSH (למשל הספרייה datasketch), שמוצאים מועמדים בלי להשוות הכול.
 
 ## job_fingerprint
 
@@ -36,6 +51,36 @@
    - לפחות אחת לא ידועה: הכותרות המנורמלות חייבות להיות זהות (ולא ריקות), **וגם** אם לשתי המשרות יש איש קשר (apply), אנשי הקשר חייבים להיות שווים (`normalize_contact`). שתי משרות שונות של "Backend Engineer" בתל אביב עם חברה לא ידועה אינן אותה משרה.
 4. טוקני כותרת = `set(normalize_title(title).split())`. התוצאה צריכה להיות סימטרית: `near_duplicate(a, b) == near_duplicate(b, a)`.
 
+## screen_post
+
+### רמז 1: כיוון
+ה-detector של guardkit מהשיעור על אבטחה כבר מוכן: `_detector = HeuristicDetector("balanced")`, ו-`_detector.detect(text, kind="document")` מחזיר `Verdict(flagged, score, reasons)`. את שני הסימנים המבניים תופסים שני ביטויים רגולריים שכבר מיובאים: `FORGED_MARKER` ו-`SYSTEM_LINE`. המלכודת: `text` יכול להיות `None`.
+
+### רמז 2: מבנה
+הרץ את ה-detector, ואחר כך בנה רשימה של שמות הסימנים שהתאימו, בסדר קבוע. אם הרשימה ריקה, החזר את ה-Verdict של ה-detector כמו שהוא. אחרת בנה Verdict חדש.
+
+### רמז 3: האלגוריתם המלא
+1. `v = _detector.detect(text, kind="document")`.
+2. `extra = []`; אם `FORGED_MARKER.search(text or "")`, הוסף `"forged_post_marker"`; אם `SYSTEM_LINE.search(text or "")`, הוסף `"system_line"` (בסדר הזה).
+3. אם `extra` ריקה: החזר `v`.
+4. אחרת: `Verdict(True, v.score + 3.0 * len(extra), v.reasons + extra)`.
+
+למה שני הסימנים האלה: פוסט שמכיל `<</post ...>>` מנסה "לסגור" את הסימון שלנו ולכתוב טקסט שייראה כאילו הוא מחוץ לפוסט, ושורה שמתחילה ב-`SYSTEM:` מנסה להתחזות להוראת מערכת. שניהם לא מופיעים במודעת דרושים אמיתית.
+
+## spotlight
+
+### רמז 1: כיוון
+שלושה דברים: nonce, החלפת רווחים בתו הסימון `DATAMARK`, ועטיפה בסימונים עם ה-nonce. `secrets` ו-`re` מיובאים. המלכודת: להחליף גם את ירידות השורה, ואז המודל מקבל גוש טקסט אחד.
+
+### רמז 2: מבנה
+השתמש ב-nonce שקיבלת או צור חדש. החלף כל רצף של רווחים וטאבים (ולא ירידות שורה) בביטוי רגולרי אחד. הרכב את המחרוזת עם f-string, והחזר זוג.
+
+### רמז 3: האלגוריתם המלא
+1. `nonce = nonce or secrets.token_hex(4)` (שמונה תווי hex).
+2. `marked = re.sub(r"[ \t]+", DATAMARK, text)`.
+3. `wrapped = f"<<post nonce={nonce}>>\n{marked}\n<</post nonce={nonce}>>"`.
+4. החזר `(wrapped, nonce)`.
+
 ## validate_job
 
 ### רמז 1: כיוון
@@ -54,6 +99,23 @@
 4. `link_in_text_field` (block): title או company מכילים URL או מייל (`URL_RE` / `EMAIL_RE`). חתוך את השדה בקישור הראשון, ועשה strip לתווים `" -:|,"`. אם לא נשאר כלום: company הופך ל-`None`, ו-title הופך ל-"(unknown title)".
 5. `title_too_long` (warn): ‏`len(title) > 120`. חתוך ל-120 תווים (ואז `rstrip`).
 
+## extract_post
+
+### רמז 1: כיוון
+את כל העבודה הקשה עושה `complete_structured` מ-`llmkit.structured` (השיעור על Structured Outputs): היא שולחת, מאמתת מול ה-schema של `PostExtraction`, ומבקשת תיקון כשהתשובה לא תקינה. הפונקציה שלך בונה את הבקשה, מודדת זמן, ותופסת את `StructuredError`. המלכודת: להחזיר חצי משרה, או לזרוק חריגה, כשהמודל נכשל. כאן נכשלים "סגור": אין משרות.
+
+### רמז 2: מבנה
+ייבא בתוך הפונקציה את `StructuredError` ו-`complete_structured`, ואת `Block`, `ChatRequest` ו-`Message` מ-`llmkit.types`. שמור `t0 = time.perf_counter()`. בתוך try: בנה את ה-prompt (ChatRequest עם system שמור במטמון, או מחרוזת), קרא ל-`complete_structured`, והחזר `ExtractResult` מהתוצאה. ב-except: החזר `ExtractResult` ריק עם `error`.
+
+### רמז 3: האלגוריתם המלא
+1. `t0 = time.perf_counter()`.
+2. אם `cache_system and mode == "native"`: ‏`prompt = ChatRequest(messages=[Message("user", build_user_prompt(post))], system=[Block(SYSTEM_PROMPT, cache="5m")], max_tokens=max_tokens)`. אחרת `prompt = build_user_prompt(post)`.
+3. `r = complete_structured(llm, prompt, PostExtraction, system=SYSTEM_PROMPT, mode=mode, max_tokens=max_tokens, max_repairs=max_repairs)`.
+4. החזר `ExtractResult(r.value, r.cost_usd, r.input_tokens, r.output_tokens, r.attempts, time.perf_counter() - t0, extractor=name)`.
+5. `except StructuredError as exc`: ‏`res = exc.result`, והחזר `ExtractResult(PostExtraction(is_job_post=False, jobs=[]), getattr(res, "cost_usd", 0.0) or 0.0, getattr(res, "input_tokens", 0), getattr(res, "output_tokens", 0), getattr(res, "attempts", 1), time.perf_counter() - t0, error=f"structured_{exc.stage}", extractor=name)`.
+
+למה המטמון: ה-system prompt זהה בכל פוסט ובא ראשון, ולכן נקודת cache אחריו מאפשרת לפוסט השני עד האחרון בריצה לקרוא אותו בעשירית מהמחיר.
+
 ## score_job
 
 ### רמז 1: כיוון
@@ -63,7 +125,7 @@
 קטגוריה: עבור על הקטגוריות של המשרה, סנן לפי ביטחון ולפי `prefs.targets`, חשב לכל אחת נקודות, ובחר את הטובה (עם שובר שוויון לפי סדר המפתחות ב-targets). מיקום: מצא אזור, ואז חפש את הכלל הראשון שמתאים. ניסיון: חשב ציון בכירות וציון שנים וקח את המינימום. אחר כך חבר, קבע tier, טפל ב-`suspicious`, ובנה את ה-dict עם השורות.
 
 ### רמז 3: האלגוריתם המלא
-`score = category (0-50) + location (0-30) + experience (0-20)`. קרא כל מספר מ-`prefs`; לעולם אל תקודד את הקריטריונים של דוד.
+`score = category (0-50) + location (0-30) + experience (0-20)`. קרא כל מספר מ-`prefs`; לעולם אל תקודד את הקריטריונים של מחפש העבודה שבדוגמה.
 
 **קטגוריה** (רק קטגוריות עם `confidence >= 0.5` שנמצאות ב-`prefs.targets`):
 1. automation, כאשר `targets["automation"].prefer_hardware` והמשרה **לא** `hardware_oriented`: ‏`targets["automation"].web_score` נקודות.
@@ -105,3 +167,30 @@
 3. אם המפתח נמצא ב-`done`: ‏`None` (כבר רץ: ניסיון חוזר או טריגר כפול).
 4. אם `now - candidate > max_late`: ‏`None` (מאוחר מדי מכדי להועיל; ה-slot הבא יכסה את הפוסטים).
 5. אחרת החזר את המפתח. `now` יכול להיות בכל אזור זמן (השווה datetime מודעים, או המר עם `.astimezone(TZ)`).
+
+## align
+
+### רמז 1: כיוון
+זו בעיית שיבוץ קטנה: לכל משרה מתויגת (gold) צריך למצוא את המשרה החזויה שמתאימה לה, כשכל חזויה משמשת פעם אחת. הגישה החמדנית מספיקה כאן: מחשבים דמיון לכל זוג, וממיינים מהגבוה לנמוך. המלכודת: לעבור על ה-gold לפי הסדר ולתת לכל אחת את הטובה ביותר שנשארה, כי אז משרה מוקדמת "גונבת" התאמה טובה יותר של משרה מאוחרת.
+
+### רמז 2: מבנה
+בנה רשימה של שלשות `(similarity, gold_index, pred_index)` לכל הזוגות. מיין אותה בסדר יורד. עבור עליה, ושמור שתי קבוצות של אינדקסים שכבר נלקחו. התוצאה היא רשימה באורך `len(golds)`, שמתחילה כ-`None` בכל מקום.
+
+### רמז 3: האלגוריתם המלא
+1. `out = [None] * len(golds)`.
+2. לכל `gi, g` ולכל `pi, p`: ‏`gt = set(normalize_title(g["title"]).split())`, ‏`pt = set(normalize_title(p.title).split())`, ‏`bonus = 0.2 if p.primary_category == g["primary_category"] else 0.0`, והוסף `(jaccard(gt, pt) + bonus, gi, pi)`.
+3. `for sim, gi, pi in sorted(pairs, reverse=True)`: אם `gi` או `pi` כבר נלקחו, דלג; אחרת `out[gi] = preds[pi]` וסמן את שניהם.
+4. החזר `out`.
+
+## relevance
+
+### רמז 1: כיוון
+`prf(tp, fp, fn)` מ-`jobagent.evaluate` כבר מחשב precision, recall ו-f1. צריך רק לספור tp, fp ו-fn פעמיים, פעם לכל הגדרה של "חיובי". המלכודת: לשכוח שב-"shown" גם "maybe" נחשב חיובי.
+
+### רמז 2: מבנה
+לולאה על שתי הגדרות: `("match", {"match"})` ו-`("shown", {"match", "maybe"})`. בכל אחת עבור על `zip(pred_tiers, gold_tiers)` וספור. בסוף הוסף את `tier_accuracy`.
+
+### רמז 3: האלגוריתם המלא
+1. לכל `(name, pos)`: ‏`tp` = מספר המקומות שבהם `p in pos and g in pos`; ‏`fp` = ‏`p in pos and g not in pos`; ‏`fn` = ‏`p not in pos and g in pos`. ‏`out[name] = prf(tp, fp, fn)`.
+2. `out["tier_accuracy"] = sum(p == g for p, g in zip(pred_tiers, gold_tiers)) / max(1, len(gold_tiers))`.
+3. החזר `out`.

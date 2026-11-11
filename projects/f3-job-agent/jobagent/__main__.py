@@ -21,56 +21,19 @@ import sys
 from datetime import datetime, timedelta
 from pathlib import Path
 
-from . import dedup, match, safety, schedule
+from . import schedule
 from .config import Settings
 from .pipeline import Hooks, Pipeline
 
-_WARNED: set[str] = set()
-
-
 def pick_hooks(reference: bool) -> Hooks:
-    """Your mine.py functions where implemented, the references elsewhere."""
-    refs = {"job_fingerprint": dedup.job_fingerprint, "near_duplicate": dedup.near_duplicate,
-            "validate_job": safety.validate_job, "score_job": match.score_job}
-    if reference:
-        return Hooks(validate_job=refs["validate_job"], fingerprint=refs["job_fingerprint"],
-                     near_duplicate=refs["near_duplicate"], score_job=refs["score_job"])
-    project = Path(__file__).resolve().parent.parent
-    if str(project) not in sys.path:
-        sys.path.insert(0, str(project))
-    import mine
-
-    def guarded(name):
-        fn, ref = getattr(mine, name), refs[name]
-
-        def call(*a, **kw):
-            try:
-                return fn(*a, **kw)
-            except NotImplementedError:
-                if name not in _WARNED:
-                    _WARNED.add(name)
-                    print(f"  (mine.{name} is still a TODO: using the reference)", file=sys.stderr)
-                return ref(*a, **kw)
-        return call
-
-    return Hooks(validate_job=guarded("validate_job"), fingerprint=guarded("job_fingerprint"),
-                 near_duplicate=guarded("near_duplicate"), score_job=guarded("score_job"))
+    """Your mine.py functions (on the solutions branch, --reference forces the references)."""
+    from .hooks import pick_hooks as _pick
+    return _pick(reference)
 
 
 def pick_due_slot(reference: bool):
-    if reference:
-        return schedule.due_slot
-    import mine
-
-    def call(*a, **kw):
-        try:
-            return mine.due_slot(*a, **kw)
-        except NotImplementedError:
-            if "due_slot" not in _WARNED:
-                _WARNED.add("due_slot")
-                print("  (mine.due_slot is still a TODO: using the reference)", file=sys.stderr)
-            return schedule.due_slot(*a, **kw)
-    return call
+    pick_hooks(reference)
+    return schedule.due_slot          # runs your mine.due_slot (milestone 7)
 
 
 def build_pipeline(s: Settings, hooks: Hooks, *, store=None, record: bool = False) -> Pipeline:
@@ -237,7 +200,7 @@ def cmd_cost(a) -> int:
 def main(argv=None) -> int:
     p = argparse.ArgumentParser(prog="python -m jobagent", description=__doc__,
                                 formatter_class=argparse.RawDescriptionHelpFormatter)
-    p.add_argument("--reference", action="store_true", help="use the reference implementations, not mine.py")
+    p.add_argument("--reference", action="store_true", help="use the reference implementations, not mine.py (solutions branch only)")
     sub = p.add_subparsers(dest="cmd", required=True)
     r = sub.add_parser("run")
     r.add_argument("--slot", default="auto", help="'auto' or a slot key like 2026-11-01T08:30")
@@ -270,7 +233,11 @@ def main(argv=None) -> int:
     c.add_argument("--posts", type=int, default=25, help="new posts per run")
     c.set_defaults(fn=cmd_cost)
     a = p.parse_args(argv)
-    return a.fn(a)
+    from .hooks import MilestoneTodo
+    try:
+        return a.fn(a)
+    except MilestoneTodo as e:
+        sys.exit(f"\n{e}")
 
 
 if __name__ == "__main__":

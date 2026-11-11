@@ -98,27 +98,9 @@ class LLMExtractor:
         self.name = f"llm:{getattr(llm, 'model', '?')}"
 
     def extract(self, post: RawPost) -> ExtractResult:
-        from llmkit.structured import StructuredError, complete_structured
-
-        t0 = time.perf_counter()
-        try:
-            if self.cache_system:
-                from llmkit.types import Block, ChatRequest, Message
-
-                prompt = ChatRequest(messages=[Message("user", build_user_prompt(post))],
-                                     system=[Block(SYSTEM_PROMPT, cache="5m")], max_tokens=self.max_tokens)
-            else:
-                prompt = build_user_prompt(post)
-            r = complete_structured(self.llm, prompt, PostExtraction, system=SYSTEM_PROMPT,
-                                    mode=self.mode, max_tokens=self.max_tokens, max_repairs=self.max_repairs)
-            out = ExtractResult(r.value, r.cost_usd, r.input_tokens, r.output_tokens, r.attempts,
-                                time.perf_counter() - t0, extractor=self.name)
-        except StructuredError as exc:  # fail closed: no jobs from a post we could not read
-            res = exc.result
-            out = ExtractResult(PostExtraction(is_job_post=False, jobs=[]), getattr(res, "cost_usd", 0.0) or 0.0,
-                                getattr(res, "input_tokens", 0), getattr(res, "output_tokens", 0),
-                                getattr(res, "attempts", 1), time.perf_counter() - t0,
-                                error=f"structured_{exc.stage}", extractor=self.name)
+        from .hooks import call                         # milestone 5: mine.extract_post
+        out = call("extract_post", self.llm, post, name=self.name, max_tokens=self.max_tokens,
+                   max_repairs=self.max_repairs, mode=self.mode, cache_system=self.cache_system)
         if self.record:
             self.record.parent.mkdir(parents=True, exist_ok=True)
             with self.record.open("a", encoding="utf-8") as fh:

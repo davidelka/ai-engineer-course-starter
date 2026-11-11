@@ -1,12 +1,15 @@
-# The owner's job criteria. The matcher (jobagent/match.py) reads ONLY this file: change the
-# file, not the code, when the criteria change. The admin API (PUT /preferences) validates
+# The job criteria of the example job seeker (a fictional engineer: five years of automation and
+# backend, lives in the south). The tests and the labeled eval set match THIS file, so do not edit
+# it: copy it, put your own criteria in the copy, and point PREFS_PATH (in .env) at the copy.
+# The matcher (jobagent/match.py) reads ONLY this file: change the file, not the code, when the
+# criteria change. The admin API (PUT /preferences) validates
 # a new version against jobagent/prefs.py before saving it.
 
 owner: Me
 experience_years: 5          # mostly automation; backend and system work too
 
 # Target categories. Anything else scores 0 on category and lands in "other jobs".
-# cv: the file the owner attaches by hand to the Gmail draft (the agent never attaches files).
+# cv: the file the job seeker attaches by hand to the Gmail draft (the agent never attaches files).
 targets:
   backend:
     cv: CV_Backend.pdf

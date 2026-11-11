@@ -17,6 +17,7 @@ import pytest
 ROOT = Path(__file__).resolve().parents[1]
 PROJECT = ROOT / "projects" / "f3-job-agent"
 sys.path[:0] = [str(ROOT), str(PROJECT)]
+pytest.importorskip("jobagent._reference", reason="reference implementations live on the solutions branch")
 
 from jobagent import dedup, safety, schedule  # noqa: E402
 from jobagent.delivery import (Draft, FileDelivery, FileDraftAdapter, GmailDraftAdapter,  # noqa: E402
@@ -74,9 +75,9 @@ def test_whatsapp_txt_android_and_ios_and_multiline():
     txt = ("01/11/2026, 08:15 - Dana: Backend Engineer @ X\nBeer Sheva\n"
            "‎[01/11/2026, 09:01:12] Avi: second message\n"
            "01/11/2026, 09:05 - Avi: <Media omitted>\n")
-    posts = parse_whatsapp_txt(txt, "Referally Senior 5+")
+    posts = parse_whatsapp_txt(txt, "Tech Referrals Senior 5+")
     assert [p.text for p in posts] == ["Backend Engineer @ X\nBeer Sheva", "second message"]
-    assert posts[0].ts == datetime(2026, 11, 1, 8, 15, tzinfo=IL) and posts[0].channel == "Referally Senior 5+"
+    assert posts[0].ts == datetime(2026, 11, 1, 8, 15, tzinfo=IL) and posts[0].channel == "Tech Referrals Senior 5+"
     assert posts[0].key != posts[1].key
 
 
@@ -87,8 +88,8 @@ def test_whatsapp_export_source_reads_the_demo_files():
     assert len(posts) == len(wa)
     since = datetime(2026, 11, 1, 15, 0, tzinfo=IL)
     assert all(p.ts > since for p in src.fetch(since))
-    only = WhatsAppExportSource(PROJECT / "data" / "whatsapp", groups=["Referally Mid 3-4"]).fetch()
-    assert only and all(p.channel == "Referally Mid 3-4" for p in only)
+    only = WhatsAppExportSource(PROJECT / "data" / "whatsapp", groups=["Tech Referrals Mid 3-4"]).fetch()
+    assert only and all(p.channel == "Tech Referrals Mid 3-4" for p in only)
 
 
 def test_whatsapp_json_export(tmp_path):

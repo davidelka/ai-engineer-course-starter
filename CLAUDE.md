@@ -101,7 +101,7 @@ Projects run the same way, by milestones, and end with the demo script in the pr
 
 ## Things the learner should customize
 
-- **F3** (`projects/f3-job-agent/data/preferences.yaml`) holds the first learner's job criteria as an example. Replace them with the new learner's own targets, location and CVs before milestone 1. The WhatsApp sample groups are synthetic.
+- **F3** (`projects/f3-job-agent/data/preferences.yaml`) holds a fictional job seeker's criteria; the tests and the labeled eval set match that file, so it stays as is. If the learner wants the agent to work for them, they copy it, put in their own targets, location and CVs, and set `PREFS_PATH` in `.env`. The WhatsApp sample groups are synthetic.
 - **F2** is designed for Arabic-speaking high-school students practicing spoken Hebrew. If the learner wants a different audience or language pair, adapt the scenarios in `projects/f2-hebrew-tutor/data/` early.
 - **M2** indexes the learner's own folder through `~/.config/pss/config.yaml`. Start with `scan --explain`, and keep `health/` and `finance/` in `cloud.never_send`.
 
