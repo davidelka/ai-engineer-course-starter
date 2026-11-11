@@ -1,4 +1,4 @@
-"""M7: word_feedback (mine.py): intelligibility via ASR, word by word."""
+"""M8: word_feedback (mine.py): intelligibility via ASR, word by word."""
 
 from hebtutor.hooks import load_mine
 

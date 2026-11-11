@@ -20,7 +20,6 @@ from __future__ import annotations
 from dataclasses import asdict, dataclass, field
 from typing import Optional
 
-from voicekit.text import align, cer, normalize_hebrew
 
 HOMOPHONE_CLASS = {"ט": "ת", "ת": "ת", "כ": "ח", "ח": "ח", "ק": "ק", "א": "א", "ע": "א", "ס": "ס", "ש": "ס",
                    "ב": "ב", "ו": "ב"}
@@ -77,23 +76,7 @@ def sound_hint(ref: str, hyp: str) -> Optional[str]:
     return None
 
 
-def word_feedback(expected: str, heard: str) -> SpeakingFeedback:
-    ref, hyp = normalize_hebrew(expected, finals=False).split(), normalize_hebrew(heard, finals=False).split()
-    fb = SpeakingFeedback()
-    for op, r, h in align(ref, hyp):
-        if op == "ok":
-            fb.words.append(WordResult(r, "ok", h, 0.0))
-        elif op == "sub":
-            c = round(cer(r, h).rate, 3)
-            if homophone_key(r) == homophone_key(h):
-                status = "homophone"
-            elif c <= 0.34:
-                status = "close"
-            else:
-                status = "wrong"
-            fb.words.append(WordResult(r, status, h, c, sound_hint(r, h)))
-        elif op == "del":
-            fb.words.append(WordResult(r, "missing", "", 1.0))
-        else:
-            fb.extra.append(h)
-    return fb
+def word_feedback(*args, **kwargs):
+    """Milestone 8: runs your mine.word_feedback (see hebtutor/hooks.py)."""
+    from .hooks import call
+    return call("word_feedback", *args, **kwargs)

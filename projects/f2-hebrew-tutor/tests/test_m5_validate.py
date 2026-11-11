@@ -1,4 +1,4 @@
-"""M4: validate_assessment (mine.py). Code checks what the model returned."""
+"""M5: validate_assessment (mine.py). Code checks what the model returned."""
 
 import pytest
 

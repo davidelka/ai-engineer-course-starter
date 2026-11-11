@@ -19,10 +19,7 @@ both lowers EF and restarts the intervals.
 
 from __future__ import annotations
 
-import math
-from dataclasses import asdict, dataclass, replace
-from datetime import date, timedelta
-from typing import Optional
+from dataclasses import asdict, dataclass
 
 from .models import LEVELS
 
@@ -48,39 +45,20 @@ class Card:
         return asdict(self)
 
 
-def sm2_update(card: Card, quality: int, today: date) -> Card:
-    """Reference. quality 0..5 (5 perfect, 3 correct with effort, below 3 failed)."""
-    if not 0 <= quality <= 5:
-        raise ValueError("quality must be 0..5")
-    q = quality
-    ef = max(1.3, card.ef + (0.1 - (5 - q) * (0.08 + (5 - q) * 0.02)))
-    if q < 3:
-        reps, interval, lapses = 0, 1, card.lapses + 1
-    else:
-        reps = card.reps + 1
-        interval = 1 if reps == 1 else 6 if reps == 2 else math.ceil(round(card.interval * ef, 6))
-        lapses = card.lapses
-    return replace(card, ef=round(ef, 4), reps=reps, interval=interval, lapses=lapses,
-                   due=(today + timedelta(days=interval)).isoformat())
+def sm2_update(*args, **kwargs):
+    """Milestone 6: runs your mine.sm2_update (see hebtutor/hooks.py)."""
+    from .hooks import call
+    return call("sm2_update", *args, **kwargs)
 
 
 def level_of(score: float) -> str:
     return LEVELS[min(2, max(0, int(score) - 1))]
 
 
-def update_level(score: float, level: str, signal: Optional[str]) -> tuple[float, str]:
-    """Reference. Returns (new score, displayed level)."""
-    if signal not in BAND_MID:
-        return score, level
-    s = min(3.99, max(1.0, score + ALPHA * (BAND_MID[signal] - score)))
-    s = round(s, 4)
-    i = LEVELS.index(level)
-    lo, hi = float(i + 1), float(i + 2)  # band of the displayed level
-    if s >= hi + MARGIN and i < 2:
-        level = level_of(s)
-    elif s < lo - MARGIN and i > 0:
-        level = level_of(s)
-    return s, level
+def update_level(*args, **kwargs):
+    """Milestone 6: runs your mine.update_level (see hebtutor/hooks.py)."""
+    from .hooks import call
+    return call("update_level", *args, **kwargs)
 
 
 def turn_points(has_correction: bool, n_new_words: int) -> int:

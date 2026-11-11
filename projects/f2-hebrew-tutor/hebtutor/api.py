@@ -1,4 +1,4 @@
-"""The tutor API (FastAPI): API-first, so the owner's React PWA can call it, plus a one-page demo.
+"""The tutor API (FastAPI): API-first, so the client's React PWA can call it, plus a one-page demo.
 
 Auth (three kinds of caller, three headers):
     X-Admin-Token     ADMIN_TOKEN from the environment: create classes, approve/reject content

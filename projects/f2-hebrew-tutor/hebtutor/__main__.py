@@ -258,8 +258,12 @@ def main(argv=None) -> None:
     c.add_argument("--students", type=int, default=30)
     c.add_argument("--turns", type=int, default=40)
     args = p.parse_args(argv)
-    {"demo": cmd_demo, "chat": cmd_chat, "content": cmd_content, "voice": cmd_voice, "eval": cmd_eval,
-     "traces": cmd_traces, "serve": cmd_serve, "purge": cmd_purge, "cost": cmd_cost}[args.cmd](args)
+    from .hooks import MilestoneTodo
+    try:
+        {"demo": cmd_demo, "chat": cmd_chat, "content": cmd_content, "voice": cmd_voice, "eval": cmd_eval,
+         "traces": cmd_traces, "serve": cmd_serve, "purge": cmd_purge, "cost": cmd_cost}[args.cmd](args)
+    except MilestoneTodo as e:
+        sys.exit(f"\n{e}")
 
 
 if __name__ == "__main__":

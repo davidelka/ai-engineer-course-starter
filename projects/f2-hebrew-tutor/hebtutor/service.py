@@ -1,7 +1,7 @@
 """The application layer: everything the API (and the CLI demo) does, in one place.
 
 The API is a thin HTTP shell over TutorService, so the same behavior is testable without HTTP
-and reusable from the owner's React app through the API.
+and reusable from the client's React app through the API.
 """
 
 from __future__ import annotations
