@@ -31,14 +31,19 @@ from .schedule import TZ, is_morning
 from .store import Store
 
 
+def _lazy(name: str) -> Callable:
+    from .hooks import _lazy as lazy
+    return lazy(name)
+
+
 @dataclass
 class Hooks:
-    """The replaceable pieces (mine.py or the references)."""
+    """The replaceable pieces: your mine.py functions (see jobagent/hooks.py)."""
 
-    validate_job: Callable = safety.validate_job
-    fingerprint: Callable = dedup.job_fingerprint
-    near_duplicate: Callable = dedup.near_duplicate
-    score_job: Callable = match.score_job
+    validate_job: Callable = field(default_factory=lambda: _lazy("validate_job"))
+    fingerprint: Callable = field(default_factory=lambda: _lazy("job_fingerprint"))
+    near_duplicate: Callable = field(default_factory=lambda: _lazy("near_duplicate"))
+    score_job: Callable = field(default_factory=lambda: _lazy("score_job"))
 
 
 @dataclass
@@ -127,6 +132,7 @@ class Pipeline:
             tracing.shutdown()
             return res
         slot_dt = datetime.fromisoformat(slot).replace(tzinfo=TZ)
+        todo = None
         try:
             with agent_span("job_agent_run", workflow=True, attributes={"job_agent.slot": slot,
                                                                          "job_agent.extractor": self.extractor.name}) as root:
@@ -148,6 +154,8 @@ class Pipeline:
         except Exception as exc:  # the slot stays retryable; the error is visible in /runs
             res.error = f"{type(exc).__name__}: {exc}"
             status = "failed"
+            if type(exc).__name__ == "MilestoneTodo":   # a function of mine.py not written yet: stop loudly
+                todo = exc
         tracing.flush()
         res.spans = list(tracing.memory.spans) if tracing.memory else []
         tracing.shutdown()
@@ -160,6 +168,8 @@ class Pipeline:
                               cost_usd=res.cost_usd, extractor=self.extractor.name,
                               digest=res.digest.text if res.digest else None, error=res.error,
                               report_path=res.report_path)
+        if todo is not None:
+            raise todo
         return res
 
     def _fetch(self, slot: str, slot_dt: datetime, span) -> list[RawPost]:

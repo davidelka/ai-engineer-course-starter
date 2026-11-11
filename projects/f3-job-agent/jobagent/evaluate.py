@@ -85,24 +85,10 @@ def field_scores(pred: Optional[JobPosting], gold: dict) -> dict[str, bool]:
     return {f: out[f] for f in FIELDS}
 
 
-def align(preds: list[JobPosting], golds: list[dict]) -> list[Optional[JobPosting]]:
-    """For each gold job, the predicted job with the most similar title (each used once)."""
-    out: list[Optional[JobPosting]] = [None] * len(golds)
-    pairs = []
-    for gi, g in enumerate(golds):
-        gt = set(normalize_title(g["title"]).split())
-        for pi, p in enumerate(preds):
-            pt = set(normalize_title(p.title).split())
-            bonus = 0.2 if p.primary_category == g["primary_category"] else 0.0
-            pairs.append((jaccard(gt, pt) + bonus, gi, pi))
-    used_g, used_p = set(), set()
-    for sim, gi, pi in sorted(pairs, reverse=True):
-        if gi in used_g or pi in used_p:
-            continue
-        out[gi] = preds[pi]
-        used_g.add(gi)
-        used_p.add(pi)
-    return out
+def align(*args, **kwargs):
+    """Milestone 9: runs your mine.align (see jobagent/hooks.py)."""
+    from .hooks import call
+    return call("align", *args, **kwargs)
 
 
 def prf(tp: int, fp: int, fn: int) -> dict:
@@ -111,15 +97,10 @@ def prf(tp: int, fp: int, fn: int) -> dict:
     return {"precision": p, "recall": r, "f1": (2 * p * r / (p + r)) if p + r else 0.0, "tp": tp, "fp": fp, "fn": fn}
 
 
-def relevance(pred_tiers: list[str], gold_tiers: list[str]) -> dict:
-    out = {}
-    for name, pos in (("match", {"match"}), ("shown", {"match", "maybe"})):
-        tp = sum(1 for p, g in zip(pred_tiers, gold_tiers) if p in pos and g in pos)
-        fp = sum(1 for p, g in zip(pred_tiers, gold_tiers) if p in pos and g not in pos)
-        fn = sum(1 for p, g in zip(pred_tiers, gold_tiers) if p not in pos and g in pos)
-        out[name] = prf(tp, fp, fn)
-    out["tier_accuracy"] = sum(p == g for p, g in zip(pred_tiers, gold_tiers)) / max(1, len(gold_tiers))
-    return out
+def relevance(*args, **kwargs):
+    """Milestone 9: runs your mine.relevance (see jobagent/hooks.py)."""
+    from .hooks import call
+    return call("relevance", *args, **kwargs)
 
 
 @dataclass

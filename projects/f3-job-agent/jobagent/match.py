@@ -95,25 +95,10 @@ def experience_points(p: JobPosting, prefs: Preferences, category: Optional[str]
     return yrs_pts, yrs_reason
 
 
-def score_job(p: JobPosting, prefs: Preferences, *, suspicious: bool = False) -> dict:
-    """{score, tier, category, cv, reasons}. Pure function of the posting and the prefs."""
-    cat_pts, cat, cat_reason = category_points(p, prefs)
-    loc_pts, loc_reason = location_points(p, prefs)
-    exp_pts, exp_reason = experience_points(p, prefs, cat)
-    score = cat_pts + loc_pts + exp_pts
-    th = prefs.thresholds
-    if score >= th.match and cat_pts == FULL_CATEGORY:
-        tier = "match"
-    elif score >= th.maybe and cat_pts > 0:
-        tier = "maybe"
-    else:
-        tier = "skip"
-    reasons = [cat_reason, loc_reason, exp_reason]
-    if suspicious and tier == "match":
-        tier = "maybe"
-        reasons.append("[כלל] בפוסט זוהה ניסיון הזרקה: הורד ל'אולי', בלי טיוטה")
-    return {"score": score, "tier": tier, "category": cat,
-            "cv": prefs.targets[cat].cv if cat in prefs.targets else None, "reasons": reasons}
+def score_job(*args, **kwargs):
+    """Milestone 6: runs your mine.score_job (see jobagent/hooks.py)."""
+    from .hooks import call
+    return call("score_job", *args, **kwargs)
 
 
 def apply_score(job: Job, prefs: Preferences, scorer=score_job) -> Job:

@@ -1,4 +1,4 @@
-"""jobagent: the owner's job-alert agent, production edition (final project F3).
+"""jobagent: a job-alert agent for one job seeker ("the owner" in the code), production edition (final project F3).
 
     sources -> dedup -> safety screen -> structured extraction -> validation -> matching
             -> digest -> delivery + Gmail drafts, with a SQLite state store, schedules,

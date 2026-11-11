@@ -13,12 +13,10 @@ and `near_duplicate` yourself (milestone 3).
 
 from __future__ import annotations
 
-import hashlib
 import re
 import unicodedata
-from typing import Iterable, Optional
+from typing import Optional
 
-from .models import JobPosting
 
 # Words that do not distinguish one role from another.
 _TITLE_SYNONYMS = {
@@ -66,13 +64,10 @@ def normalize_contact(apply: Optional[str]) -> str:
     return (apply or "").strip().lower().removeprefix("mailto:").rstrip("/")
 
 
-def job_fingerprint(job: JobPosting) -> str:
-    """sha1 of 'title|company|location' (normalized), first 16 hex chars. When the company is
-    unknown, the apply contact stands in for it: otherwise every anonymous "Backend Engineer"
-    in Tel Aviv would get the same fingerprint."""
-    who = normalize_company(job.company) or normalize_contact(job.apply)
-    key = "|".join([normalize_title(job.title), who, normalize_location(job.location)])
-    return hashlib.sha1(key.encode("utf-8")).hexdigest()[:16]
+def job_fingerprint(*args, **kwargs):
+    """Milestone 3: runs your mine.job_fingerprint (see jobagent/hooks.py)."""
+    from .hooks import call
+    return call("job_fingerprint", *args, **kwargs)
 
 
 def jaccard(a: set, b: set) -> float:
@@ -81,30 +76,10 @@ def jaccard(a: set, b: set) -> float:
     return len(a & b) / len(a | b)
 
 
-def near_duplicate(a: JobPosting, b: JobPosting, *, title_threshold: float = 0.6) -> bool:
-    """Same role, written differently.
-
-    - companies: equal after normalization, or one of them unknown (a recruiter repost)
-      but then the titles must be identical after normalization, and the apply contacts
-      must be equal when both posts have one
-    - locations: equal, or at least one unknown
-    - seniority words in the titles (junior, senior, lead...) must be the same
-    - titles: Jaccard similarity of normalized title tokens >= title_threshold
-    """
-    ca, cb = normalize_company(a.company), normalize_company(b.company)
-    la, lb = normalize_location(a.location), normalize_location(b.location)
-    if la and lb and la != lb:
-        return False
-    ta, tb = set(normalize_title(a.title).split()), set(normalize_title(b.title).split())
-    if (ta & SENIORITY_WORDS) != (tb & SENIORITY_WORDS):  # "Junior Rust" is not "Rust"
-        return False
-    if ca and cb:
-        return ca == cb and jaccard(ta, tb) >= title_threshold
-    # One company unknown: a generic title like "Backend Engineer" in Tel Aviv is not enough.
-    # Require the same title AND, when both posts give one, the same apply contact.
-    if a.apply and b.apply and normalize_contact(a.apply) != normalize_contact(b.apply):
-        return False
-    return ta == tb and bool(ta)
+def near_duplicate(*args, **kwargs):
+    """Milestone 3: runs your mine.near_duplicate (see jobagent/hooks.py)."""
+    from .hooks import call
+    return call("near_duplicate", *args, **kwargs)
 
 
 # ---------------------------------------------------------------- post level
@@ -117,14 +92,7 @@ def text_similarity(a: str, b: str, k: int = 5) -> float:
     return jaccard(shingles(a, k), shingles(b, k))
 
 
-def find_repost(text: str, previous: Iterable[tuple[str, str]], threshold: float = 0.8) -> Optional[str]:
-    """Key of an earlier post whose text is a near copy of `text`, else None.
-    previous: (key, text) pairs. Fine for hundreds of posts a day; for millions you would
-    use MinHash + LSH (e.g. the datasketch library) instead of comparing all pairs."""
-    sh = shingles(text)
-    best, best_key = 0.0, None
-    for key, other in previous:
-        sim = jaccard(sh, shingles(other))
-        if sim > best:
-            best, best_key = sim, key
-    return best_key if best >= threshold else None
+def find_repost(*args, **kwargs):
+    """Milestone 3: runs your mine.find_repost (see jobagent/hooks.py)."""
+    from .hooks import call
+    return call("find_repost", *args, **kwargs)

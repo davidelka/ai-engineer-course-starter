@@ -1,4 +1,4 @@
-"""M5: output validation of extracted jobs (mine.validate_job). Posts are untrusted input."""
+"""M4: output validation of extracted jobs (mine.validate_job). Posts are untrusted input."""
 
 from jobagent.models import CategoryScore, JobPosting
 from jobagent.safety import DATAMARK

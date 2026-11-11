@@ -17,7 +17,7 @@ reads that file. The pipeline never talks to WhatsApp itself, which keeps the ac
 safe and the pipeline testable.
 
 JSON message format (one list per file):
-    [{"id": "3EB0C1...", "chat": "Referally Senior 5+", "sender": "+972...",
+    [{"id": "3EB0C1...", "chat": "Tech Referrals Senior 5+", "sender": "+972...",
       "timestamp": "2026-11-02T07:58:00+02:00", "text": "..."}]
 """
 
@@ -106,7 +106,7 @@ def parse_whatsapp_json(items: list[dict]) -> list[RawPost]:
 
 class WhatsAppExportSource:
     """Reads every *.txt and *.json under `folder`. For .txt files the chat name is the file
-    name (e.g. "Referally Senior 5+.txt"); .json files carry it per message.
+    name (e.g. "Tech Referrals Senior 5+.txt"); .json files carry it per message.
     `groups`: only these chats (None = all)."""
 
     name = "whatsapp"

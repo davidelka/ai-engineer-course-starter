@@ -13,7 +13,7 @@
 4. cap_jobs         at most MAX_JOBS_PER_POST jobs per post (an attack can ask for 50).
 5. redact           PII (phones, emails, Israeli IDs) is removed before text reaches
                     traces, logs or stored eval data. The digest itself keeps the apply contact:
-                    it goes to the owner's own group, and he needs it.
+                    it goes to the owner's own group, and they need it.
 
 What the agent can DO is also limited by design: it can write a digest to one fixed group
 and create Gmail DRAFTS. It cannot send email, cannot message anyone else, and has no
@@ -23,13 +23,12 @@ tool the model can call. A successful injection can at worst put a bad line in a
 from __future__ import annotations
 
 import re
-import secrets
 from typing import Optional
 
-from guardkit.detectors import HeuristicDetector, Verdict
+from guardkit.detectors import HeuristicDetector
 from guardkit.redact import redact_pii, redact_secrets
 
-from .models import Finding, JobPosting, PostExtraction
+from .models import Finding, PostExtraction
 
 DATAMARK = "ˆ"  # the same marker guardkit.Spotlight uses
 MAX_JOBS_PER_POST = 8
@@ -47,20 +46,16 @@ FORGED_MARKER = re.compile(r"<<\s*/?\s*post\b", re.I)
 SYSTEM_LINE = re.compile(r"(?im)^\s*(?:system|assistant)\s*:")
 
 
-def screen_post(text: str) -> Verdict:
-    v = _detector.detect(text, kind="document")
-    extra = [name for name, rx in (("forged_post_marker", FORGED_MARKER), ("system_line", SYSTEM_LINE))
-             if rx.search(text or "")]
-    if extra:
-        return Verdict(True, v.score + 3.0 * len(extra), v.reasons + extra)
-    return v
+def screen_post(*args, **kwargs):
+    """Milestone 4: runs your mine.screen_post (see jobagent/hooks.py)."""
+    from .hooks import call
+    return call("screen_post", *args, **kwargs)
 
 
-def spotlight(text: str, nonce: Optional[str] = None) -> tuple[str, str]:
-    """Wrap untrusted text for the prompt. Returns (wrapped, nonce)."""
-    nonce = nonce or secrets.token_hex(4)
-    marked = re.sub(r"[ \t]+", DATAMARK, text)
-    return f"<<post nonce={nonce}>>\n{marked}\n<</post nonce={nonce}>>", nonce
+def spotlight(*args, **kwargs):
+    """Milestone 4: runs your mine.spotlight (see jobagent/hooks.py)."""
+    from .hooks import call
+    return call("spotlight", *args, **kwargs)
 
 
 def unmark(text: Optional[str]) -> Optional[str]:
@@ -87,52 +82,10 @@ def number_in_text(n: int, text: str) -> bool:
     return any(w in text for w in HE_NUMBERS.get(n, ()))
 
 
-def validate_job(job: JobPosting, source_text: str) -> tuple[JobPosting, list[Finding]]:
-    """Reference version of milestone 5. Returns a CLEANED copy and what was found.
-
-    Rules:
-      apply_not_in_source  apply is set but does not appear in the post (case-insensitive,
-                           whitespace-normalized, trailing '/' or '.' ignored) -> apply=None, block
-      apply_bad_scheme     apply is neither an email nor an http(s) URL -> apply=None, block
-      years_not_in_source  years_required is set but that number is not in the post (as digits
-                           or as a Hebrew number word, see number_in_text) -> None, warn
-      link_in_text_field   title or company contains a URL or email -> the field is cut at
-                           the link (company becomes None if nothing is left), block
-      title_too_long       title longer than MAX_TITLE_LEN -> cut, warn
-    """
-    j = job.model_copy(deep=True)
-    findings: list[Finding] = []
-    j.title, j.company, j.location, j.apply = unmark(j.title), unmark(j.company), unmark(j.location), unmark(j.apply)
-
-    if j.apply:
-        a = j.apply.strip()
-        is_email = bool(EMAIL_RE.fullmatch(a.removeprefix("mailto:")))
-        is_http = a.lower().startswith(("http://", "https://"))
-        if not (is_email or is_http):
-            findings.append(Finding(code="apply_bad_scheme", detail=a[:80], severity="block"))
-            j.apply = None
-        elif not appears_in(a.removeprefix("mailto:"), source_text):
-            findings.append(Finding(code="apply_not_in_source", detail=a[:80], severity="block"))
-            j.apply = None
-        else:
-            j.apply = a.removeprefix("mailto:")
-
-    if j.years_required is not None and not number_in_text(j.years_required, source_text):
-        findings.append(Finding(code="years_not_in_source", detail=str(j.years_required)))
-        j.years_required = None
-
-    for field in ("title", "company"):
-        val = getattr(j, field)
-        if val and (URL_RE.search(val) or EMAIL_RE.search(val) or ANY_SCHEME_RE.search(val)):
-            m = min(x.start() for x in (URL_RE.search(val), EMAIL_RE.search(val), ANY_SCHEME_RE.search(val)) if x)
-            cut = val[:m].strip(" -:|,")
-            findings.append(Finding(code="link_in_text_field", detail=field, severity="block"))
-            setattr(j, field, cut or (None if field == "company" else "(unknown title)"))
-
-    if len(j.title) > MAX_TITLE_LEN:
-        findings.append(Finding(code="title_too_long", detail=str(len(j.title))))
-        j.title = j.title[:MAX_TITLE_LEN].rstrip()
-    return j, findings
+def validate_job(*args, **kwargs):
+    """Milestone 4: runs your mine.validate_job (see jobagent/hooks.py)."""
+    from .hooks import call
+    return call("validate_job", *args, **kwargs)
 
 
 def validate_extraction(ex: PostExtraction, source_text: str,

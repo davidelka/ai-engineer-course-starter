@@ -28,7 +28,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 
 HOME_DEFAULT = Path(__file__).resolve().parent.parent
-GROUPS_DEFAULT = ("Referally Senior 5+", "Referally Mid 3-4", "קהילת הייטק באר שבע והסביבה")
+GROUPS_DEFAULT = ("Tech Referrals Senior 5+", "Tech Referrals Mid 3-4", "קהילת הייטק דרום")
 
 
 def _env(name: str, default: str = "") -> str:
