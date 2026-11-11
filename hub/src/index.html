@@ -559,7 +559,7 @@ Progress.on(() => { if (!location.hash.startsWith("#l")) renderHome(); else refr
 
 /* ---------------- home ---------------- */
 // Core path: the lessons and projects that carry the course's thread (Company Brain) end to end.
-// Everything else deepens a topic and can wait. Roughly 100 hours instead of 180.
+// Everything else deepens a topic and can wait. Roughly 160 hours instead of 280 (sum of the units' own estimates).
 const CORE = new Set(["01", "02", "03", "04", "07", "08", "09", "10", "12", "13", "14", "15", "16", "17", "22", "23", "24", "27", "29", "31"]);
 function shortHours(L) {
   if (!L || !L.hours) return "";
@@ -587,7 +587,7 @@ function renderHome() {
     <ol class="mmm">${STATIONS.map((s) => `<li><div><b>${s.name}</b><span>${s.what}</span></div></li>`).join("")}</ol></section>`);
   app.append(how);
   app.append(h(`<section class="card"><div class="eyebrow">Core path</div><h2>מסלול הליבה, ומה אפשר לדחות</h2>
-    <p class="muted" style="margin:0">הקורס המלא הוא בערך 150 עד 200 שעות. <b>מסלול הליבה</b> (20 יחידות, מסומנות "ליבה") עובר על כל החוט של Company Brain, מפרומפט ועד פריסה, בערך 100 שעות. השאר מעמיקים נושא מסוים, ואפשר לחזור אליהם אחר כך בלי לאבד את הרצף. ליד כל יחידה מופיעה הערכת הזמן שלה.</p>
+    <p class="muted" style="margin:0">הקורס המלא הוא בערך 280 שעות, לפי הערכות הזמן של היחידות. <b>מסלול הליבה</b> (20 יחידות, מסומנות "ליבה") עובר על כל החוט של Company Brain, מפרומפט ועד פריסה, בערך 160 שעות. השאר מעמיקים נושא מסוים, ואפשר לחזור אליהם אחר כך בלי לאבד את הרצף. ליד כל יחידה מופיעה הערכת הזמן שלה.</p>
     <div class="legend"><span><span class="badge core">ליבה</span> חובה לרצף</span><span><span class="badge">העמקה</span> אפשר לדחות</span></div></section>`));
 
   for (const ph of COURSE.phases) {

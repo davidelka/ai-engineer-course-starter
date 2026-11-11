@@ -32,7 +32,7 @@ Read this file at the start of every session. Then read `PROGRESS.md` (create it
 - **`tests/`**: the environment suite. `python -m pytest -q` runs it offline, with no keys and no cost; it should be fully green (about 930 tests, around 4 minutes). Run it after any change to a shared library.
 - **`LIVE_CHECKS.md`**: per lesson, the commands that need real API keys, Docker or AWS, with estimated costs.
 - **`hub/src/live.js`**: live findings, shown in each lab station's "ממצאים חיים" tab. When the learner runs something live and the result differs from a slide (or confirms something the slide only assumed), add an entry there with the date, fix the slide if needed, and rebuild the hub.
-- **Core path**: the home page marks 20 units as "ליבה" (the Company Brain thread, about 100 hours) and the rest as "העמקה". If the learner is short on time, follow the core path and come back to the rest later. The list is the `CORE` set in `hub/src/index.html`.
+- **Core path**: the home page marks 20 units as "ליבה" (the Company Brain thread, about 160 hours) and the rest as "העמקה". If the learner is short on time, follow the core path and come back to the rest later. The list is the `CORE` set in `hub/src/index.html`.
 - **`hub/check_links.py`**: checks the ~380 external links in the course. Suggest running it monthly on the learner's machine (it needs network).
 - **`mockllm`**: a local fake provider server with fault modes (rate limits, truncated streams, bad JSON, tool scripts, cache simulation). Most labs run against it first, for free, and only then live.
 
